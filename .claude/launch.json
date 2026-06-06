@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Express Dev Server",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "port": 3000
+    },
+    {
+      "name": "Firebase Emulator (Functions)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "serve"],
+      "port": 5001
+    },
+    {
+      "name": "Next Dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "next:dev"],
+      "port": 3002
+    }
+  ]
+}

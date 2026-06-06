@@ -1,0 +1,24 @@
+/* PG 심사 안내(.checkout-pg-review-notice)와 동일 — 복사됨 상태에 음영·포커스 링 없음 */
+html.ping-ui button.ping-bank-copy-all-btn,
+html.ping-ui button.ping-bank-copy-all-btn:hover,
+html.ping-ui button.ping-bank-copy-all-btn:focus,
+html.ping-ui button.ping-bank-copy-all-btn:focus-visible,
+html.ping-ui button.ping-bank-copy-all-btn:active {
+  box-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+  outline: none !important;
+  outline-offset: 0 !important;
+}
+
+html.ping-ui button.ping-bank-copy-all-btn--copied,
+html.ping-ui button.ping-bank-copy-all-btn--copied:hover,
+html.ping-ui button.ping-bank-copy-all-btn--copied:focus,
+html.ping-ui button.ping-bank-copy-all-btn--copied:focus-visible,
+html.ping-ui button.ping-bank-copy-all-btn--copied:active {
+  box-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+  outline: none !important;
+  outline-offset: 0 !important;
+}

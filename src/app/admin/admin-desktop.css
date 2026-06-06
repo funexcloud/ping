@@ -1,0 +1,7 @@
+/** 관리자 화면 — PC(1280+) 전용. 모바일 폭(400px) 셸 밖에서 전체 너비 사용 */
+.admin-desktop-root {
+  box-sizing: border-box;
+  min-height: 100dvh;
+  width: 100%;
+  min-width: 1280px;
+}

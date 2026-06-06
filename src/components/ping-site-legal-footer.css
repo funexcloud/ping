@@ -1,0 +1,209 @@
+/* 전역 사업자·약관 푸터 (단일 정의 — `globals.css`에서 로드) · `.footer-company-rep-reg` */
+
+html.ping-ui .ping-global-main {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+html.ping-ui .ping-global-root .ping-layout-centered {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+}
+
+html.ping-ui .ping-global-root .ping-shell {
+  min-height: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* 인증·폼 셸: 푸터를 하단에 두되 본문은 상단 정렬(원래 레이아웃) */
+html.ping-ui .ping-global-root .ob-entry-shell {
+  flex: 1 1 auto;
+}
+
+@media (min-width: 480px) {
+  html.ping-ui .ping-global-root .ping-shell {
+    min-height: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+html.ping-ui .ping-global-footer-slot {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+  background: var(--ping-surface);
+  border-top: none;
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+}
+
+html.ping-ui .ping-global-root .app-shell {
+  border-bottom: none;
+  box-shadow: none;
+}
+
+html.ping-ui .ping-global-footer-slot .index-footer-legal-stack {
+  padding-top: 0;
+}
+
+html.ping-ui .index-footer-legal-stack {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-top: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html.ping-ui .index-footer-accordion {
+  border-radius: var(--ping-radius-card, 20px);
+  border: none;
+  box-shadow: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: var(--ping-surface);
+}
+
+html.ping-ui .index-footer-copyright {
+  margin-top: 0.75rem;
+  margin-bottom: 0;
+  flex-shrink: 0;
+  scroll-margin-bottom: 1.25rem;
+}
+
+html.ping-ui .index-footer-accordion > summary,
+html.ping-ui .index-footer-accordion-summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.95rem 1rem;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ping-ui-text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  background-color: var(--ping-surface);
+}
+
+html.ping-ui .index-footer-accordion:not([open]) > summary,
+html.ping-ui .index-footer-accordion:not([open]) > .index-footer-accordion-summary {
+  padding: 0.72rem 1rem;
+}
+
+html.ping-ui .index-footer-accordion > summary::-webkit-details-marker {
+  display: none;
+}
+
+html.ping-ui .index-footer-accordion > summary .index-footer-accordion-chevron,
+html.ping-ui .index-footer-accordion-summary .index-footer-accordion-chevron {
+  color: var(--ping-ui-text-hint);
+  font-size: 12px;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+html.ping-ui .index-footer-accordion[open] > summary .index-footer-accordion-chevron,
+html.ping-ui .index-footer-accordion[open] > .index-footer-accordion-summary .index-footer-accordion-chevron {
+  transform: rotate(180deg);
+}
+
+html.ping-ui .index-footer-accordion > summary:hover,
+html.ping-ui .index-footer-accordion-summary:hover {
+  background-color: var(--ping-surface);
+  filter: brightness(0.98);
+}
+
+html.ping-ui .index-footer-accordion-panel {
+  padding: 0 0 1rem;
+  border-top: none;
+}
+
+html.ping-ui .index-footer-legal-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin: 0;
+  border: 1px solid var(--ping-ui-line-strong);
+  border-radius: 0;
+  background: var(--ping-surface);
+  overflow: hidden;
+}
+
+html.ping-ui .index-footer-legal-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 3rem;
+  padding: 0.75rem 0.75rem;
+  box-sizing: border-box;
+  background: var(--ping-surface);
+  color: var(--ping-ui-text);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  border-right: 1px solid var(--ping-ui-line);
+  border-bottom: 1px solid var(--ping-ui-line);
+  transition: background-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui .index-footer-legal-nav a:nth-child(2n) {
+  border-right: none;
+}
+
+html.ping-ui .index-footer-legal-nav a:nth-child(n + 3) {
+  border-bottom: none;
+}
+
+html.ping-ui .index-footer-legal-nav a:hover,
+html.ping-ui .index-footer-legal-nav a:active {
+  background: var(--ping-bg-sub);
+}
+
+html.ping-ui .index-footer-legal-nav a i {
+  width: 1rem;
+  flex-shrink: 0;
+  text-align: center;
+  color: var(--ping-ui-text-hint);
+  font-size: 0.875rem;
+}
+
+html.ping-ui .index-footer-accordion-panel .index-footer-legal-inline-note {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ping-ui-text-sub);
+}
+
+html.ping-ui .index-footer-accordion-panel .index-footer-legal-inline-note--hint {
+  color: var(--ping-ui-text-hint);
+}
+
+html.ping-ui .index-footer-accordion-panel .index-footer-legal-company-body {
+  padding-left: 3ch;
+  box-sizing: border-box;
+}

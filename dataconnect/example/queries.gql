@@ -1,0 +1,63 @@
+mutation CreateObituary($firstName: String!, $lastName: String!, $dateOfBirth: Date!, $dateOfDeath: Date!) @auth(level: USER) {
+  obituary_insert(data: {
+    firstName: $firstName,
+    lastName: $lastName,
+    dateOfBirth: $dateOfBirth,
+    dateOfDeath: $dateOfDeath,
+    creatorId_expr: "auth.uid",
+    createdAt_expr: "request.time",
+    isPublic: true
+  })
+}
+
+query GetObituary($id: UUID!) @auth(level: PUBLIC, insecureReason: "This query is safe to expose to the public") {
+  obituary(id: $id) {
+    id
+    firstName
+    lastName
+    dateOfBirth
+    dateOfDeath
+    biography
+    photoUrl
+    isPublic
+    creator {
+      id
+      displayName
+      email
+      profilePictureUrl
+    }
+    services_on_obituary {
+      id
+      type
+      dateTime
+      locationName
+      address
+    }
+  }
+}
+
+mutation UpdateObituary($id: UUID!, $firstName: String, $lastName: String, $dateOfBirth: Date, $dateOfDeath: Date, $biography: String, $photoUrl: String, $isPublic: Boolean) @auth(level: USER) {
+  obituary_update(
+    id: $id,
+    data: {
+      firstName: $firstName,
+      lastName: $lastName,
+      dateOfBirth: $dateOfBirth,
+      dateOfDeath: $dateOfDeath,
+      biography: $biography,
+      photoUrl: $photoUrl,
+      isPublic: $isPublic
+    }
+  )
+}
+
+query ListMyObituaries @auth(level: USER) {
+  obituaries(where: {creatorId: {eq_expr: "auth.uid"}}) {
+    id
+    firstName
+    lastName
+    dateOfDeath
+    dateOfBirth
+    isPublic
+  }
+}

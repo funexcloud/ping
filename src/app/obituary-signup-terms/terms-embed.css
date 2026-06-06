@@ -1,0 +1,51 @@
+/* 약관 동의 Next 페이지 — 임베드 본문 타이포는 ping-ui.css
+   (.ping-law-scroll.ping-doc-article-embed) 에서 통합 관리 */
+.ping-stack.ping-stack--relaxed.ping-signup-terms-legal-gap {
+  margin-bottom: 1.25rem;
+}
+
+/* 하단: 모두 동의(체크) → 다음(플로우 CTA, 무음영) */
+.ping-signup-terms-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+}
+
+html.ping-ui .ping-agree-all-toggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0;
+  padding: 14px 16px;
+  text-align: left;
+  background: var(--ping-field-fill);
+  border: none;
+  border-radius: var(--radius-16);
+  cursor: pointer;
+  touch-action: manipulation;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui .ping-agree-all-toggle .ping-term-label-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ping-ui-text);
+  letter-spacing: -0.02em;
+}
+
+html.ping-ui .ping-agree-all-toggle:active {
+  opacity: 0.98;
+}
+
+html.ping-ui .ping-signup-terms-actions .ob-flow-btn-primary {
+  box-shadow: none !important;
+}
+
+html.ping-ui .ping-signup-terms-actions .ob-flow-btn-primary:not(:disabled):hover {
+  box-shadow: none !important;
+}

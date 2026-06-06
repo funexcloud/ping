@@ -1,0 +1,108 @@
+/* 전역 사이드 메뉴 — `/start` bulk-entry.css 에서 이전 (전역 헤더 공용) */
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 280px;
+  max-width: 85vw;
+  height: 100vh;
+  background: var(--ping-surface);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+}
+
+.side-menu.show {
+  right: 0;
+}
+
+.side-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.side-menu-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.side-menu-header {
+  padding: 18px 18px 16px;
+  border-bottom: none;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.side-menu-title {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ping-ui-text);
+}
+
+.side-menu-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  font-size: 20px;
+  color: var(--ping-ui-text-sub);
+  border: none;
+  background: transparent;
+}
+
+.side-menu-close:hover {
+  background-color: var(--ping-bg);
+}
+
+.side-menu-content {
+  padding: 16px 0;
+}
+
+.side-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 13px 20px;
+  color: var(--ping-ui-text-sub);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.side-menu-item:hover {
+  background-color: var(--ping-bg);
+}
+
+.side-menu-divider {
+  height: 1px;
+  background: var(--ping-ui-muted-fill);
+  margin: 8px 0;
+}

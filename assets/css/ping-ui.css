@@ -1,0 +1,3044 @@
+/**
+ * PING 제품 UI — 단색 면·소프트 섀도·Pretendard
+ * 사용: <html class="ping-ui"> + Pretendard
+ */
+
+/*
+ * =============================================================================
+ * DESIGN CONTRACT — 제품 UI “통합”은 이 파일만 기준으로 한다
+ * =============================================================================
+ *
+ * 1. 제품-facing HTML은 `<html class="ping-ui">` 이고 이 CSS를 반드시 링크한다.
+ *
+ * 2. 색·그림자·라운드·본문/보조 텍스트 색은 아래 `:root` 토큰만 사용한다.
+ *    동일 목적의 색을 각 HTML `<style>` 안에 `:root { ... }` 로 다시 정의하지 않는다.
+ *    (페이지 한정 레이아웃·애니메이션만 인라인 허용)
+ *
+ * 3. 액센트 = `--ping-primary` / `--ping-primary-dark`.
+ *    본문 = `--ping-ui-text`, 보조 = `--ping-ui-text-sub`, 캡션 = `--ping-ui-text-hint`.
+ *    구분은 섀도·면색(`--ping-bg` / `--ping-surface` / `--ping-field-fill`). 카드 = `--ping-surface`.
+ *
+ * 4. 셸·카드: `.app-shell`, `.ping-shell`, 헤더 `.ping-top-nav`, 뒤로 `.ping-back-btn` + `.ping-chevron-left`.
+ *    주요 CTA: `.ping-cta-primary`, 보조: `.ping-cta-ghost`. 텍스트형 뒤로: `a.ping-link-back-text`.
+ *    보조 호버: 인풋·textarea·select·버튼에 `.ping-hover-secondary` 한 곳에서만 정의; HTML `<style>`에 동일 ID·클래스로 호버 링·보더를 다시 쓰지 않는다.
+ *
+ * 5. “통일 작업”이 필요하면 여기에 토큰·유틸 클래스를 추가하고, HTML은 클래스/변수 치환으로 맞춘다.
+ *    페이지마다 헥스·Tailwind 임의색을 새로 쌓아 수정하지 않는다.
+ *
+ * 6. 의도적 예외(이 파일 밖 스타일 유지 가능):
+ *    `ping-dashboard-dark`, `ping-surface-dark`, 인트로 풀블랙, 일부 데모/실험 HTML.
+ *    예외 화면에서도 액센트가 필요하면 `--ping-primary` 를 우선 쓴다.
+ *
+ * =============================================================================
+ */
+:root {
+    --ping-color-primary: #3182f6;
+    --ping-color-primary-dark: #1e64d4;
+    /* 토스 톤 캔버스 */
+    --ping-color-bg: #f2f4f6;
+    --ping-color-surface: #ffffff;
+    --ping-color-bg-sub: #f8f9fa;
+    --ping-color-text-title: #191f28;
+    --ping-color-text-body: #6b7684;
+    --ping-color-text-caption: #b0b8c1;
+
+    /* 토스 스타일 디자인 토큰 (브랜드 리디자인) */
+    --ping-primary-hover: #1b64da;
+    --ping-primary-light-bg: #ebf3ff;
+    --ping-primary-text-on-light: #1a5fbf;
+    --ping-divider: #e9ecf0;
+    /** 위저드·폼 그룹용 div 테두리 (`ping-bordered-panel`) */
+    --ping-panel-border: #e5e8eb;
+    --ping-panel-border-width: 1.5px;
+    --ping-panel-radius: 16px;
+    --ping-inset: #f8f9fa;
+    --ping-text-secondary: #6b7684;
+    --ping-text-tertiary: #b0b8c1;
+
+    --dongban-plum: var(--ping-color-text-title);
+    --dongban-yellow: var(--ping-color-primary);
+    --dongban-seafoam: rgba(0, 0, 0, 0.12);
+    --dongban-teal: var(--ping-color-primary);
+    --dongban-teal-dark: var(--ping-color-primary-dark);
+
+    --ping-surface: var(--ping-color-surface);
+    --ping-primary: var(--ping-color-primary);
+    --ping-primary-dark: var(--ping-color-primary-dark);
+    --ping-bg: var(--ping-color-bg);
+    --ping-bg-sub: var(--ping-color-bg-sub);
+    --ping-text: var(--ping-color-text-title);
+    --ping-muted: var(--ping-color-text-body);
+    --ping-border: transparent;
+    --ping-field-fill: #f2f4f6;
+    --ping-tint-bg: rgba(49, 130, 246, 0.1);
+    --ping-tint-border: rgba(49, 130, 246, 0.28);
+    --ping-icon-chip-muted-bg: rgba(0, 0, 0, 0.04);
+    --ping-icon-chip-muted-fg: var(--ping-ui-text-sub);
+    --ping-shadow-shell: 0 4px 24px rgba(15, 23, 42, 0.07);
+    --ping-shadow-float: 0 4px 16px rgba(15, 23, 42, 0.1);
+    --ping-radius-card: var(--radius-8);
+    --ping-radius-control: var(--radius-8);
+
+    --ping-ui-text: var(--ping-color-text-title);
+    --ping-ui-text-sub: var(--ping-color-text-body);
+    --ping-ui-text-hint: var(--ping-color-text-caption);
+    --ping-ui-line: transparent;
+    --ping-ui-line-strong: transparent;
+
+    --radius-6: 6px;
+    --radius-8: 8px;
+    --radius-12: 8px;
+    --radius-14: 8px;
+    --radius-16: 8px;
+    --radius-20: 8px;
+    --radius-24: 8px;
+    --radius-full: 9999px;
+
+    --shadow-ping-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-ping-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+    --shadow-ping-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-ping-primary: var(--ping-shadow-float);
+
+    --font-ping-ui: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    --ping-primary-light: rgba(49, 130, 246, 0.15);
+    --ping-ui-muted-fill: #eaeaea;
+    --ping-ui-placeholder: #888888;
+
+    /* 솔리드 보조 CTA(회색) — «이전» 등, 메인 primary와 톤만 구분 */
+    --ping-cta-secondary-text: #4e5968;
+    --ping-cta-secondary-bg: #f2f4f6;
+    --ping-cta-secondary-bg-hover: #e8ebee;
+    --ping-cta-secondary-bg-active: #d8dce0;
+    --ping-cta-secondary-shadow: var(--shadow-ping-sm);
+}
+
+/* 다크 히어로 페이지(obituary-review 등): 배경은 페이지가 지정 */
+html.ping-ui.ping-surface-dark,
+html.ping-ui.ping-surface-dark body {
+    background: transparent;
+    color: inherit;
+    letter-spacing: inherit;
+}
+
+html.ping-ui.ping-surface-dark body {
+    font-family: var(--font-ping-ui);
+    -webkit-font-smoothing: antialiased;
+}
+
+html.ping-ui {
+    -webkit-text-size-adjust: 100%;
+}
+
+html.ping-ui,
+html.ping-ui body {
+    font-family: var(--font-ping-ui);
+    color: var(--ping-ui-text);
+    background-color: var(--ping-bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.02em;
+}
+
+/* 위 기본 배경보다 우선 (선택자 순서·특이도) */
+html.ping-ui.ping-dashboard-dark,
+html.ping-ui.ping-dashboard-dark body {
+    background-color: #0f172a;
+    color: #e2e8f0;
+}
+
+html.ping-ui.ping-dashboard-dark body {
+    font-family: var(--font-ping-ui);
+    -webkit-font-smoothing: antialiased;
+}
+
+html.ping-ui body.ping-body-gradient {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    color: #e2e8f0;
+    font-family: var(--font-ping-ui);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* 앱 셸 (모바일 카드) — 바탕 그레이 위 화이트 면 + 얇은 테두리로 구분 */
+html.ping-ui .app-shell {
+    background: var(--ping-surface);
+    box-shadow: var(--shadow-ping-md);
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    border-radius: 0;
+}
+
+@media (min-width: 480px) {
+    html.ping-ui .app-shell {
+        border-radius: var(--radius-24);
+        margin-top: 12px;
+        margin-bottom: 24px;
+    }
+}
+
+/* 인풋·버튼 */
+html.ping-ui .input-field {
+    border-radius: var(--radius-8) !important;
+    border: none !important;
+    background: var(--ping-field-fill);
+    min-height: 52px;
+    font-size: 16px;
+    transition: box-shadow 0.2s, background 0.2s;
+}
+
+html.ping-ui .input-field:focus:not(:focus-visible) {
+    box-shadow: none;
+}
+
+/*
+ * 제품 플로 표준 단일행 입력 (.ping-field-standard)
+ * 기준: /start bulk URL (#bulk-entry-zero-url). OTP·checkbox·input-outline·form-input·admin shadcn은 제외.
+ */
+html.ping-ui input.input-field.ping-field-standard {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box !important;
+    background: var(--ping-field-fill) !important;
+    padding-left: 2ch !important;
+    padding-right: 0.875rem !important;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    color: var(--ping-ui-text, #191f28);
+    border: none !important;
+    outline: none !important;
+}
+
+html.ping-ui input.input-field.ping-field-standard::placeholder {
+    font-size: 14px;
+    color: var(--ping-ui-text-hint, #b0b8c1);
+}
+
+html.ping-ui input.input-field.ping-field-standard:hover:not(:focus):not(:disabled) {
+    background: var(--ping-primary-light-bg) !important;
+    color: var(--ping-primary) !important;
+    box-shadow: none !important;
+}
+
+html.ping-ui input.input-field.ping-field-standard:hover:not(:focus):not(:disabled)::placeholder {
+    color: var(--ping-primary) !important;
+    opacity: 0.65;
+}
+
+html.ping-ui input.input-field.ping-field-standard:focus,
+html.ping-ui input.input-field.ping-field-standard:focus-visible,
+html.ping-ui input.input-field.ping-field-standard.ping-field-standard--valid {
+    outline: none !important;
+    background: var(--ping-surface) !important;
+    box-shadow: 0 0 0 2px var(--ping-primary) !important;
+}
+
+html.ping-ui input.input-field.ping-field-standard:disabled {
+    opacity: 0.65;
+}
+
+html.ping-ui input.input-field.ping-field-standard--with-trailing {
+    padding-right: 4.75rem !important;
+}
+
+html.ping-ui input.input-field.ping-field-standard.ping-field-numeric {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+/*
+ * 공통 보조 호버 — 포커스가 아닐 때만: 틴트 면 + 글자색(테두리·박스 링 없음).
+ * .ping-field-standard는 입력 전용 primary-light-bg 호버를 위에서 처리.
+ * index «이전» 등은 .index-wiz-back 전용.
+ */
+html.ping-ui input.input-field.ping-hover-secondary:not(.ping-field-standard):hover:not(:focus):not(:disabled),
+html.ping-ui textarea.ping-hover-secondary:hover:not(:focus):not(:disabled),
+html.ping-ui select.ping-hover-secondary:hover:not(:focus):not(:disabled),
+html.ping-ui button.ping-hover-secondary:hover:not(:disabled) {
+    background: var(--ping-tint-bg);
+    border-color: transparent;
+    box-shadow: none;
+    color: var(--ping-primary);
+}
+
+html.ping-ui input.input-field.ping-hover-secondary:hover:not(:focus):not(:disabled)::placeholder,
+html.ping-ui textarea.ping-hover-secondary:hover:not(:focus):not(:disabled)::placeholder {
+    color: var(--ping-primary);
+    opacity: 0.55;
+}
+
+/*
+ * 플로 하단 «다음»(index #submit-btn, 레거시 보더형) · 약관 등 푸터 CTA(.ping-footer-action)
+ * index 대량발송 기본 «다음»은 .ob-flow-btn-primary(부고 플로·문자 단계와 동일).
+ */
+html.ping-ui #submit-btn:not(.ob-flow-btn-primary),
+html.ping-ui .ping-footer-action {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+html.ping-ui #submit-btn:not(.ob-flow-btn-primary) {
+    border-radius: var(--radius-8) !important;
+    min-height: 54px;
+    font-size: 16px;
+}
+
+html.ping-ui .ping-footer-action {
+    padding: 10px 22px;
+    border-radius: var(--radius-14);
+    font-size: 15px;
+    cursor: pointer;
+    touch-action: manipulation;
+    font-family: inherit;
+}
+
+html.ping-ui #submit-btn:not(.ob-flow-btn-primary):disabled,
+html.ping-ui .ping-footer-action:disabled {
+    background-color: var(--ping-ui-muted-fill) !important;
+    color: var(--ping-ui-placeholder) !important;
+    box-shadow: none !important;
+    cursor: not-allowed;
+}
+
+html.ping-ui #submit-btn:not(.ob-flow-btn-primary):not(:disabled),
+html.ping-ui .ping-footer-action:not(:disabled) {
+    box-shadow: var(--shadow-ping-primary);
+    border: none !important;
+}
+
+html.ping-ui #submit-btn:not(.ob-flow-btn-primary):not(:disabled):hover {
+    border-color: transparent !important;
+    background-color: var(--ping-primary) !important;
+    color: var(--ping-surface) !important;
+    box-shadow: var(--ping-shadow-float);
+}
+
+html.ping-ui .ping-footer-action:not(:disabled):hover {
+    border-color: transparent !important;
+    background-color: var(--ping-primary) !important;
+    color: var(--ping-surface) !important;
+    box-shadow: var(--ping-shadow-float);
+}
+
+html.ping-ui .ping-footer-action:disabled:hover {
+    background-color: var(--ping-tint-bg) !important;
+    color: var(--ping-primary) !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+html.ping-ui #submit-btn:not(.ob-flow-btn-primary):disabled:hover {
+    background-color: var(--ping-tint-bg) !important;
+    color: var(--ping-primary) !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* index #submit-btn + 부고 플로: 동일 주버튼 */
+html.ping-ui #submit-btn.ob-flow-btn-primary {
+    width: 100%;
+    max-width: none;
+}
+
+/* Footer.js·index 사업자 블록: 모바일은 항목별 줄바꿈, 태블릿·PC(768px↑)만 가로 배치 */
+html.ping-ui .footer-company-rep-reg {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    margin: 0;
+}
+
+@media (min-width: 768px) {
+    html.ping-ui .footer-company-rep-reg {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 1.5rem;
+    }
+}
+
+/* 세그먼트 / 카드 */
+html.ping-ui .plan-selector {
+    border-radius: var(--radius-20);
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.75);
+    border: none;
+    box-shadow: var(--shadow-ping-xs);
+}
+
+html.ping-ui .plan-tab,
+html.ping-ui .plan-tab-flower {
+    border-radius: var(--radius-16);
+    min-height: 50px;
+}
+
+html.ping-ui .plan-info-card {
+    border-radius: var(--radius-20);
+    border: none;
+    box-shadow: var(--shadow-ping-sm);
+    background: var(--ping-surface);
+}
+
+html.ping-ui .open-promo-banner {
+    border-radius: var(--radius-16);
+}
+
+/* 스크롤 연동 네비 언더라인: `ping-nav-scroll-underline.js` 가 .ping-sticky-nav--scrolled 토글 (아래 .ping-top-nav 본문과 함께 사용) */
+html.ping-ui header.ping-sticky-page-header {
+    border-bottom: none;
+    box-shadow: 0 1px 0 transparent;
+    transition: box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+html.ping-ui header.ping-sticky-page-header.ping-sticky-nav--scrolled {
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* 법률·문서 페이지: html 전역 배경이 회색이면 여백이 비쳐 보임 → doc-page 일 때 html 도 흰색 */
+html.ping-ui:has(body.doc-page) {
+    background-color: #fff;
+}
+/* 셸: 뷰포트 전체 흰색 + 가운데 컬럼은 .ping-doc-shell */
+html.ping-ui body.doc-page {
+    margin: 0;
+    padding: 0;
+    max-width: none;
+    min-height: 100vh;
+    background: #fff;
+    line-height: 1.65;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+/* 모달 등 body 대신 삽입된 래퍼(fetch + innerHTML) — 동일 레이아웃·배경 */
+html.ping-ui .ping-doc-embed {
+    margin: 0;
+    padding: 0;
+    max-width: none;
+    min-height: 0;
+    background: #fff;
+    line-height: 1.65;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+html.ping-ui body.doc-page .ping-doc-shell {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 20px 56px;
+    background-color: #fff;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+html.ping-ui .ping-doc-embed .ping-doc-shell {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 20px 56px;
+    background-color: #fff;
+    min-height: 0;
+    box-sizing: border-box;
+}
+
+.modal-content .ping-doc-embed .ping-doc-shell {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    min-height: 0;
+}
+
+/* 약관·방침 등 실질 본문 블록(제목~조문~문단) — 흰 배경 명시 */
+html.ping-ui body.doc-page .ping-doc-article,
+html.ping-ui .ping-doc-embed .ping-doc-article {
+    background-color: #fff;
+}
+
+html.ping-ui body.doc-page h1,
+html.ping-ui .ping-doc-embed h1 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.35;
+    color: var(--ping-ui-text);
+    margin-bottom: 10px;
+}
+
+html.ping-ui body.doc-page h2,
+html.ping-ui .ping-doc-embed h2 {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin: 28px 0 12px;
+    color: var(--ping-ui-text);
+}
+
+html.ping-ui body.doc-page p,
+html.ping-ui body.doc-page li,
+html.ping-ui .ping-doc-embed p,
+html.ping-ui .ping-doc-embed li {
+    color: var(--ping-ui-text-sub);
+}
+
+html.ping-ui body.doc-page a.ping-doc-page-back,
+html.ping-ui .ping-doc-embed a.ping-doc-page-back {
+    margin-bottom: 16px;
+    border: none;
+    box-shadow: none;
+}
+
+/* 공통 보조 버튼 */
+html.ping-ui .ping-back-btn {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-14);
+    color: var(--ping-primary);
+    background: var(--ping-surface);
+    border: none;
+    box-shadow: none;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+}
+
+html.ping-ui .ping-back-btn:focus-visible {
+    outline: 2px solid var(--ping-primary);
+    outline-offset: 2px;
+}
+
+html.ping-ui .ping-back-btn:active {
+    transform: scale(0.98);
+}
+
+/* 블러 카드 (고객센터 등) */
+html.ping-ui .ping-elevated {
+    background: var(--ping-surface);
+    border-radius: var(--radius-20);
+    border: none;
+    box-shadow: var(--shadow-ping-sm);
+}
+
+/* =============================================================================
+ * 부고 플로우 UI 통일 (부고 보내기 · 판매 · 장례 메시지 · 공개 부고)
+ * 페이지: html.ping-ui.ob-flow-page + .ob-flow-shell
+ * ============================================================================= */
+html.ping-ui .ob-flow-shell {
+    max-width: 28rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--ping-bg);
+    padding-bottom: 2.5rem;
+}
+
+html.ping-ui .ob-flow-hero {
+    background: linear-gradient(165deg, #1a2332 0%, #0c1016 52%, #152030 100%);
+    color: #f8fafc;
+    padding: 2.25rem 1.25rem 1.75rem;
+    border-radius: 0 0 2rem 2rem;
+    box-shadow: 0 20px 48px rgba(15, 18, 24, 0.38);
+}
+
+/* 부고 플로 히어로를 상단 고정 + 스크롤 시 하단 헤어섀도 */
+html.ping-ui header.ob-flow-hero.ping-sticky-page-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: none;
+    box-shadow: 0 1px 0 transparent;
+}
+
+html.ping-ui header.ob-flow-hero.ping-sticky-page-header.ping-sticky-nav--scrolled {
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+html.ping-ui .ob-flow-hero--spacious {
+    padding-top: 2.5rem;
+    padding-bottom: 2rem;
+}
+
+html.ping-ui .ob-flow-eyebrow {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 0.5rem;
+}
+
+html.ping-ui .ob-flow-loading {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.72);
+    padding: 1.5rem 0;
+    text-align: center;
+}
+
+html.ping-ui .ob-flow-error {
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.15rem 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: #fecaca;
+}
+
+html.ping-ui .ob-flow-hero-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.3;
+    color: #f8fafc;
+}
+
+html.ping-ui .ob-flow-hero-title--lg {
+    font-size: 1.5rem;
+    letter-spacing: -0.04em;
+    line-height: 1.25;
+}
+
+@media (min-width: 640px) {
+    html.ping-ui .ob-flow-hero-title--lg {
+        font-size: 1.65rem;
+    }
+}
+
+html.ping-ui .ob-flow-hero-sub {
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.72);
+    line-height: 1.5;
+}
+
+html.ping-ui .ob-flow-hero-muted {
+    margin-top: 0.5rem;
+    font-size: 12px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+html.ping-ui .ob-flow-main {
+    flex: 1;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-top: -0.75rem;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+html.ping-ui .ob-flow-main--tight {
+    gap: 1rem;
+}
+
+html.ping-ui .ob-flow-main--overlap {
+    margin-top: -1rem;
+}
+
+html.ping-ui .ob-flow-hint {
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--ping-muted);
+    padding: 0 0.125rem;
+}
+
+html.ping-ui .ob-flow-card {
+    border-radius: 1.35rem;
+    background: var(--ping-surface);
+    border: none;
+    box-shadow: var(--shadow-ping-md);
+    overflow: hidden;
+}
+
+html.ping-ui .ob-flow-card--padded {
+    padding: 1rem;
+}
+
+html.ping-ui .ob-flow-card--flat {
+    box-shadow: var(--shadow-ping-sm);
+}
+
+html.ping-ui .ob-flow-card-head {
+    padding: 1rem 1rem 0.75rem;
+    border-bottom: none;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+}
+
+html.ping-ui .ob-flow-card-head--soft {
+    background: rgba(248, 250, 252, 0.9);
+}
+
+html.ping-ui .ob-flow-section-title {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ping-ui-text);
+}
+
+html.ping-ui .ob-flow-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ping-muted);
+    margin-bottom: 0.375rem;
+}
+
+html.ping-ui .ob-flow-input {
+    width: 100%;
+    border-radius: 1rem;
+    border: none;
+    padding: 0.625rem 0.75rem;
+    font-size: 14px;
+    color: var(--ping-ui-text);
+    background: var(--ping-field-fill);
+}
+
+html.ping-ui .ob-flow-input:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+}
+html.ping-ui .ob-flow-input:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.35);
+}
+
+html.ping-ui .ob-flow-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 52px;
+    padding: 0 1rem;
+    border: none;
+    border-radius: 1rem;
+    background: var(--ping-primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.02em;
+    box-shadow: var(--shadow-ping-primary);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui .ob-flow-btn-primary:active {
+    opacity: 0.92;
+}
+
+html.ping-ui .ob-flow-btn-primary:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+html.ping-ui .ob-flow-btn-inverse {
+    background: var(--dongban-plum);
+    box-shadow: 0 10px 28px rgba(25, 31, 40, 0.32);
+}
+
+html.ping-ui .ob-flow-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 48px;
+    padding: 0 1rem;
+    border-radius: 1rem;
+    border: none;
+    background: var(--ping-surface);
+    color: var(--ping-ui-text);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui .ob-flow-btn-secondary:active {
+    opacity: 0.92;
+}
+
+/*
+ * 플로 하단 버튼 표준 (페이지별로 혼용하지 말 것)
+ *
+ * 1) «이전 | 다음(다음이 주 CTA)» — index 대량 발송 등: index.html
+ *    · 그리드: .index-sticky-btn-wrap / .index-sticky-btn-row (열: 1fr 1fr 동일 폭; 이전 숨김 시 다음만 전체 폭)
+ *    · 이전: .index-wiz-back
+ *    · 다음: #submit-btn.ob-flow-btn-primary (부고/문자 단계와 동일 토큰)
+ *
+ * 2) 단일 전폭 슬레이트 CTA — 비회원 본인확인 등 본문 하단 한 줄 버튼:
+ *    · 클래스: .ping-flow-cta-slate (+ touch-manipulation 권장)
+ */
+html.ping-ui .ping-flow-cta-slate {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 54px;
+    padding: 0 1rem;
+    border: none;
+    border-radius: 1rem;
+    background: #374151;
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.02em;
+    font-family: inherit;
+    box-shadow: 0 10px 28px rgba(55, 65, 81, 0.25);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.15s ease;
+}
+
+html.ping-ui .ping-flow-cta-slate:hover {
+    opacity: 0.96;
+}
+
+html.ping-ui .ping-flow-cta-slate:active {
+    opacity: 0.9;
+}
+
+html.ping-ui .ping-flow-cta-slate:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+html.ping-ui .ob-flow-link-row {
+    display: flex;
+    gap: 0.75rem;
+}
+
+html.ping-ui .ob-flow-link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 1rem;
+    border: none;
+    background: var(--ping-surface);
+    padding: 0.75rem 0.5rem;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ping-ui-text);
+    text-decoration: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui .ob-flow-footer {
+    text-align: center;
+    font-size: 11px;
+    line-height: 1.55;
+    color: var(--ping-ui-text-hint);
+    padding: 0 0.5rem;
+}
+
+html.ping-ui .ob-flow-callout {
+    font-size: 12px;
+    line-height: 1.55;
+    color: #92400e;
+    background: #fffbeb;
+    border: none;
+    border-radius: 1rem;
+    padding: 0.625rem 0.75rem;
+    box-shadow: var(--shadow-ping-xs);
+}
+
+html.ping-ui .ob-flow-tpl-box {
+    flex: 1;
+    border-radius: 0.75rem;
+    border: none;
+    padding: 0.625rem 0.75rem;
+    background: var(--ping-field-fill);
+    box-shadow: var(--shadow-ping-xs);
+    transition: box-shadow 0.15s, background 0.15s;
+}
+
+html.ping-ui .ob-flow-tpl:checked + .ob-flow-tpl-box {
+    box-shadow: 0 0 0 2px var(--ping-primary);
+    background: var(--ping-tint-bg);
+}
+
+html.ping-ui .ob-flow-kv-row,
+html.ping-ui .ob-pub-row {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: none;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+}
+
+html.ping-ui .ob-flow-kv-row:last-child,
+html.ping-ui .ob-pub-row:last-child {
+    box-shadow: none;
+}
+
+html.ping-ui .ob-flow-segment {
+    margin-top: 1rem;
+    display: flex;
+    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.22);
+    padding: 4px;
+    gap: 4px;
+}
+
+html.ping-ui .ob-flow-segment-btn {
+    flex: 1;
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0.625rem 0.5rem;
+    font-size: 13px;
+    font-weight: 600;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.78);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui .ob-flow-segment-btn.is-active {
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font-weight: 800;
+}
+
+html.ping-ui .ob-flow-tpl-label {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+    touch-action: manipulation;
+    border-radius: 0.75rem;
+    padding: 0.125rem;
+}
+
+html.ping-ui .ob-flow-tpl {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+html.ping-ui .ob-flow-mourner-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border-radius: 1rem;
+    border: none;
+    background: rgba(248, 250, 252, 0.92);
+    padding: 0.625rem 0.75rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-ping-xs);
+}
+
+html.ping-ui .ob-flow-mourner-row:has(input:checked) {
+    box-shadow: 0 0 0 2px var(--ping-primary);
+    background: var(--ping-tint-bg);
+}
+
+html.ping-ui .ob-flow-kv-k,
+html.ping-ui .ob-pub-k {
+    flex: 0 0 4.85rem;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ping-muted);
+}
+
+html.ping-ui .ob-flow-kv-v,
+html.ping-ui .ob-pub-v {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ping-ui-text);
+    line-height: 1.5;
+}
+
+html.ping-ui .ob-flow-inset-title {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ping-muted);
+}
+
+/* =============================================================================
+ * 제품 전역 레이아웃 — 단일 셀·타이포·폼
+ * body.ping-layout-centered + .ping-shell + .ping-top-nav + .ping-main
+ * ============================================================================= */
+html.ping-ui body.ping-layout-centered {
+    margin: 0;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+html.ping-ui .ping-shell {
+    width: 100%;
+    max-width: 400px;
+    min-height: 100dvh;
+    margin: 0 auto;
+    background: var(--ping-surface);
+    box-shadow: var(--shadow-ping-md);
+    border: none;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+@media (min-width: 480px) {
+    html.ping-ui .ping-shell {
+        border-radius: var(--radius-24);
+        margin-top: 12px;
+        margin-bottom: 24px;
+        min-height: calc(100dvh - 36px);
+    }
+}
+
+/**
+ * 그룹 패널(div) — 한 질문·입력 묶음. 연한 회색 테두리·라운드·그림자 없음.
+ * 예: `/start` 부고 주소 카드. 버튼·입력 필드 테두리와 별도(본문색 `--ping-muted` 테두리 금지).
+ */
+html.ping-ui .ping-bordered-panel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    border: var(--ping-panel-border-width) solid var(--ping-panel-border);
+    border-radius: var(--ping-panel-radius);
+    background: var(--ping-surface);
+    box-shadow: none;
+}
+
+html.ping-ui .ping-top-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: none;
+    box-shadow: 0 1px 0 transparent;
+    transition: box-shadow 0.2s ease;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+html.ping-ui .ping-top-nav.ping-sticky-nav--scrolled {
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
+html.ping-ui .ping-top-nav__title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0 52px;
+    box-sizing: border-box;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-align: center;
+    color: var(--ping-ui-text);
+    pointer-events: none;
+    flex: none;
+}
+
+html.ping-ui .ping-top-nav__back {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+
+/* 상단 네비 뒤로: 카드형 면·보더·아웃라인 제거 — 터치/마우스 클릭 포커스 링 숨김, 키보드만 인풋과 동일한 소프트 링 */
+html.ping-ui .ping-top-nav__back.ping-back-btn {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui .ping-top-nav__back.ping-back-btn:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+}
+
+html.ping-ui .ping-top-nav__back.ping-back-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.35);
+}
+
+html.ping-ui .ping-top-nav--balanced .ping-top-nav__title {
+    padding-left: 52px;
+    padding-right: 52px;
+}
+
+html.ping-ui .ping-top-nav__spacer {
+    width: 44px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+
+html.ping-ui .ping-chevron-left {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-left: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    margin-left: 5px;
+}
+
+html.ping-ui .ping-main {
+    flex: 1;
+    padding: 24px 18px 40px;
+    box-sizing: border-box;
+}
+
+html.ping-ui .ping-main--scroll {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: none;
+    overscroll-behavior-y: none;
+    overflow-anchor: none;
+}
+
+/** 약관 동의 등: main 내부 스크롤 대신 문서(셸) 전체 스크롤 */
+html.ping-ui .ping-main.ping-main--signup-terms-flow {
+    flex: 1 1 auto;
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+html.ping-ui .ping-main--tight-top {
+    padding-top: 18px;
+}
+
+html.ping-ui .ping-lead {
+    margin: 0 0 18px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ping-ui-text-sub);
+}
+
+html.ping-ui .ping-foot {
+    margin: 24px 0 0;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--ping-ui-text-hint);
+    text-align: center;
+}
+
+html.ping-ui .ping-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+html.ping-ui .ping-stack--relaxed {
+    gap: 20px;
+}
+
+html.ping-ui .ping-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ping-muted);
+    margin-bottom: 6px;
+}
+
+html.ping-ui .ping-label-hint {
+    font-weight: 500;
+    color: var(--ping-ui-text-hint);
+}
+
+html.ping-ui .ping-input {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: var(--radius-16);
+    border: none;
+    padding: 14px 16px;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--ping-ui-text);
+    background: var(--ping-field-fill);
+    transition: box-shadow 0.2s, background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui .ping-input:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+}
+html.ping-ui .ping-input:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.35);
+}
+
+html.ping-ui .ping-input::placeholder {
+    color: var(--ping-ui-text-hint);
+}
+
+html.ping-ui .ping-input-hint {
+    margin: 6px 0 0;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--ping-ui-text-hint);
+    min-height: 1.35em;
+}
+
+html.ping-ui .ping-input-hint.is-error {
+    color: #b91c1c;
+    font-weight: 600;
+}
+
+html.ping-ui .ping-input-hint.is-ok {
+    color: var(--ping-primary-dark);
+    font-weight: 600;
+}
+
+html.ping-ui .ping-btn-primary {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: var(--radius-16);
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    font-family: inherit;
+    letter-spacing: -0.02em;
+    color: #fff;
+    background: var(--ping-primary);
+    box-shadow: var(--shadow-ping-primary);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    margin-top: 8px;
+}
+
+html.ping-ui .ping-btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+html.ping-ui .ping-btn-primary:active:not(:disabled) {
+    opacity: 0.92;
+}
+
+html.ping-ui .ping-btn-secondary {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: var(--radius-16);
+    padding: 14px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    color: var(--ping-ui-text);
+    background: #f2f4f6;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui .ping-btn-secondary:active {
+    opacity: 0.92;
+}
+
+html.ping-ui .ping-btn-secondary:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+html.ping-ui .ping-link {
+    color: var(--ping-primary);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    touch-action: manipulation;
+}
+
+html.ping-ui .ping-muted-row {
+    margin: 0 0 16px;
+    font-size: 14px;
+    color: var(--ping-ui-text-sub);
+}
+
+html.ping-ui .ping-alert--error {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: var(--radius-16);
+    border: none;
+    background: #fef2f2;
+    font-size: 13px;
+    color: #991b1b;
+    line-height: 1.45;
+}
+
+html.ping-ui .ping-alert--ok {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: var(--radius-16);
+    border: none;
+    background: #eff6ff;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ping-primary-dark);
+    line-height: 1.45;
+}
+
+html.ping-ui .signup-register-inline-alert {
+    margin: 8px 0 0;
+}
+
+/** 비밀번호 보안 난이도 — Google형 4칸 막대 + 라벨 */
+html.ping-ui .ping-pw-strength {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    min-width: 0;
+    max-width: 100%;
+}
+
+html.ping-ui .ping-pw-strength__bars {
+    display: flex;
+    flex: 1;
+    gap: 4px;
+    min-width: 0;
+}
+
+html.ping-ui .ping-pw-strength__segment {
+    flex: 1;
+    height: 4px;
+    border-radius: 999px;
+    background: #e5e8eb;
+    transition: background-color 0.2s ease;
+}
+
+html.ping-ui .ping-pw-strength__segment.is-on.is-easy {
+    background: #f04452;
+}
+
+html.ping-ui .ping-pw-strength__segment.is-on.is-medium {
+    background: #ff922b;
+}
+
+html.ping-ui .ping-pw-strength__segment.is-on.is-strong {
+    background: #3182f6;
+}
+
+html.ping-ui .ping-pw-strength__segment.is-on.is-high {
+    background: #00b894;
+}
+
+html.ping-ui .ping-pw-strength__label {
+    flex-shrink: 0;
+    min-width: 3.25rem;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-align: right;
+    text-transform: lowercase;
+}
+
+html.ping-ui .ping-pw-strength__label--easy {
+    color: #f04452;
+}
+
+html.ping-ui .ping-pw-strength__label--medium {
+    color: #e8590c;
+}
+
+html.ping-ui .ping-pw-strength__label--strong {
+    color: #1b64da;
+}
+
+html.ping-ui .ping-pw-strength__label--high {
+    color: #00875a;
+}
+
+html.ping-ui .ping-callout--slack {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: var(--radius-16);
+    border: none;
+    background: #f2f4f6;
+    font-size: 12px;
+    color: var(--ping-ui-text-sub);
+    line-height: 1.5;
+}
+
+html.ping-ui .ping-callout--success {
+    margin: 0 0 16px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ping-primary);
+    text-align: center;
+}
+
+html.ping-ui .ping-alert--warn {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #92400e;
+    background: #fffbeb;
+    border: none;
+    border-radius: var(--radius-16);
+    padding: 12px 14px;
+    box-shadow: var(--shadow-ping-xs);
+}
+
+html.ping-ui .ping-hidden {
+    display: none !important;
+}
+
+/* Tailwind 제거 페이지 호환 */
+html.ping-ui .hidden {
+    display: none !important;
+}
+
+/* 부고 시작하기 (obituary-entry) */
+html.ping-ui .ob-entry-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: var(--radius-16);
+    text-decoration: none;
+    transition: transform 0.12s ease, box-shadow 0.2s ease;
+    box-shadow: var(--shadow-ping-xs);
+}
+
+html.ping-ui .ob-entry-card:active {
+    transform: scale(0.99);
+}
+
+html.ping-ui .ob-entry-card--member {
+    background: var(--ping-tint-bg);
+    border: none;
+}
+
+html.ping-ui .ob-entry-card--member:hover {
+    box-shadow: var(--shadow-ping-sm);
+}
+
+html.ping-ui .ob-entry-card--guest {
+    background: var(--ping-cta-secondary-bg);
+    border: none;
+}
+
+html.ping-ui .ob-entry-card--guest:hover {
+    box-shadow: var(--shadow-ping-sm);
+}
+
+html.ping-ui .ob-entry-icon-wrap {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+html.ping-ui .ob-entry-icon-wrap--member {
+    background: var(--ping-primary);
+}
+
+html.ping-ui .ob-entry-icon-wrap--guest {
+    background: #9ca3af;
+}
+
+html.ping-ui .ob-entry-icon-inner {
+    width: 36px;
+    height: 36px;
+    border-radius: 9999px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+html.ping-ui .ob-entry-icon-inner--member {
+    color: var(--ping-primary);
+}
+
+html.ping-ui .ob-entry-icon-inner--guest {
+    color: #6b7280;
+}
+
+html.ping-ui .ob-entry-text {
+    flex: 1;
+    min-width: 0;
+}
+
+html.ping-ui .ob-entry-title-member {
+    font-size: 1.125rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ping-primary-dark);
+    line-height: 1.3;
+}
+
+html.ping-ui .ob-entry-sub-member {
+    margin-top: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--ping-muted);
+    line-height: 1.4;
+}
+
+html.ping-ui .ob-entry-title-guest {
+    font-size: 1.125rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ping-ui-text);
+    line-height: 1.3;
+}
+
+html.ping-ui .ob-entry-sub-guest {
+    margin-top: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--ping-ui-text-sub);
+    line-height: 1.4;
+}
+
+html.ping-ui .ob-entry-chevron-member {
+    flex-shrink: 0;
+    color: var(--ping-primary);
+    font-size: 14px;
+    opacity: 0.85;
+}
+
+html.ping-ui .ob-entry-chevron-guest {
+    flex-shrink: 0;
+    color: var(--ping-ui-text-sub);
+    font-size: 14px;
+    opacity: 0.75;
+}
+
+html.ping-ui .ob-entry-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+html.ping-ui .ob-entry-stack > .member-login-kakao-btn,
+html.ping-ui .ob-entry-stack > .ob-entry-guest-btn {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+html.ping-ui .ob-entry-kakao-wrap {
+    min-width: 0;
+    max-width: 100%;
+}
+
+html.ping-ui .ob-entry-guest-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 14px 16px;
+    border: none;
+    border-radius: var(--ping-radius-md, 10px);
+    background: var(--ping-cta-secondary-bg);
+    color: var(--ping-ui-text);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    box-shadow: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.2s ease;
+}
+
+html.ping-ui .ob-entry-guest-btn:hover {
+    background: var(--ping-bg-sub, #f2f4f6);
+}
+
+html.ping-ui .ob-entry-guest-btn:active {
+    transform: scale(0.99);
+}
+
+html.ping-ui .ob-entry-email-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+}
+
+html.ping-ui .ob-entry-email-login-btn__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    color: var(--ping-ui-text);
+}
+
+html.ping-ui .ob-entry-signup-row {
+    line-height: 1.5;
+    padding-top: 2px;
+}
+
+html.ping-ui .ob-entry-guest-btn__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: var(--ping-ui-text-sub);
+}
+
+/** 본인 확인(/login) — lead·선택 카드 한 패널 (`ping-bordered-panel`) */
+html.ping-ui .ob-entry-panel {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+html.ping-ui .ob-entry-panel #ob-entry-lead.ob-entry-lead,
+html.ping-ui .ob-entry-panel .ob-entry-lead {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--ping-ui-text);
+    letter-spacing: -0.02em;
+}
+
+html.ping-ui .ob-entry-panel .ob-entry-card {
+    box-shadow: none;
+}
+
+/** 회원 로그인·회원가입 등록 — lead·폼 패널 / CTA 밖 */
+html.ping-ui .member-login-panel,
+html.ping-ui .signup-register-panel {
+    min-width: 0;
+    max-width: 100%;
+}
+
+/** 패널·로그인 공통 — 제목 바로 아래 부제(한 줄 띄움) */
+html.ping-ui .ping-step-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    min-width: 0;
+    max-width: 100%;
+}
+
+html.ping-ui .ping-step-head__title {
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+html.ping-ui .ping-step-head__sub {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--ping-ui-text-sub);
+}
+
+html.ping-ui .ping-step-head--panel .ping-step-head__title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ping-ui-text);
+}
+
+html.ping-ui .ping-step-head--panel .ping-step-head__sub {
+    font-weight: 500;
+    color: #6b7684;
+}
+
+html.ping-ui .ping-step-head--lead .ping-step-head__title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ping-ui-text);
+}
+
+html.ping-ui .ping-step-head--lead .ping-step-head__sub {
+    font-weight: 500;
+}
+
+html.ping-ui .ob-entry-lead-block,
+html.ping-ui .member-login-lead-block,
+html.ping-ui .signup-register-panel .signup-register-lead-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+html.ping-ui .ob-entry-lead-title,
+html.ping-ui .member-login-panel .member-login-lead,
+html.ping-ui .signup-register-panel .signup-register-lead {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--ping-ui-text);
+    letter-spacing: -0.02em;
+}
+
+html.ping-ui .ob-entry-lead-sub,
+html.ping-ui .member-login-lead-sub,
+html.ping-ui .signup-register-panel .signup-register-lead-sub {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--ping-ui-text-sub);
+    letter-spacing: -0.01em;
+}
+
+html.ping-ui .signup-terms-section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    margin-bottom: 4px;
+}
+
+html.ping-ui .signup-terms-section-head .ping-title-section {
+    margin: 0;
+    line-height: 1.2;
+}
+
+html.ping-ui .signup-terms-section-sub {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--ping-ui-text-sub);
+}
+
+html.ping-ui .verify-email-lead {
+    margin: 0 0 16px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--ping-ui-text-sub);
+}
+
+html.ping-ui .member-login-panel .member-login-form,
+html.ping-ui .signup-register-panel .signup-register-form {
+    gap: 16px;
+    min-width: 0;
+    max-width: 100%;
+}
+
+html.ping-ui .member-login-field,
+html.ping-ui .signup-register-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+html.ping-ui .member-login-panel input.ping-field-standard,
+html.ping-ui .signup-register-panel input.ping-field-standard {
+    margin: 0;
+}
+
+html.ping-ui .member-login-pw-wrap,
+html.ping-ui .signup-register-pw-wrap {
+    position: relative;
+    min-width: 0;
+    max-width: 100%;
+}
+
+html.ping-ui .member-login-pw-wrap .ping-field-standard,
+html.ping-ui .signup-register-pw-wrap .ping-field-standard {
+    padding-right: 2.75rem !important;
+}
+
+html.ping-ui .member-login-pw-toggle,
+html.ping-ui .signup-register-pw-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ping-muted);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui .member-login-pw-toggle:hover,
+html.ping-ui .signup-register-pw-toggle:hover {
+    color: var(--ping-primary);
+    background: var(--ping-tint-bg);
+}
+
+html.ping-ui .member-login-pw-toggle:focus-visible,
+html.ping-ui .signup-register-pw-toggle:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--ping-primary);
+}
+
+/** 패널 밖 로그인·가입 신청 CTA */
+html.ping-ui .member-login-actions,
+html.ping-ui .signup-register-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+    min-width: 0;
+    max-width: 100%;
+}
+
+html.ping-ui .member-login-actions .ping-btn-primary.member-login-submit,
+html.ping-ui .signup-register-actions .ping-btn-primary.signup-register-submit {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 46px;
+    padding: 14px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+html.ping-ui .member-login-kakao-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 14px 16px;
+    border: none;
+    border-radius: var(--ping-radius-md, 10px);
+    background: #fee500;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+html.ping-ui .member-login-kakao-btn:hover:not(:disabled) {
+    background: #f5dc00;
+}
+
+html.ping-ui .member-login-kakao-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+html.ping-ui .member-login-kakao-btn__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+}
+
+html.ping-ui .member-login-kakao-note {
+    line-height: 1.5;
+}
+
+html.ping-ui .ping-shell.ob-entry-shell {
+    background: var(--ping-surface);
+}
+
+html.ping-ui .ping-top-nav--blend {
+    /* 흰 셸(`--ping-surface`)과 동일 톤 — `--ping-bg`는 전역 바·바깥 캔버스용 */
+    background: var(--ping-surface);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+html.ping-ui .ping-title-section {
+    margin: 0 0 16px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ping-ui-text);
+}
+
+html.ping-ui .ping-hr {
+    margin: 28px 0;
+    border: none;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.06);
+}
+
+/** 실선 양쪽 + 가운데 라벨 (예: and) */
+html.ping-ui .ping-hr-labeled {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0;
+    min-width: 0;
+}
+
+html.ping-ui .ping-hr-labeled__line {
+    flex: 1;
+    min-width: 0;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.06);
+}
+
+html.ping-ui .ping-hr-labeled__text {
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ping-ui-text-hint);
+    text-transform: lowercase;
+}
+
+html.ping-ui .ping-sticky-footer {
+    flex-shrink: 0;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    border-top: none;
+    box-shadow: 0 -4px 24px rgba(15, 23, 42, 0.08);
+    background: rgba(255, 255, 255, 0.96);
+    display: flex;
+    justify-content: flex-end;
+}
+
+html.ping-ui .ping-footer-action:not(:disabled):active {
+    opacity: 0.94;
+}
+
+html.ping-ui .ping-btn-agree-all {
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    letter-spacing: -0.02em;
+    color: #fff;
+    background: #3182f6;
+    cursor: pointer;
+    touch-action: manipulation;
+    margin-top: 4px;
+    box-shadow: 0 1px 2px rgba(49, 130, 246, 0.22);
+}
+
+html.ping-ui .ping-btn-agree-all:active {
+    background: #1b64da;
+    box-shadow: none;
+}
+
+html.ping-ui .ping-btn-agree-all:focus-visible {
+    outline: 3px solid rgba(49, 130, 246, 0.35);
+    outline-offset: 2px;
+}
+
+/* 회원가입 약관: 스크롤 박스·체크·가입 유형 */
+html.ping-ui .ping-law-scroll {
+    max-height: 140px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+    overflow-anchor: none;
+    background: var(--ping-field-fill);
+    border: none;
+    border-radius: var(--radius-12);
+    padding: 12px 14px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--ping-ui-text-sub);
+    box-shadow: var(--shadow-ping-xs);
+}
+
+html.ping-ui .ping-law-scroll p {
+    margin: 0 0 0.65rem;
+}
+
+html.ping-ui .ping-law-scroll p:last-child {
+    margin-bottom: 0;
+}
+
+html.ping-ui .ping-law-scroll a {
+    color: var(--ping-primary);
+    font-weight: 600;
+}
+
+/* 전문 임베드(회원가입 동의): 작은 타이포·낮은 박스, 스크롤바 숨김(스크롤은 유지) */
+html.ping-ui .ping-law-scroll.ping-doc-article-embed {
+    max-height: min(30vh, 10.5rem);
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--ping-text);
+    padding: 10px 12px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html.ping-ui .ping-law-scroll.ping-doc-article-embed::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: transparent;
+}
+
+html.ping-ui .ping-law-scroll.ping-doc-article-embed h1 {
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 0.2rem;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    color: var(--ping-text);
+}
+
+html.ping-ui .ping-law-scroll.ping-doc-article-embed .last-updated {
+    font-size: 10px;
+    color: var(--ping-muted);
+    margin-bottom: 0.5rem;
+}
+
+html.ping-ui .ping-law-scroll.ping-doc-article-embed .chapter-title {
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 0.6rem;
+    margin-bottom: 0.3rem;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    color: var(--ping-text);
+}
+
+html.ping-ui .ping-law-scroll.ping-doc-article-embed h2 {
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 0.55rem;
+    margin-bottom: 0.3rem;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    color: var(--ping-text);
+}
+
+html.ping-ui .ping-law-scroll.ping-doc-article-embed h3 {
+    font-size: 10.5px;
+    font-weight: 700;
+    margin-top: 0.45rem;
+    margin-bottom: 0.25rem;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    color: var(--ping-text);
+}
+
+html.ping-ui .ping-law-scroll.ping-doc-article-embed .section {
+    margin-bottom: 0.55rem;
+}
+
+html.ping-ui .ping-law-scroll.ping-doc-article-embed p {
+    margin-bottom: 0.35rem;
+    color: var(--ping-text);
+}
+
+html.ping-ui .ping-law-scroll.ping-doc-article-embed ul {
+    margin: 0.2rem 0 0.4rem 0.85rem;
+    padding: 0;
+    list-style: disc;
+}
+
+html.ping-ui .ping-law-scroll.ping-doc-article-embed li {
+    margin-bottom: 0.15rem;
+    color: var(--ping-text);
+}
+
+html.ping-ui .ping-law-scroll.ping-doc-article-embed .contact-info p {
+    margin-bottom: 0.2rem;
+}
+
+html.ping-ui .ping-term-toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    touch-action: manipulation;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui .ping-term-check {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid #d1d6db;
+    box-shadow: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.12s ease;
+    background: #fff;
+    margin-top: 0;
+}
+
+html.ping-ui .ping-term-check-mark {
+    font-size: 12px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+html.ping-ui .ping-term-check[data-on='true'] {
+    background: #3182f6;
+    border-color: #3182f6;
+}
+
+html.ping-ui .ping-term-check[data-on='true'] .ping-term-check-mark {
+    opacity: 1;
+}
+
+html.ping-ui .ping-term-toggle:active .ping-term-check {
+    transform: scale(0.96);
+}
+
+html.ping-ui .ping-term-label-text {
+    flex: 1;
+    min-width: 0;
+    padding-top: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ping-ui-text);
+    letter-spacing: -0.02em;
+}
+
+html.ping-ui .ping-term-req {
+    color: #f04452;
+    font-weight: 600;
+}
+
+html.ping-ui .ping-join-radio {
+    accent-color: var(--ping-primary);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+html.ping-ui .ping-join-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 14px 16px;
+    border-radius: var(--radius-16);
+    border: none;
+    background: var(--ping-field-fill);
+    box-shadow: var(--shadow-ping-xs);
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+
+html.ping-ui .ping-join-option:has(.ping-join-radio:checked) {
+    background: var(--ping-tint-bg);
+    box-shadow: 0 0 0 2px var(--ping-primary);
+}
+
+html.ping-ui .ping-join-option:active {
+    opacity: 0.98;
+}
+
+html.ping-ui .ping-join-option-body {
+    min-width: 0;
+    flex: 1;
+}
+
+html.ping-ui .ping-join-option-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--ping-ui-text);
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+}
+
+html.ping-ui .ping-join-option-desc {
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ping-ui-text-sub);
+    line-height: 1.45;
+}
+
+html.ping-ui .ping-law-note {
+    font-size: 11px;
+    color: var(--ping-ui-text-hint);
+}
+
+/* 마이페이지 (인라인 제거용) */
+html.ping-ui body.mypage-body {
+    margin: 0;
+    min-height: 100dvh;
+    padding-bottom: 96px;
+}
+
+html.ping-ui .mypage-shell {
+    max-width: 400px;
+    margin: 0 auto;
+    min-height: 100dvh;
+    background: var(--ping-surface);
+    box-shadow: var(--ping-shadow-shell);
+    border: none;
+    box-sizing: border-box;
+}
+
+@media (min-width: 480px) {
+    html.ping-ui .mypage-shell {
+        border-radius: var(--radius-24);
+        margin-top: 12px;
+    }
+}
+
+html.ping-ui .mypage-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: none;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 10;
+}
+
+html.ping-ui .mypage-head .ping-back-btn {
+    flex-shrink: 0;
+    touch-action: manipulation;
+}
+
+html.ping-ui .mypage-head h1 {
+    flex: 1;
+    margin: 0;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+html.ping-ui .mypage-tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    background: var(--ping-surface);
+}
+
+html.ping-ui .mypage-tab {
+    flex: 1;
+    text-align: center;
+    padding: 12px 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ping-muted);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui .mypage-tab.is-active {
+    color: var(--ping-primary);
+    border-bottom-color: var(--ping-primary);
+}
+
+html.ping-ui .mypage-main {
+    padding: 20px 18px 32px;
+}
+
+html.ping-ui .mypage-card {
+    border-radius: var(--radius-16);
+    border: none;
+    background: var(--ping-surface);
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-ping-xs);
+}
+
+html.ping-ui .mypage-card h2 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+html.ping-ui .mypage-points-total {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--ping-text);
+}
+
+html.ping-ui .mypage-points-total span.unit {
+    font-size: 15px;
+    font-weight: 700;
+    margin-left: 2px;
+}
+
+html.ping-ui .mypage-points-detail {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ping-muted);
+    line-height: 1.55;
+}
+
+html.ping-ui .mypage-points-detail strong {
+    color: var(--ping-text);
+    font-weight: 700;
+}
+
+html.ping-ui .mypage-referral-desc {
+    font-size: 13px;
+    color: var(--ping-muted);
+    line-height: 1.5;
+    margin: 0 0 14px;
+}
+
+html.ping-ui .mypage-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--ping-primary);
+    background: var(--ping-tint-bg);
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+}
+
+html.ping-ui .mypage-code-box {
+    font-family: ui-monospace, monospace;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px 12px;
+    background: #f6f7f9;
+    border-radius: 12px;
+    word-break: break-all;
+    margin-bottom: 8px;
+}
+
+html.ping-ui .mypage-link-box {
+    font-size: 11px;
+    color: var(--ping-muted);
+    word-break: break-all;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+html.ping-ui .mypage-link-box a {
+    color: var(--ping-primary);
+}
+
+html.ping-ui .mypage-copy-btn {
+    width: 100%;
+    border: none;
+    border-radius: var(--radius-14);
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 800;
+    background: var(--ping-primary);
+    color: #fff;
+    cursor: pointer;
+    touch-action: manipulation;
+    box-shadow: var(--shadow-ping-primary);
+}
+
+html.ping-ui .mypage-copy-btn:active {
+    opacity: 0.92;
+}
+
+html.ping-ui .mypage-sync-hint {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #c2410c;
+}
+
+html.ping-ui .mypage-copy {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ping-muted);
+}
+
+html.ping-ui .mypage-embed-wrap {
+    margin-top: 4px;
+    padding-top: 14px;
+    border-top: none;
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
+html.ping-ui .mypage-subtle-label {
+    margin-top: 16px;
+    margin-bottom: 8px;
+}
+
+/* =============================================================================
+ * 유틸 — 아이콘+텍스트 간격·CTA
+ * ============================================================================= */
+html.ping-ui .ping-row-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+html.ping-ui .ping-row-icon--md {
+    gap: 10px;
+}
+
+/* 텍스트형 뒤로(목록·이전) — 위저드 `.index-wiz-back`과 동일 톤 */
+html.ping-ui a.ping-link-back-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ping-primary);
+    text-decoration: none;
+    padding: 0.35rem 0.65rem 0.35rem 0.2rem;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui a.ping-link-back-text:hover {
+    background: var(--ping-tint-bg);
+}
+
+html.ping-ui a.ping-link-back-text .ping-chevron-left {
+    margin-left: 2px;
+}
+
+html.ping-ui .ping-cta-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 0 20px;
+    border: none;
+    border-radius: var(--radius-16);
+    background: var(--ping-primary);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    box-shadow: var(--shadow-ping-primary);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.15s, transform 0.12s;
+}
+
+html.ping-ui .ping-cta-primary:active {
+    opacity: 0.94;
+    transform: scale(0.99);
+}
+
+html.ping-ui .ping-cta-primary:disabled,
+html.ping-ui .ping-cta-primary[aria-disabled='true'] {
+    background: #e5e8eb;
+    color: #b0b8c1;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
+html.ping-ui .ping-cta-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: var(--radius-14);
+    border: none;
+    background: var(--ping-surface);
+    color: var(--ping-ui-text);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.12s;
+}
+
+html.ping-ui body .btn-secondary:hover,
+html.ping-ui body .form-button-secondary:hover,
+html.ping-ui body .tribute-modal-btn-secondary:hover,
+html.ping-ui body .modal-button-secondary:hover,
+html.ping-ui body .ping-cta-ghost:hover {
+    background: #ffffff;
+    box-shadow: var(--shadow-ping-sm);
+    transform: translateY(-1px);
+}
+
+html.ping-ui .ping-section-title {
+    margin: 0 0 6px;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--ping-ui-text);
+    line-height: 1.35;
+}
+
+html.ping-ui .ping-section-lead {
+    margin: 0 0 16px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.55;
+    color: var(--ping-ui-text-sub);
+}
+
+/* =============================================================================
+ * 글로벌 카드·모달·폼 면 통일
+ * ============================================================================= */
+/* index 발송 위저드(ping-one-screen)는 단색 배경만 — 부고 주소 단계 등에서 배경 그라데이션이 비치지 않게 */
+html.ping-ui:not(.ping-dashboard-dark):not(.ping-surface-dark):not(.ping-one-screen) body:not(.ping-body-gradient) {
+    background: var(--ping-color-bg);
+}
+
+html.ping-ui body {
+    color: var(--ping-ui-text);
+}
+
+html.ping-ui body a,
+html.ping-ui body button,
+html.ping-ui body input,
+html.ping-ui body textarea,
+html.ping-ui body select {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Flex/Grid 안에서 내용 길이만큼 min-width:auto 로 부모를 넘치는 것 방지 */
+html.ping-ui input:not([type='checkbox']):not([type='radio']):not([type='hidden']),
+html.ping-ui textarea,
+html.ping-ui select {
+    min-width: 0;
+}
+
+/* 클릭 포커스 시 브라우저 scrollIntoView 여백 제거(필드 바깥으로 덜 끌려가게) */
+html.ping-ui input:not([type='checkbox']):not([type='radio']):not([type='hidden']),
+html.ping-ui textarea,
+html.ping-ui select {
+    scroll-margin: 0 !important;
+    scroll-margin-top: 0 !important;
+    scroll-margin-bottom: 0 !important;
+    scroll-margin-left: 0 !important;
+    scroll-margin-right: 0 !important;
+    scroll-margin-block: 0 !important;
+    scroll-margin-inline: 0 !important;
+}
+
+html.ping-ui body a:focus-visible,
+html.ping-ui body button:focus-visible {
+    outline: 3px solid rgba(0, 0, 0, 0.2);
+    outline-offset: 2px;
+}
+
+html.ping-ui body header:not(.cx-head):not(.ob-flow-hero):not(.ob-flow-topbar):not(.index-header-sticky):not(.ping-top-nav):not(.ping-sticky-page-header) {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    border-bottom: none;
+    box-shadow: 0 10px 28px rgba(25, 31, 40, 0.04);
+}
+
+html.ping-ui body .header-container,
+html.ping-ui body .container {
+    width: min(100%, 1120px);
+}
+
+html.ping-ui body .hero {
+    position: relative;
+    overflow: hidden;
+    padding-top: clamp(72px, 10vw, 112px);
+    padding-bottom: clamp(56px, 8vw, 88px);
+}
+
+html.ping-ui body .hero::after {
+    content: '';
+    position: absolute;
+    inset: auto -12% 8% auto;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle, rgba(0, 0, 0, 0.16) 0%, rgba(0, 0, 0, 0.04) 42%, rgba(0, 0, 0, 0) 72%);
+    pointer-events: none;
+}
+
+html.ping-ui body .hero > * {
+    position: relative;
+    z-index: 1;
+}
+
+html.ping-ui body .hero-badge,
+html.ping-ui body .service-badge,
+html.ping-ui body .mypage-badge,
+html.ping-ui body .religion-badge,
+html.ping-ui body .dongban-partner-pill,
+html.ping-ui body .status-badge,
+html.ping-ui body .ob-dash-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: var(--radius-full);
+    background: rgba(49, 130, 246, 0.1);
+    border: none;
+    color: var(--ping-primary);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    box-shadow: var(--shadow-ping-xs);
+}
+
+html.ping-ui body .hero-title,
+html.ping-ui body .section-title,
+html.ping-ui body .card-title,
+html.ping-ui body .contact-title,
+html.ping-ui body .pay-ok-title,
+html.ping-ui body .auth-title {
+    letter-spacing: -0.04em;
+    line-height: 1.18;
+    color: var(--ping-ui-text);
+}
+
+html.ping-ui body .hero-subtitle,
+html.ping-ui body .section-description,
+html.ping-ui body .card-description,
+html.ping-ui body .contact-description,
+html.ping-ui body .empty-state-text,
+html.ping-ui body .empty-state-subtext,
+html.ping-ui body .pay-ok-sub,
+html.ping-ui body .auth-subtitle {
+    color: var(--ping-ui-text-sub);
+}
+
+html.ping-ui body .card,
+html.ping-ui body .contact-card,
+html.ping-ui body .plan-info-card,
+html.ping-ui body .memorial-card,
+html.ping-ui body .deceased-card,
+html.ping-ui body .mypage-card,
+html.ping-ui body .inquiry-item,
+html.ping-ui body .message-item,
+html.ping-ui body .schedule-item,
+html.ping-ui body .tribute-item,
+html.ping-ui body .photo-empty-state,
+html.ping-ui body .pay-ok-card,
+html.ping-ui body .ob-dash-card,
+html.ping-ui body .stat-card,
+html.ping-ui body .service-status-card,
+html.ping-ui body .system-status-card,
+html.ping-ui body .ping-elevated,
+html.ping-ui body .modal,
+html.ping-ui body .tribute-modal,
+html.ping-ui body .auth-container,
+html.ping-ui body .file-select-modal-content,
+html.ping-ui body .recipient-exclude-sheet,
+html.ping-ui body #authModal > div,
+html.ping-ui body #partnerModal > div,
+html.ping-ui body #loading-screen > div,
+html.ping-ui body #flower-partner-nav-screen > div {
+    background: rgba(255, 255, 255, 0.96);
+    border: none;
+    border-radius: 24px;
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.78) inset,
+        0 18px 40px rgba(25, 31, 40, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+html.ping-ui body .card:hover,
+html.ping-ui body .contact-card:hover,
+html.ping-ui body .memorial-card:hover,
+html.ping-ui body .inquiry-item:hover,
+html.ping-ui body .stat-card:hover,
+html.ping-ui body .service-status-card:hover,
+html.ping-ui body .system-status-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.78) inset,
+        0 22px 44px rgba(25, 31, 40, 0.1);
+}
+
+html.ping-ui body .plan-selector,
+html.ping-ui body .tab-bar {
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.82);
+    border: none;
+    box-shadow: 0 8px 24px rgba(25, 31, 40, 0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+html.ping-ui body .tab,
+html.ping-ui body .plan-tab,
+html.ping-ui body .plan-tab-flower {
+    border-radius: 16px;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.18s;
+}
+
+html.ping-ui body .tab.on,
+html.ping-ui body .tab.active,
+html.ping-ui body .plan-tab.active,
+html.ping-ui body .plan-tab-flower.active {
+    background: #ffffff;
+    color: var(--ping-ui-text);
+    box-shadow: 0 10px 24px rgba(25, 31, 40, 0.08);
+}
+
+html.ping-ui body .cta-button,
+html.ping-ui body .btn-primary,
+html.ping-ui body .inquiry-button,
+html.ping-ui body .form-button-primary,
+html.ping-ui body .auth-certify-btn,
+html.ping-ui body .search-btn,
+html.ping-ui body .search-button,
+html.ping-ui body .submit-btn,
+html.ping-ui body .tribute-btn,
+html.ping-ui body .tribute-modal-btn-primary,
+html.ping-ui body .modal-button-primary,
+html.ping-ui body .btn-auth,
+html.ping-ui body .btn-modern,
+html.ping-ui body .ping-cta-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 50px;
+    border: none;
+    border-radius: 16px;
+    background: var(--ping-primary);
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.15s, box-shadow 0.18s, opacity 0.18s;
+}
+
+html.ping-ui body .cta-button:hover,
+html.ping-ui body .btn-primary:hover,
+html.ping-ui body .inquiry-button:hover,
+html.ping-ui body .form-button-primary:hover,
+html.ping-ui body .auth-certify-btn:hover,
+html.ping-ui body .search-btn:hover,
+html.ping-ui body .search-button:hover,
+html.ping-ui body .submit-btn:hover,
+html.ping-ui body .tribute-btn:hover,
+html.ping-ui body .tribute-modal-btn-primary:hover,
+html.ping-ui body .modal-button-primary:hover,
+html.ping-ui body .btn-auth:hover,
+html.ping-ui body .btn-modern:hover,
+html.ping-ui body .ping-cta-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+html.ping-ui body .btn-secondary,
+html.ping-ui body .form-button-secondary,
+html.ping-ui body .tribute-modal-btn-secondary,
+html.ping-ui body .modal-button-secondary,
+html.ping-ui body .ping-cta-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    border-radius: 16px;
+    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--ping-ui-text);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    box-shadow: var(--shadow-ping-xs);
+    transition: transform 0.15s, box-shadow 0.18s, background 0.18s;
+}
+
+html.ping-ui body input:not([type='checkbox']):not([type='radio']):not([type='hidden']),
+html.ping-ui body textarea,
+html.ping-ui body select,
+html.ping-ui body .modal-input,
+html.ping-ui body .tribute-modal-input,
+html.ping-ui body .input-outline,
+html.ping-ui body .select-outline,
+html.ping-ui body .form-input {
+    border-radius: 16px;
+    border: none;
+    background: var(--ping-field-fill);
+    box-shadow: none;
+}
+
+/* 클릭 포커스: 링/인셋 하이라이트 없음 */
+html.ping-ui body input:not([type='checkbox']):not([type='radio']):not([type='hidden']):focus:not(:focus-visible),
+html.ping-ui body textarea:focus:not(:focus-visible),
+html.ping-ui body select:focus:not(:focus-visible),
+html.ping-ui body .modal-input:focus:not(:focus-visible),
+html.ping-ui body .tribute-modal-input:focus:not(:focus-visible),
+html.ping-ui body .input-outline:focus:not(:focus-visible),
+html.ping-ui body .select-outline:focus:not(:focus-visible),
+html.ping-ui body .form-input:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+}
+
+html.ping-ui body input:not([type='checkbox']):not([type='radio']):not([type='hidden']):focus-visible,
+html.ping-ui body textarea:focus-visible,
+html.ping-ui body select:focus-visible,
+html.ping-ui body .modal-input:focus-visible,
+html.ping-ui body .tribute-modal-input:focus-visible,
+html.ping-ui body .input-outline:focus-visible,
+html.ping-ui body .select-outline:focus-visible,
+html.ping-ui body .form-input:focus-visible {
+    box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.35);
+}
+
+/* index 부고 주소·문자 작성: 글로벌 인풋 글로스(inset 하이라이트) 제거 → 단색 면 */
+html.ping-ui body input.input-field,
+html.ping-ui body textarea.input-field,
+html.ping-ui body select.input-field,
+html.ping-ui body textarea.index-bulk-compose-textarea {
+    background: var(--ping-field-fill);
+    box-shadow: none;
+}
+
+html.ping-ui body input.input-field:focus:not(:focus-visible),
+html.ping-ui body textarea.input-field:focus:not(:focus-visible),
+html.ping-ui body select.input-field:focus:not(:focus-visible),
+html.ping-ui body textarea.index-bulk-compose-textarea:focus:not(:focus-visible) {
+    box-shadow: none;
+}
+
+html.ping-ui body input.input-field:not(.ping-field-standard):focus-visible,
+html.ping-ui body textarea.input-field:focus-visible,
+html.ping-ui body select.input-field:focus-visible,
+html.ping-ui body textarea.index-bulk-compose-textarea:focus-visible {
+    box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.35);
+}
+
+/* 전역 input-field 규칙 opt-out: verify-otp-digit, guest-otp-digit, input-outline, form-input, checkbox/radio */
+
+html.ping-ui body .card-icon,
+html.ping-ui body .contact-icon,
+html.ping-ui body .file-select-icon,
+html.ping-ui body .upload-icon,
+html.ping-ui body .auth-icon,
+html.ping-ui body .empty-state-icon,
+html.ping-ui body .result-icon,
+html.ping-ui body .tribute-icon,
+html.ping-ui body .tribute-icon-small,
+html.ping-ui body .icon-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 18px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 244, 246, 0.96) 100%);
+    border: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    color: var(--ping-primary);
+}
+
+html.ping-ui body .card-icon,
+html.ping-ui body .contact-icon,
+html.ping-ui body .file-select-icon,
+html.ping-ui body .upload-icon,
+html.ping-ui body .auth-icon,
+html.ping-ui body .empty-state-icon,
+html.ping-ui body .tribute-icon,
+html.ping-ui body .tribute-icon-small {
+    font-size: 1.3rem;
+    filter: grayscale(1) saturate(0.35);
+}
+
+html.ping-ui body .card-icon svg,
+html.ping-ui body .contact-icon svg,
+html.ping-ui body .file-select-icon svg,
+html.ping-ui body .upload-icon svg,
+html.ping-ui body .auth-icon svg,
+html.ping-ui body .result-icon svg,
+html.ping-ui body .tribute-icon svg,
+html.ping-ui body .tribute-icon-small svg {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor !important;
+    fill: none;
+}
+
+html.ping-ui body .logo-icon {
+    border-radius: var(--radius-8);
+    background: var(--ping-primary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+html.ping-ui body .empty-state,
+html.ping-ui body .photo-empty-state {
+    padding: 32px 24px;
+    border-radius: 24px;
+    border: none;
+    background: var(--ping-field-fill);
+    box-shadow: var(--shadow-ping-sm);
+}
+
+html.ping-ui body .modal-overlay,
+html.ping-ui body .tribute-modal-overlay,
+html.ping-ui body .file-select-modal-overlay,
+html.ping-ui body .recipient-exclude-overlay {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+html.ping-ui body .modal-title,
+html.ping-ui body .tribute-modal-title {
+    color: var(--ping-ui-text);
+    letter-spacing: -0.03em;
+}
+
+html.ping-ui body .modal-subtitle,
+html.ping-ui body .tribute-modal-subtitle {
+    color: var(--ping-ui-text-sub);
+}
+
+html.ping-ui body .stat-card .w-12.h-12,
+html.ping-ui body .stat-card .w-10.h-10,
+html.ping-ui body .stat-card .w-16.h-16,
+html.ping-ui body .service-status-card .w-20.h-20,
+html.ping-ui body .system-status-card .w-12.h-12 {
+    border-radius: 18px !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        0 14px 24px rgba(25, 31, 40, 0.12);
+}
+
+html.ping-ui body .auth-container,
+html.ping-ui body .ping-body-gradient .auth-container {
+    background: rgba(15, 23, 42, 0.86);
+    border: none;
+    box-shadow:
+        0 22px 56px rgba(2, 6, 23, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+html.ping-ui body .auth-container .auth-icon {
+    background: var(--ping-primary);
+    filter: none;
+}
+
+/*
+ * index 대량발송 상단 헤더 — .ping-top-nav / .ping-sticky-page-header 와 동일: 스크롤 시 하단 헤어섀도.
+ */
+html.ping-ui header.index-header-sticky {
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    border-bottom: none;
+    box-shadow: 0 1px 0 transparent;
+    transition: box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+html.ping-ui header.index-header-sticky.ping-sticky-nav--scrolled {
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* index: 위저드 본문(#main-view) · 시트·모달만 Tailwind 보더 완화 — 하단 약관·사업자 접힘 영역(.index-footer-legal-stack) 제외 */
+html.ping-ui.ping-one-screen #main-view .border.border-ping-muted,
+html.ping-ui.ping-one-screen #main-view .border-2.border-ping-muted {
+    border-width: 0 !important;
+    background: var(--ping-field-fill);
+    box-shadow: var(--shadow-ping-xs);
+}
+
+html.ping-ui.ping-one-screen #main-view .border-t.border-dashed.border-ping-muted,
+html.ping-ui.ping-one-screen #main-view .border-t.border-ping-muted {
+    border-top-width: 0 !important;
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
+html.ping-ui .recipient-exclude-list-wrap.border-t,
+html.ping-ui .recipient-exclude-list-wrap.border-b {
+    border-width: 0 !important;
+    box-shadow:
+        inset 0 1px 0 rgba(0, 0, 0, 0.06),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+}

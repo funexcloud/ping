@@ -1,0 +1,20 @@
+# 로컬 dev — Express(:3000) + Next(:3002). 프로덕션은 Vercel + Firebase Functions.
+FROM node:20-bookworm-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+
+ENV PING_SKIP_NEXT_ENSURE=1
+ENV WATCHPACK_POLLING=true
+ENV CHOKIDAR_USEPOLLING=true
+
+EXPOSE 3000 3002
+
+CMD ["npm", "run", "dev"]

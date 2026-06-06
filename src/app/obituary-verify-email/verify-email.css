@@ -1,0 +1,185 @@
+/* 이메일 인증 — 패널·Google형 OTP */
+
+html.ping-ui .verify-email-panel {
+  min-width: 0;
+  max-width: 100%;
+}
+
+html.ping-ui .verify-email-lead-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+html.ping-ui .verify-email-lead {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ping-ui-text);
+  letter-spacing: -0.02em;
+}
+
+html.ping-ui .verify-email-lead-sub {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--ping-ui-text-sub);
+}
+
+html.ping-ui .verify-email-target {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-12);
+  background: var(--ping-field-fill);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ping-ui-text);
+  text-align: center;
+  word-break: break-all;
+}
+
+html.ping-ui .verify-email-target-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ping-muted);
+}
+
+html.ping-ui .verify-otp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+html.ping-ui .verify-otp-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ping-muted);
+}
+
+html.ping-ui .verify-otp-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+html.ping-ui .verify-otp-digit {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  min-height: 48px;
+  border: 1.5px solid #d1d6db;
+  border-radius: 8px;
+  background: var(--ping-surface);
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: inherit;
+  letter-spacing: 0.02em;
+  color: var(--ping-ui-text);
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui .verify-otp-digit:focus,
+html.ping-ui .verify-otp-digit:focus-visible {
+  border-color: var(--ping-primary);
+  box-shadow: 0 0 0 2px rgba(49, 130, 246, 0.25);
+  background: var(--ping-surface);
+}
+
+html.ping-ui .verify-otp-digit:not(:placeholder-shown) {
+  border-color: var(--ping-primary);
+}
+
+html.ping-ui .verify-email-resend-hint {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ping-muted);
+}
+
+.verify-email-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+html.ping-ui .verify-email-actions .ping-btn-primary,
+html.ping-ui .verify-email-actions .ping-btn-secondary {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 46px;
+  padding: 14px 16px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+html.ping-ui .verify-submit-btn--verified {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+  pointer-events: none;
+}
+
+html.ping-ui .verify-submit-btn__icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+html.ping-ui .verify-submit-btn__icon--spin {
+  animation: verify-submit-spin 0.8s linear infinite;
+}
+
+@keyframes verify-submit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+html.ping-ui .verify-email-panel--locked {
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+html.ping-ui .verify-email-panel--locked .verify-otp-digit:disabled {
+  opacity: 0.7;
+}
+
+html.ping-ui .verify-email-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+html.ping-ui .verify-email-panel input.ping-field-standard {
+  margin: 0;
+}

@@ -1,0 +1,65 @@
+/* 발송 제외 연락처 시트 — 너비·버튼 (레거시 `recipient-exclude-modal` 정리) */
+
+.recipient-exclude-overlay-root {
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.recipient-exclude-sheet {
+  width: 100%;
+  max-width: min(400px, 100%);
+  min-width: 0;
+  box-sizing: border-box;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* 글로벌 ping-ui 가 시트에 24px 전체 라운드를 넣음 → 하단은 직각(레거시 8px 8px 0 0) */
+html.ping-ui body .recipient-exclude-sheet {
+  border-radius: 16px 16px 0 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  background: #fff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+.recipient-exclude-sheet__head,
+.recipient-exclude-sheet__list,
+.recipient-exclude-sheet__footer {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.recipient-exclude-sheet__list {
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.recipient-exclude-row {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.recipient-exclude-row__label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+html.ping-ui .recipient-exclude-confirm-btn.ob-flow-btn-primary {
+  box-shadow: none !important;
+}
+
+html.ping-ui .recipient-exclude-confirm-btn.ob-flow-btn-primary:not(:disabled) {
+  box-shadow: none !important;
+}
+
+html.ping-ui .recipient-exclude-confirm-btn.ob-flow-btn-primary:disabled {
+  opacity: 0.45;
+  background: var(--ping-primary) !important;
+  color: #fff !important;
+}

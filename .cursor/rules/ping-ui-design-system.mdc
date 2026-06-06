@@ -1,0 +1,36 @@
+---
+description: PING 제품 UI 통합 — 단일 기준 ping-ui.css, 페이지 산발 수정 금지
+globs:
+  - "**/*.html"
+  - "assets/css/**/*.css"
+alwaysApply: false
+---
+
+# 제품 UI 통합 원칙
+
+동일 톤의 화면을 **한 번에 시스템으로** 맞춘다. HTML마다 색·간격을 조금씩 바꾸는 방식은 하지 않는다.
+
+## 단일 기준
+
+- **`assets/css/ping-ui.css`** 가 유일한 디자인 계약이다. 파일 상단 **DESIGN CONTRACT** 주석을 먼저 읽는다.
+- 토큰은 `:root`에만 둔다. **제품 HTML의 `<style>`에 동일 목적의 `:root`·회색/틸 헥스 블록을 새로 두지 않는다.**
+- 블랙·화이트·`#EAEAEA` 보더 중심의 **Vercel형 미니멀 팔레트**와 라운드·그림자 원칙은 **[docs/UI-GUIDE.md](../../docs/UI-GUIDE.md) §2** 와 함께 본다.
+
+## 페이지
+
+- `<html class="ping-ui">` + Pretendard + `ping-ui.css` 링크.
+- 공통 패턴은 기존 클래스를 재사용: `.app-shell`, `.ping-shell`, `.ping-top-nav`, `.ping-back-btn`, `.ping-cta-primary`, `.ping-cta-ghost`, `.ping-link-back-text`, `.input-field`(index 등). 하단 «이전»과 동일한 호버(틴트·검정 보더·글자)가 필요하면 `.ping-hover-secondary` (`ping-ui.css` 참고).
+
+## 수정 절차 (이 순서만)
+
+1. 필요한 토큰·유틸이 없으면 **`ping-ui.css`에만** 추가한다.
+2. HTML은 **클래스 부착 또는 `var(--토큰)` 한 종류**로만 맞춘다.
+3. 동일 스윕을 여러 번 나누지 말고, **한 작업 단위**로 끝낸다.
+
+## 예외
+
+- `ping-dashboard-dark` / `ping-surface-dark` / 인트로 블랙 배경 등 **의도적 다크·데모**는 예외. 그래도 액센트는 가능하면 `--ping-primary`.
+
+## 페이지별 상세 표
+
+- 파일·Tailwind·인라인 `<style>` 여부 등은 **[docs/UI-GUIDE.md](../../docs/UI-GUIDE.md)** 에 정리한다. 새 HTML 추가 시 그 표에 한 행 추가한다.

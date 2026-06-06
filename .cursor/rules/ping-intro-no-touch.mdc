@@ -1,0 +1,14 @@
+---
+description: 인트로(/intro) 클라이언트·단계 TS/TSX 로직은 변경하지 않음 — 레이아웃·전역 CSS가 intro를 깨뜨리면 intro.css 또는 루트 레이아웃 격리로만 복구한다.
+globs:
+  - "src/app/intro/**/*.tsx"
+  - "src/app/intro/**/*.ts"
+  - "src/app/intro/**/*.css"
+alwaysApply: false
+---
+
+# 인트로 (`/intro`) 보호
+
+- **`intro-client.tsx`**, **`intro-stages.ts`**, **`page.tsx`**, **`intro-html-class.tsx`**, **`intro-wave-canvas.tsx`** 의 **동작·플로·카피·구조**는 사용자가 명시적으로 요청하지 않는 한 **수정하지 않는다.**
+- **`intro.css`**는 인트로 전용 스타일이므로, **루트 `layout`의 `body` 유틸(`bg-background` 등)과 충돌해 배경이 깨질 때** 같은 회귀를 막기 위한 `!important` / 선택자 보강 **정도만** 허용한다.
+- 설치 커맨드 블록(`DocsCodeBlock`) 등 **다른 기능**은 인트로 라우트에 **넣지 않는다** (별도 페이지·컴포넌트로 둔다).

@@ -1,0 +1,58 @@
+extend type Invitation {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "Invitation", purpose: IMPLICIT_KEY_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Invitation`.`invitedUser`. It must match the value of `User`.`id`. See `@ref` for how to customize it.
+  """
+  invitedUserId: UUID @fdc_generated(from: "Invitation.invitedUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Invitation`.`obituary`. It must match the value of `Obituary`.`id`. See `@ref` for how to customize it.
+  """
+  obituaryId: UUID @fdc_generated(from: "Invitation.obituary", purpose: IMPLICIT_REF_FIELD)
+}
+extend type Notification {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "Notification", purpose: IMPLICIT_KEY_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Notification`.`obituary`. It must match the value of `Obituary`.`id`. See `@ref` for how to customize it.
+  """
+  obituaryId: UUID @fdc_generated(from: "Notification.obituary", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Notification`.`recipient`. It must match the value of `User`.`id`. See `@ref` for how to customize it.
+  """
+  recipientId: UUID @fdc_generated(from: "Notification.recipient", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Notification`.`service`. It must match the value of `Service`.`id`. See `@ref` for how to customize it.
+  """
+  serviceId: UUID @fdc_generated(from: "Notification.service", purpose: IMPLICIT_REF_FIELD)
+}
+extend type Obituary {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "Obituary", purpose: IMPLICIT_KEY_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Obituary`.`creator`. It must match the value of `User`.`id`. See `@ref` for how to customize it.
+  """
+  creatorId: UUID @fdc_generated(from: "Obituary.creator", purpose: IMPLICIT_REF_FIELD)
+}
+extend type Service {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "Service", purpose: IMPLICIT_KEY_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Service`.`obituary`. It must match the value of `Obituary`.`id`. See `@ref` for how to customize it.
+  """
+  obituaryId: UUID @fdc_generated(from: "Service.obituary", purpose: IMPLICIT_REF_FIELD)
+}
+extend type User {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "User", purpose: IMPLICIT_KEY_FIELD)
+}

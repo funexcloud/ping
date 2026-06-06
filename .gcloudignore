@@ -1,0 +1,15 @@
+.git/
+.gitignore
+node_modules/
+.next/
+dist/
+build/
+.env
+.env.*
+.ping-express-origin
+*.log
+.DS_Store
+.vscode/
+.idea/
+legacy-html/
+terminals/

@@ -1,0 +1,43 @@
+/* SVG 아크 스피너 — 둥근 헤드 + 연한 트랙 (토스/Vercel 톤) */
+.ping-loading-spinner {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ping-loading-spinner__svg {
+  display: block;
+  animation: ping-loading-spin 1.15s linear infinite;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.ping-loading-spinner__track {
+  stroke: #e5e8eb;
+}
+
+.ping-loading-spinner__arc {
+  stroke: var(--ping-primary, #3182f6);
+}
+
+.ping-loading-spinner[data-variant="dark"] .ping-loading-spinner__track {
+  stroke: rgba(148, 163, 184, 0.35);
+}
+
+.ping-loading-spinner[data-variant="dark"] .ping-loading-spinner__arc {
+  stroke: #7dd3ea;
+}
+
+@keyframes ping-loading-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ping-loading-spinner__svg {
+    animation-duration: 1.6s;
+    animation-timing-function: linear;
+  }
+}

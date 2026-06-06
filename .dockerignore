@@ -1,0 +1,13 @@
+node_modules
+.next
+.git
+.cursor
+*.local.json
+.env
+.env.*
+!.env.example
+ping_mobile_legacy_html_snapshot
+spline-next
+entry-select
+functions/node_modules
+firebase-functions-app

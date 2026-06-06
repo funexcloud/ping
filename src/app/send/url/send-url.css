@@ -1,0 +1,35 @@
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.ping-ui #send-url-field {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.send-url-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.send-url-loading.hidden {
+  display: none;
+}
+
+.send-url-loading__card {
+  background: var(--ping-surface);
+  border-radius: 16px;
+  padding: 24px 28px;
+  max-width: 90vw;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.15);
+  text-align: center;
+  font-weight: 600;
+  color: var(--ping-ui-text);
+}

@@ -1,0 +1,560 @@
+/* 결제 완료 전용 — 흰 컬럼 + 토스 블루 (#3182f6) */
+.ping-global-root:has(.pay-ok-page) .ping-global-main {
+  background: var(--ping-surface, #fff);
+}
+
+.pay-ok-flow-progress-wrap {
+    width: 100%;
+    max-width: min(400px, 100%);
+    align-self: stretch;
+}
+
+.pay-ok-page > .bulk-flow-logo-bar {
+    width: 100%;
+    max-width: min(400px, 100%);
+    align-self: stretch;
+    margin-top: env(safe-area-inset-top, 0);
+    box-sizing: border-box;
+}
+
+.pay-ok-page {
+    --pay-ok-accent: #3182f6;
+    --pay-ok-accent-deep: #2563eb;
+    --pay-ok-accent-hover: #1b64da;
+    --pay-ok-text: #191f28;
+    --pay-ok-text-sub: #6b7684;
+    flex: 1;
+    width: 100%;
+    min-height: 100%;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 1.25rem 2rem;
+    box-sizing: border-box;
+    background: var(--ping-surface, #fff);
+}
+.pay-ok-shell {
+    width: 100%;
+    max-width: 28rem;
+    margin-top: env(safe-area-inset-top, 0);
+    padding-top: 1.75rem;
+    box-sizing: border-box;
+}
+.pay-ok-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto 1.35rem;
+}
+.pay-ok-success-mark {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 5.75rem;
+    height: 5.75rem;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    border-radius: 50%;
+}
+.pay-ok-success-mark:focus-visible {
+    outline: 2px solid var(--pay-ok-accent);
+    outline-offset: 4px;
+}
+.pay-ok-success-float {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pay-ok-mark-bob 2.4s ease-in-out 0.95s infinite;
+    transform-origin: center center;
+}
+.pay-ok-success-circle {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #4f9bff 0%, var(--pay-ok-accent-deep) 100%);
+    box-shadow:
+        0 12px 32px rgba(49, 130, 246, 0.4),
+        0 4px 12px rgba(37, 99, 235, 0.22);
+    transform-origin: center center;
+}
+.pay-ok-success-circle:not(.pay-ok-circle-enter-done) {
+    animation: pay-ok-mark-enter 0.95s cubic-bezier(0.34, 1.45, 0.55, 1) forwards;
+}
+.pay-ok-success-circle.pay-ok-circle-enter-done {
+    animation: none;
+}
+.pay-ok-success-mark svg {
+    width: 58%;
+    height: 58%;
+    display: block;
+    filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.08));
+}
+@keyframes pay-ok-mark-enter {
+    0% { transform: scale(0); opacity: 0; }
+    55% { transform: scale(1.12); opacity: 1; }
+    80% { transform: scale(0.94); }
+    100% { transform: scale(1); }
+}
+@keyframes pay-ok-mark-bob {
+    0%, 100% { transform: translateY(0) scale(1); }
+    40% { transform: translateY(-7px) scale(1.03); }
+    55% { transform: translateY(0) scale(1); }
+    70% { transform: translateY(-3px) scale(1.015); }
+}
+@keyframes pay-ok-mark-boop {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.18); }
+    55% { transform: scale(0.92); }
+    75% { transform: scale(1.06); }
+    100% { transform: scale(1); }
+}
+.pay-ok-success-mark.is-boop .pay-ok-success-circle {
+    animation: pay-ok-mark-boop 0.62s cubic-bezier(0.34, 1.65, 0.64, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+    .pay-ok-success-float {
+        animation: none;
+    }
+    .pay-ok-success-circle:not(.pay-ok-circle-enter-done) {
+        animation: pay-ok-mark-enter 0.45s ease forwards;
+    }
+    .pay-ok-success-mark.is-boop .pay-ok-success-circle {
+        animation: none;
+    }
+}
+#pay-ok-valid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#pay-ok-valid .pay-ok-title,
+#pay-ok-valid .pay-ok-sub {
+    text-align: center;
+    width: 100%;
+}
+#pay-ok-valid .pay-ok-title {
+    color: var(--pay-ok-text);
+}
+#pay-ok-valid .pay-ok-sub {
+    color: var(--pay-ok-text-sub);
+}
+#pay-ok-valid .pay-ok-card,
+#pay-ok-valid .pay-ok-message,
+#pay-ok-valid .pay-ok-actions {
+    width: 100%;
+    max-width: 100%;
+    align-self: stretch;
+    box-sizing: border-box;
+}
+#pay-ok-valid .pay-ok-btn {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+.pay-ok-title {
+    font-size: 1.625rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--pay-ok-text);
+    line-height: 1.25;
+    margin: 0 0 0.5rem;
+}
+.pay-ok-sub {
+    font-size: 0.9375rem;
+    color: var(--pay-ok-text-sub);
+    line-height: 1.55;
+    margin: 0 0 1.75rem;
+}
+.pay-ok-card {
+    background: var(--ping-surface);
+    border-radius: var(--radius-20);
+    border: 1px solid var(--ping-ui-line);
+    box-shadow: var(--shadow-ping-sm);
+    padding: 1.25rem 1.35rem;
+    margin-bottom: 1rem;
+    animation: pay-ok-fade 0.55s ease 0.1s both;
+}
+@keyframes pay-ok-fade {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.pay-ok-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+}
+.pay-ok-row + .pay-ok-row {
+    margin-top: 0.875rem;
+    padding-top: 0.875rem;
+    border-top: 1px dashed var(--ping-ui-line);
+}
+.pay-ok-k { color: var(--ping-muted); font-weight: 500; flex-shrink: 0; }
+.pay-ok-v { font-weight: 600; color: var(--ping-text); text-align: right; word-break: break-all; }
+.pay-ok-v--mono { font-family: ui-monospace, monospace; font-size: 0.8125rem; }
+.pay-ok-amount {
+    font-size: 1.375rem;
+    font-weight: 800;
+    color: var(--pay-ok-accent);
+    letter-spacing: -0.02em;
+}
+.pay-ok-message {
+    background: linear-gradient(135deg, rgba(49, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.06) 100%);
+    border: 1px solid rgba(49, 130, 246, 0.18);
+    border-radius: var(--radius-16);
+    padding: 1.15rem 1.25rem;
+    margin-bottom: 1.5rem;
+    animation: pay-ok-fade 0.55s ease 0.18s both;
+}
+.pay-ok-message p {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--ping-text);
+}
+.pay-ok-message strong {
+    color: var(--pay-ok-accent-deep);
+    font-weight: 700;
+}
+.pay-ok-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    width: 100%;
+    animation: pay-ok-fade 0.55s ease 0.26s both;
+}
+.pay-ok-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.25rem;
+    border-radius: var(--radius-14);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    touch-action: manipulation;
+}
+.pay-ok-btn:active { transform: scale(0.98); }
+.pay-ok-btn--primary {
+    background: var(--pay-ok-accent);
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(49, 130, 246, 0.35);
+}
+.pay-ok-btn--primary:hover { background: var(--pay-ok-accent-hover); }
+.pay-ok-btn--secondary {
+    background: var(--ping-surface);
+    color: var(--pay-ok-text);
+    border: 1px solid #e5e8eb;
+}
+.pay-ok-btn--secondary:hover { background: #f2f4f6; }
+.pay-ok-panel--hidden {
+    display: none !important;
+}
+.pay-ok-invalid-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto 1.35rem;
+}
+.pay-ok-invalid-bounce {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    border-radius: 50%;
+}
+.pay-ok-invalid-bounce:focus-visible {
+    outline: 2px solid var(--pay-ok-accent);
+    outline-offset: 6px;
+}
+.pay-ok-invalid-bounce-float {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-origin: center center;
+}
+.pay-ok-invalid-bounce-float:not(.pay-ok-invalid-float-ready) {
+    animation: pay-ok-invalid-pop 0.85s cubic-bezier(0.33, 1.5, 0.55, 1) forwards;
+}
+.pay-ok-invalid-bounce-float.pay-ok-invalid-float-ready {
+    animation: pay-ok-invalid-irregular 3.15s ease-in-out infinite;
+}
+.pay-ok-invalid-circle {
+    width: 5.75rem;
+    height: 5.75rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: linear-gradient(145deg, #4f9bff 0%, var(--pay-ok-accent-deep) 100%);
+    box-shadow:
+        0 12px 32px rgba(49, 130, 246, 0.35),
+        0 4px 12px rgba(37, 99, 235, 0.2);
+}
+.pay-ok-invalid-circle svg {
+    width: 58%;
+    height: 58%;
+    display: block;
+    filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.08));
+}
+.pay-ok-invalid-graphic {
+    width: 5.75rem;
+    height: auto;
+    max-width: 100%;
+    display: block;
+    user-select: none;
+    pointer-events: none;
+}
+@keyframes pay-ok-invalid-pop {
+    0% { transform: scale(0); opacity: 0; }
+    58% { transform: scale(1.08); opacity: 1; }
+    82% { transform: scale(0.94); }
+    100% { transform: scale(1); opacity: 1; }
+}
+@keyframes pay-ok-invalid-irregular {
+    0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    11% { transform: translate(-3px, -10px) rotate(-2deg) scale(1.045); }
+    24% { transform: translate(4px, -5px) rotate(1.2deg) scale(0.97); }
+    38% { transform: translate(-2px, -12px) rotate(0.8deg) scale(1.06); }
+    52% { transform: translate(3px, -3px) rotate(-1deg) scale(1); }
+    66% { transform: translate(-4px, -8px) rotate(1.6deg) scale(1.04); }
+    79% { transform: translate(2px, -5px) rotate(-0.6deg) scale(0.99); }
+    91% { transform: translate(-1px, -2px) rotate(0.3deg) scale(1.02); }
+}
+@keyframes pay-ok-invalid-tap {
+    0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    35% { transform: translate(0, 0) rotate(0deg) scale(1.14); }
+    60% { transform: translate(0, 0) rotate(0deg) scale(0.9); }
+    82% { transform: translate(0, 0) rotate(0deg) scale(1.05); }
+    100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+}
+.pay-ok-invalid-bounce.is-boop .pay-ok-invalid-bounce-float {
+    animation: pay-ok-invalid-tap 0.58s cubic-bezier(0.34, 1.55, 0.64, 1);
+}
+#pay-ok-invalid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#pay-ok-invalid .pay-ok-title,
+#pay-ok-invalid .pay-ok-sub {
+    text-align: center;
+    width: 100%;
+}
+#pay-ok-invalid .pay-ok-title {
+    color: var(--pay-ok-text);
+}
+#pay-ok-invalid .pay-ok-sub {
+    color: var(--pay-ok-text-sub);
+}
+#pay-ok-invalid .pay-ok-actions {
+    width: 100%;
+    max-width: 100%;
+    align-self: stretch;
+    box-sizing: border-box;
+}
+#pay-ok-invalid .pay-ok-btn {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+#pay-ok-invalid .pay-ok-invalid-prompt {
+    box-sizing: border-box;
+}
+#pay-ok-invalid .pay-ok-invalid-prompt {
+    margin-bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+#pay-ok-invalid .pay-ok-invalid-prompt p {
+    margin: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+    .pay-ok-invalid-bounce-float:not(.pay-ok-invalid-float-ready) {
+        animation: pay-ok-invalid-pop 0.45s ease forwards;
+    }
+    .pay-ok-invalid-bounce-float.pay-ok-invalid-float-ready {
+        animation: none;
+    }
+    .pay-ok-invalid-bounce.is-boop .pay-ok-invalid-bounce-float {
+        animation: none;
+    }
+}
+.pay-ok-btn--excel {
+    background: #fff;
+    color: var(--pay-ok-accent-deep);
+    border: 1.5px solid rgba(49, 130, 246, 0.45);
+    gap: 0.45rem;
+    box-shadow: 0 2px 8px rgba(25, 31, 40, 0.04);
+}
+.pay-ok-btn--excel:hover {
+    background: rgba(49, 130, 246, 0.07);
+    border-color: var(--pay-ok-accent);
+}
+.pay-ok-btn--excel.pay-ok-btn--dim {
+    opacity: 0.55;
+    filter: grayscale(0.2);
+}
+#pay-ok-xlsx-btn.pay-ok-btn--excel {
+    gap: 0.45rem;
+}
+#pay-ok-verifying {
+    text-align: center;
+    padding-top: 2.5rem;
+    padding-bottom: 2rem;
+}
+#pay-ok-verifying .pay-ok-verifying-hint {
+    margin: 0.75rem 0 0;
+    font-size: 0.8125rem;
+    color: var(--pay-ok-text-sub);
+    line-height: 1.5;
+}
+
+/* 무통장 입금 대기 — 결제 완료 체크 UI 대신 입금 안내 전용 */
+.pay-ok-shell--bank-pending .pay-ok-sub {
+    margin-bottom: 1.25rem;
+}
+
+.pay-ok-bank-pending-hero {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.pay-ok-bank-pending-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 1.25rem;
+    background: linear-gradient(145deg, #4f9bff 0%, var(--pay-ok-accent-deep) 100%);
+    border: none;
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(49, 130, 246, 0.28);
+}
+
+.pay-ok-bank-pending-icon svg {
+    width: 2rem;
+    height: 2rem;
+}
+
+.pay-ok-bank-steps {
+    display: flex;
+    width: 100%;
+    gap: 0.5rem;
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+}
+
+.pay-ok-bank-steps__item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.65rem 0.35rem;
+    border-radius: 0.75rem;
+    background: #f2f4f6;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--pay-ok-text-sub);
+    letter-spacing: -0.02em;
+}
+
+.pay-ok-bank-steps__item.is-current {
+    background: #fff;
+    color: var(--pay-ok-accent-deep);
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(49, 130, 246, 0.2);
+}
+
+.pay-ok-bank-steps__num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.375rem;
+    height: 1.375rem;
+    border-radius: 999px;
+    background: rgba(107, 118, 132, 0.12);
+    font-size: 0.6875rem;
+    font-weight: 800;
+}
+
+.pay-ok-bank-steps__item.is-current .pay-ok-bank-steps__num {
+    background: var(--pay-ok-accent);
+    color: #fff;
+}
+
+.pay-ok-bank-card-pending {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-color: rgba(251, 191, 36, 0.35);
+    background: #fff;
+}
+
+.pay-ok-bank-amount-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 1rem 0.75rem;
+    border-radius: 1rem;
+    background: linear-gradient(180deg, rgba(49, 130, 246, 0.06) 0%, rgba(49, 130, 246, 0.02) 100%);
+    border: 1px solid rgba(49, 130, 246, 0.12);
+}
+
+.pay-ok-bank-amount-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--pay-ok-text-sub);
+}
+
+.pay-ok-bank-amount {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--pay-ok-accent-deep);
+    line-height: 1.2;
+}
+
+.pay-ok-card--compact .pay-ok-row + .pay-ok-row {
+    margin-top: 0.65rem;
+    padding-top: 0.65rem;
+}
+
+.pay-ok-bank-pending-foot {
+    width: 100%;
+    margin-bottom: 1rem;
+    line-height: 1.55;
+}

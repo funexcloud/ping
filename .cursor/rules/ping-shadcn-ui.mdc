@@ -1,0 +1,56 @@
+---
+description: Next/React UI — shadcn/ui (new-york), zinc CSS variables, Lucide, Tailwind-only, Toss primary
+globs:
+  - "src/app/**/*.tsx"
+  - "src/components/**/*.tsx"
+alwaysApply: false
+---
+
+# shadcn/ui (React) 규칙
+
+다음은 **`src/app/**/*.tsx`**, **`src/components/**/*.tsx`** 편집 시 준수한다. 레거시 정적 HTML(`*.html`)과 `assets/css/ping-ui.css`는 [ping-ui-design-system.mdc](./ping-ui-design-system.mdc)가 우선한다.
+
+## shadcn/ui
+
+- **UI는 shadcn/ui 패턴의 래퍼만 사용**한다. (`@/components/ui/*` — Button, Input, Label, 이후 `npx shadcn@latest add [component]`로 추가되는 컴포넌트)
+- **의미 있는 입력·버튼·라벨에 raw `<input>` / `<button>` / `<label>` 금지.** (접근성·스타일 일원화)
+- 예외(리팩터링 예정): **`src/app/obituary-form/obituary-form-client.tsx`** 는 대형 폼으로 아직 마이그레이션 중이므로, 수정 시 가능한 범위에서 shadcn·Lucide·토큰을 적용하고, 전면 Field/Form 분리는 별도 작업으로 끝낸다.
+
+## 테마
+
+- **스타일: new-york**, **baseColor: zinc** (`components.json`과 동기)
+- 색·배경·보더·링 등은 **CSS 변수**만 사용한다: `--background`, `--foreground`, `--primary`, `--primary-hover`, `--border`, `--radius` 등 (`globals.css`의 `:root` / `.dark`)
+- **모서리**: `rounded-sm` / `rounded-md` / `rounded-lg` 는 Tailwind에서 **`var(--radius)`** 계열로 매핑됨. **픽셀 하드코딩 금지** (예: `rounded-[12px]` 지양 — 필요 시 토큰·`calc(var(--radius) ± …)` 논의 후 추가)
+
+## 버튼 색상 (토스 스타일)
+
+- **Primary** 배경: `#3182F6` → `globals.css`의 `--primary` (HSL 컴포넌트만 저장, `hsl(var(--primary))`로 사용)
+- **Primary** 텍스트: `#FFFFFF` → `--primary-foreground`
+- **Primary hover**: `#1B6EF3` → `--primary-hover` (`Button` `default` / `primary` / `agreeAll` 등에서 `hover:bg-primary-hover`)
+- **Secondary / outline / ghost** 는 shadcn 기본 variant 스타일을 따른다.
+- **`Button` 기본 variant는 `default`** 유지; `default`의 시각적 primary 색은 위 토큰으로 나와야 한다.
+
+## ⚠️ 절대 건드리지 말 것 (토스 Primary 보호)
+
+다음 토스 스타일 토큰은 **의도적인 예외 없이 변경·덮어쓰기·리셋하지 않는다.**
+
+- **`--primary`**, **`--primary-foreground`**, **`--primary-hover`** (`globals.css`의 `:root` — 토스 블루 / 화이트 텍스트 / hover)
+- 배경·레이아웃·그레이 레이어링·다크 모드 조정 등 **다른 테마 작업**을 할 때도 위 변수를 바꾸거나 무효화하는 코드를 넣지 않는다.
+- 새 preset·테마·`globals.css` 대-scale 수정 요청이 와도, **위 세 변수는 유지**하고, 필요 시 사용자에게 별도 승인을 받은 뒤에만 변경한다.
+
+## 스타일링
+
+- **인라인 `style={{}}` 금지.** 레이아웃·색은 **Tailwind 유틸**만 (`className`).
+- **아이콘은 `lucide-react`만.** Font Awesome·CDN 훅·`<i className="fa-...">` 금지 (기존 사용처는 Lucide로 교체)
+
+## 컴포넌트 사용 원칙
+
+- 새 UI 블록은 **반드시 `npx shadcn@latest add [component]`** 로 설치한 뒤 `@/components/ui`에서 임포트한다.
+- 커스텀 variant·레이아웃이 필요하면 **해당 컴포넌트 파일 안의 `cva()`에만** 추가한다.
+- **shadcn 소스를 복사해 별도 이름(`buttons-v2.tsx` 등)으로 두지 않는다.**
+
+## 설정 참조
+
+- `components.json` — `"style": "new-york"`, `"tailwind.cssVariables": true`, `"tailwind.baseColor": "zinc"`
+- `src/app/globals.css` — shadcn `:root` / `.dark` 변수 (토스 primary·hover 포함)
+- `tailwind.config.ts` — `hsl(var(--*))` 색·`primary.hover`·`borderRadius`·`tailwindcss-animate`

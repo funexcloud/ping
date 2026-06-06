@@ -1,0 +1,46 @@
+node_modules/
+.DS_Store
+*.log
+nul
+.env
+.env.local
+.env.*.local
+.env.vercel.pull
+.ping-express-origin
+dist/
+build/
+.vscode/
+.idea/
+obituary-drafts.local.json
+payment-orders.local.json
+marketing-leads.local.json
+marketing-cookie-events.local.json
+ping-send-coupons.local.json
+members.local.json
+auth-sessions.local.json
+referral-ledger.local.json
+user-benefits.local.json
+admin-app-settings.local.json
+guest-sms-codes.local.json
+solapi-otp-store.local.json
+
+# 보안 파일
+*.key
+*.pem
+secrets/
+*firebase-adminsdk*.json
+*.local.json
+
+
+
+.vercel
+
+# Next 레거시 미러 전체 (scripts/ensure-next-public-static.mjs)
+/public/
+
+# 레거시 HTML 전개물 — 원본은 legacy-html/ 만 추적. clone 후·배포 전 npm run materialize:legacy-html
+/*.html
+/obituary/**/*.html
+/legal/**/*.html
+/send/**/*.html
+/admin/**/*.html

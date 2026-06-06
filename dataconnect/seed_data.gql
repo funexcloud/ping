@@ -1,0 +1,92 @@
+mutation CreateSeedData @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") @transaction {
+  user_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      createdAt: "2024-04-05T00:00:00Z",
+      displayName: "demouser1",
+      email: "demouser1@example.com",
+    },
+    {
+      id: "661f9511-f3ac-52e5-b827-557766551111",
+      createdAt: "2024-04-05T00:00:00Z",
+      displayName: "demouser2",
+      email: "demouser2@example.com",
+    }
+  ])
+  obituary_insertMany(data: [
+    {
+      id: "772a0622-04bb-63f6-c938-668877662222",
+      creatorId: "550e8400-e29b-41d4-a716-446655440000",
+      createdAt: "2024-04-05T00:00:00Z",
+      dateOfBirth: "1940-01-01",
+      dateOfDeath: "2024-01-01",
+      firstName: "John",
+      lastName: "Doe",
+      isPublic: true
+    },
+    {
+      id: "883b1733-15cc-7407-da49-779988773333",
+      creatorId: "661f9511-f3ac-52e5-b827-557766551111",
+      createdAt: "2024-04-05T00:00:00Z",
+      dateOfBirth: "1950-02-02",
+      dateOfDeath: "2024-02-02",
+      firstName: "Jane",
+      lastName: "Smith",
+      isPublic: false
+    }
+  ])
+  service_insertMany(data: [
+    {
+      id: "994c2844-26dd-8518-eb5a-88aabb994444",
+      obituaryId: "772a0622-04bb-63f6-c938-668877662222",
+      address: "123 Main St",
+      dateTime: "2024-04-10T10:00:00Z",
+      locationName: "Community Church",
+      type: "Funeral"
+    },
+    {
+      id: "aa5d3955-37ee-9629-fc6b-99bbccaa5555",
+      obituaryId: "883b1733-15cc-7407-da49-779988773333",
+      address: "456 Oak Ave",
+      dateTime: "2024-04-12T14:00:00Z",
+      locationName: "Family Cemetery",
+      type: "Memorial"
+    }
+  ])
+    invitation_insertMany(data: [
+    {
+      id: "bb6e4a66-48ff-a73a-0d7c-aabbddbb6666",
+      obituaryId: "772a0622-04bb-63f6-c938-668877662222",
+      invitedUserId: "661f9511-f3ac-52e5-b827-557766551111",
+      invitedEmail: "invitee1@example.com",
+      invitedAt: "2024-04-07T12:00:00Z"
+    },
+    {
+      id: "cc7f5b77-59gg-b84b-1e8d-bbccddee7777",
+      obituaryId: "883b1733-15cc-7407-da49-779988773333",
+      invitedUserId: "550e8400-e29b-41d4-a716-446655440000",
+      invitedEmail: "invitee2@example.com",
+      invitedAt: "2024-04-08T15:00:00Z"
+    }
+  ])
+  notification_insertMany(data: [
+    {
+      id: "dd8a6c88-6aff-c95c-2f9e-ccddeecc8888",
+      obituaryId: "772a0622-04bb-63f6-c938-668877662222",
+      recipientId: "661f9511-f3ac-52e5-b827-557766551111",
+      serviceId: "994c2844-26dd-8518-eb5a-88aabb994444",
+      message: "Service details updated",
+      sentAt: "2024-04-09T08:00:00Z",
+      type: "Update"
+    },
+    {
+      id: "ee9b7d99-7bgg-da6d-30af-ddeeffdd9999",
+      obituaryId: "883b1733-15cc-7407-da49-779988773333",
+      recipientId: "550e8400-e29b-41d4-a716-446655440000",
+      serviceId: "aa5d3955-37ee-9629-fc6b-99bbccaa5555",
+      message: "New memorial service",
+      sentAt: "2024-04-11T11:00:00Z",
+      type: "New"
+    }
+  ])
+}

@@ -1,0 +1,111 @@
+/**
+ * H — 부고 수신자 링크 (/s/*, 공개 부고) 고령·고대비 모드
+ */
+
+html.ping-ui.ping-recipient-page,
+html.ping-recipient-page,
+.ping-recipient-page {
+  font-size: 18px;
+  line-height: 1.65;
+  -webkit-text-size-adjust: 100%;
+}
+
+html.ping-recipient-page body,
+.ping-recipient-page {
+  background: #ffffff;
+  color: #191f28;
+}
+
+.ping-recipient-page .ping-recipient-shell {
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 1.5rem 1.25rem 2rem;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.ping-recipient-page .ping-recipient-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.45;
+  color: #191f28;
+}
+
+.ping-recipient-page .ping-recipient-body {
+  margin: 0;
+  max-width: 22rem;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: #4e5968;
+}
+
+.ping-recipient-page .ping-recipient-cta {
+  display: inline-flex;
+  min-height: 48px;
+  width: 100%;
+  max-width: 20rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 2px solid #191f28;
+  background: #3182f6;
+  color: #ffffff;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.ping-recipient-page .ping-recipient-cta:hover {
+  background: #1b6ef3;
+}
+
+.ping-recipient-page .ping-recipient-cta--secondary {
+  background: #ffffff;
+  color: #191f28;
+  border-color: #191f28;
+}
+
+.ping-recipient-page .ob-pub-section {
+  margin-bottom: 1.25rem;
+}
+
+.ping-recipient-page .ob-pub-label,
+.ping-recipient-page .ob-flow-eyebrow {
+  font-size: 1rem !important;
+  font-weight: 700;
+  color: #191f28;
+}
+
+.ping-recipient-page .ob-pub-value,
+.ping-recipient-page .ob-flow-hero-title {
+  font-size: 1.125rem !important;
+  line-height: 1.55;
+}
+
+.ping-recipient-page .ob-pub-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (prefers-contrast: more) {
+  html.ping-recipient-page body {
+    background: #ffffff;
+    color: #000000;
+  }
+
+  .ping-recipient-page .ping-recipient-body {
+    color: #000000;
+  }
+
+  .ping-recipient-page .ping-recipient-cta {
+    border-width: 3px;
+    border-color: #000000;
+  }
+}

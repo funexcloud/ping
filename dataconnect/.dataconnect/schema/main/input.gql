@@ -1,0 +1,1769 @@
+"""
+✨ `Invitation_KeyOutput` returns the primary key fields of table type `Invitation`.
+
+It has the same format as `Invitation_Key`, but is only used as mutation return value.
+"""
+scalar Invitation_KeyOutput
+"""
+✨ `Notification_KeyOutput` returns the primary key fields of table type `Notification`.
+
+It has the same format as `Notification_Key`, but is only used as mutation return value.
+"""
+scalar Notification_KeyOutput
+"""
+✨ `Obituary_KeyOutput` returns the primary key fields of table type `Obituary`.
+
+It has the same format as `Obituary_Key`, but is only used as mutation return value.
+"""
+scalar Obituary_KeyOutput
+"""
+✨ `Service_KeyOutput` returns the primary key fields of table type `Service`.
+
+It has the same format as `Service_Key`, but is only used as mutation return value.
+"""
+scalar Service_KeyOutput
+"""
+✨ `User_KeyOutput` returns the primary key fields of table type `User`.
+
+It has the same format as `User_Key`, but is only used as mutation return value.
+"""
+scalar User_KeyOutput
+"""
+✨ Generated data input type for table 'Invitation'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Invitation_Data {
+  """
+  ✨ Generated from Field `Invitation`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Invitation`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Invitation`.`invitedUserId` of type `UUID`
+  """
+  invitedUserId: UUID
+  """
+  ✨ `_expr` server value variant of `invitedUserId` (✨ Generated from Field `Invitation`.`invitedUserId` of type `UUID`)
+  """
+  invitedUserId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Invitation`.`obituaryId` of type `UUID`
+  """
+  obituaryId: UUID
+  """
+  ✨ `_expr` server value variant of `obituaryId` (✨ Generated from Field `Invitation`.`obituaryId` of type `UUID`)
+  """
+  obituaryId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Invitation`.`invitedUser` of type `User`
+  """
+  invitedUser: User_Key
+  """
+  ✨ Generated from Field `Invitation`.`obituary` of type `Obituary`
+  """
+  obituary: Obituary_Key
+  """
+  ✨ Generated from Field `Invitation`.`invitedAt` of type `Timestamp`
+  """
+  invitedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `invitedAt` (✨ Generated from Field `Invitation`.`invitedAt` of type `Timestamp`)
+  """
+  invitedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `invitedAt` (✨ Generated from Field `Invitation`.`invitedAt` of type `Timestamp`)
+  """
+  invitedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `invitedAt` (✨ Generated from Field `Invitation`.`invitedAt` of type `Timestamp`)
+  """
+  invitedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Invitation`.`invitedEmail` of type `String!`
+  """
+  invitedEmail: String
+  """
+  ✨ `_expr` server value variant of `invitedEmail` (✨ Generated from Field `Invitation`.`invitedEmail` of type `String!`)
+  """
+  invitedEmail_expr: String_Expr
+  """
+  ✨ Generated from Field `Invitation`.`rsvpStatus` of type `String`
+  """
+  rsvpStatus: String
+  """
+  ✨ `_expr` server value variant of `rsvpStatus` (✨ Generated from Field `Invitation`.`rsvpStatus` of type `String`)
+  """
+  rsvpStatus_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'Invitation'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Invitation_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Invitation_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Invitation_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Invitation_Filter!]
+  """
+  ✨ Generated from Field `Invitation`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `Invitation`.`invitedUserId` of type `UUID`
+  """
+  invitedUserId: UUID_Filter
+  """
+  ✨ Generated from Field `Invitation`.`obituaryId` of type `UUID`
+  """
+  obituaryId: UUID_Filter
+  """
+  ✨ Generated from Field `Invitation`.`invitedUser` of type `User`
+  """
+  invitedUser: User_Filter
+  """
+  ✨ Generated from Field `Invitation`.`obituary` of type `Obituary`
+  """
+  obituary: Obituary_Filter
+  """
+  ✨ Generated from Field `Invitation`.`invitedAt` of type `Timestamp`
+  """
+  invitedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Invitation`.`invitedEmail` of type `String!`
+  """
+  invitedEmail: String_Filter
+  """
+  ✨ Generated from Field `Invitation`.`rsvpStatus` of type `String`
+  """
+  rsvpStatus: String_Filter
+}
+"""
+✨ Generated first-row input type for table 'Invitation'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Invitation_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Invitation_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Invitation_Filter
+}
+"""
+✨ Generated having input type for table 'Invitation'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Invitation_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Invitation_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Invitation_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Invitation_Having!]
+  """
+  ✨ Generated from Field `Invitation`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Invitation`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Invitation`.`invitedAt_count` of type `Int!`
+  """
+  invitedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Invitation`.`invitedEmail_count` of type `Int!`
+  """
+  invitedEmail_count: Int_Filter
+  """
+  ✨ Generated from Field `Invitation`.`invitedUserId_count` of type `Int!`
+  """
+  invitedUserId_count: Int_Filter
+  """
+  ✨ Generated from Field `Invitation`.`obituaryId_count` of type `Int!`
+  """
+  obituaryId_count: Int_Filter
+  """
+  ✨ Generated from Field `Invitation`.`rsvpStatus_count` of type `Int!`
+  """
+  rsvpStatus_count: Int_Filter
+  """
+  ✨ Generated from Field `Invitation`.`invitedAt_min` of type `Timestamp`
+  """
+  invitedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Invitation`.`invitedAt_max` of type `Timestamp`
+  """
+  invitedAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Invitation'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Invitation_Key {
+  """
+  ✨ Generated from Field `Invitation`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Invitation`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Invitation'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Invitation_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Invitation_Filter
+}
+"""
+✨ Generated order input type for table 'Invitation'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Invitation_Order {
+  """
+  ✨ Generated from Field `Invitation`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Invitation`.`invitedUserId` of type `UUID`
+  """
+  invitedUserId: OrderDirection
+  """
+  ✨ Generated from Field `Invitation`.`obituaryId` of type `UUID`
+  """
+  obituaryId: OrderDirection
+  """
+  ✨ Generated from Field `Invitation`.`invitedUser` of type `User`
+  """
+  invitedUser: User_Order
+  """
+  ✨ Generated from Field `Invitation`.`obituary` of type `Obituary`
+  """
+  obituary: Obituary_Order
+  """
+  ✨ Generated from Field `Invitation`.`invitedAt` of type `Timestamp`
+  """
+  invitedAt: OrderDirection
+  """
+  ✨ Generated from Field `Invitation`.`invitedEmail` of type `String!`
+  """
+  invitedEmail: OrderDirection
+  """
+  ✨ Generated from Field `Invitation`.`rsvpStatus` of type `String`
+  """
+  rsvpStatus: OrderDirection
+  """
+  ✨ Generated from Field `Invitation`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Invitation`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Invitation`.`invitedAt_count` of type `Int!`
+  """
+  invitedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Invitation`.`invitedEmail_count` of type `Int!`
+  """
+  invitedEmail_count: OrderDirection
+  """
+  ✨ Generated from Field `Invitation`.`invitedUserId_count` of type `Int!`
+  """
+  invitedUserId_count: OrderDirection
+  """
+  ✨ Generated from Field `Invitation`.`obituaryId_count` of type `Int!`
+  """
+  obituaryId_count: OrderDirection
+  """
+  ✨ Generated from Field `Invitation`.`rsvpStatus_count` of type `Int!`
+  """
+  rsvpStatus_count: OrderDirection
+  """
+  ✨ Generated from Field `Invitation`.`invitedAt_min` of type `Timestamp`
+  """
+  invitedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Invitation`.`invitedAt_max` of type `Timestamp`
+  """
+  invitedAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Notification'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Notification_Data {
+  """
+  ✨ Generated from Field `Notification`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Notification`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Notification`.`obituaryId` of type `UUID`
+  """
+  obituaryId: UUID
+  """
+  ✨ `_expr` server value variant of `obituaryId` (✨ Generated from Field `Notification`.`obituaryId` of type `UUID`)
+  """
+  obituaryId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Notification`.`recipientId` of type `UUID`
+  """
+  recipientId: UUID
+  """
+  ✨ `_expr` server value variant of `recipientId` (✨ Generated from Field `Notification`.`recipientId` of type `UUID`)
+  """
+  recipientId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Notification`.`serviceId` of type `UUID`
+  """
+  serviceId: UUID
+  """
+  ✨ `_expr` server value variant of `serviceId` (✨ Generated from Field `Notification`.`serviceId` of type `UUID`)
+  """
+  serviceId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Notification`.`obituary` of type `Obituary`
+  """
+  obituary: Obituary_Key
+  """
+  ✨ Generated from Field `Notification`.`recipient` of type `User`
+  """
+  recipient: User_Key
+  """
+  ✨ Generated from Field `Notification`.`service` of type `Service`
+  """
+  service: Service_Key
+  """
+  ✨ Generated from Field `Notification`.`isRead` of type `Boolean`
+  """
+  isRead: Boolean
+  """
+  ✨ `_expr` server value variant of `isRead` (✨ Generated from Field `Notification`.`isRead` of type `Boolean`)
+  """
+  isRead_expr: Boolean_Expr
+  """
+  ✨ Generated from Field `Notification`.`message` of type `String!`
+  """
+  message: String
+  """
+  ✨ `_expr` server value variant of `message` (✨ Generated from Field `Notification`.`message` of type `String!`)
+  """
+  message_expr: String_Expr
+  """
+  ✨ Generated from Field `Notification`.`sentAt` of type `Timestamp!`
+  """
+  sentAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `sentAt` (✨ Generated from Field `Notification`.`sentAt` of type `Timestamp!`)
+  """
+  sentAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `sentAt` (✨ Generated from Field `Notification`.`sentAt` of type `Timestamp!`)
+  """
+  sentAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `sentAt` (✨ Generated from Field `Notification`.`sentAt` of type `Timestamp!`)
+  """
+  sentAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Notification`.`type` of type `String!`
+  """
+  type: String
+  """
+  ✨ `_expr` server value variant of `type` (✨ Generated from Field `Notification`.`type` of type `String!`)
+  """
+  type_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'Notification'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Notification_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Notification_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Notification_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Notification_Filter!]
+  """
+  ✨ Generated from Field `Notification`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `Notification`.`obituaryId` of type `UUID`
+  """
+  obituaryId: UUID_Filter
+  """
+  ✨ Generated from Field `Notification`.`recipientId` of type `UUID`
+  """
+  recipientId: UUID_Filter
+  """
+  ✨ Generated from Field `Notification`.`serviceId` of type `UUID`
+  """
+  serviceId: UUID_Filter
+  """
+  ✨ Generated from Field `Notification`.`obituary` of type `Obituary`
+  """
+  obituary: Obituary_Filter
+  """
+  ✨ Generated from Field `Notification`.`recipient` of type `User`
+  """
+  recipient: User_Filter
+  """
+  ✨ Generated from Field `Notification`.`service` of type `Service`
+  """
+  service: Service_Filter
+  """
+  ✨ Generated from Field `Notification`.`isRead` of type `Boolean`
+  """
+  isRead: Boolean_Filter
+  """
+  ✨ Generated from Field `Notification`.`message` of type `String!`
+  """
+  message: String_Filter
+  """
+  ✨ Generated from Field `Notification`.`sentAt` of type `Timestamp!`
+  """
+  sentAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Notification`.`type` of type `String!`
+  """
+  type: String_Filter
+}
+"""
+✨ Generated first-row input type for table 'Notification'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Notification_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Notification_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Notification_Filter
+}
+"""
+✨ Generated having input type for table 'Notification'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Notification_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Notification_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Notification_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Notification_Having!]
+  """
+  ✨ Generated from Field `Notification`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Notification`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Notification`.`isRead_count` of type `Int!`
+  """
+  isRead_count: Int_Filter
+  """
+  ✨ Generated from Field `Notification`.`message_count` of type `Int!`
+  """
+  message_count: Int_Filter
+  """
+  ✨ Generated from Field `Notification`.`obituaryId_count` of type `Int!`
+  """
+  obituaryId_count: Int_Filter
+  """
+  ✨ Generated from Field `Notification`.`recipientId_count` of type `Int!`
+  """
+  recipientId_count: Int_Filter
+  """
+  ✨ Generated from Field `Notification`.`sentAt_count` of type `Int!`
+  """
+  sentAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Notification`.`serviceId_count` of type `Int!`
+  """
+  serviceId_count: Int_Filter
+  """
+  ✨ Generated from Field `Notification`.`type_count` of type `Int!`
+  """
+  type_count: Int_Filter
+  """
+  ✨ Generated from Field `Notification`.`sentAt_min` of type `Timestamp`
+  """
+  sentAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Notification`.`sentAt_max` of type `Timestamp`
+  """
+  sentAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Notification'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Notification_Key {
+  """
+  ✨ Generated from Field `Notification`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Notification`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Notification'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Notification_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Notification_Filter
+}
+"""
+✨ Generated order input type for table 'Notification'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Notification_Order {
+  """
+  ✨ Generated from Field `Notification`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`obituaryId` of type `UUID`
+  """
+  obituaryId: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`recipientId` of type `UUID`
+  """
+  recipientId: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`serviceId` of type `UUID`
+  """
+  serviceId: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`obituary` of type `Obituary`
+  """
+  obituary: Obituary_Order
+  """
+  ✨ Generated from Field `Notification`.`recipient` of type `User`
+  """
+  recipient: User_Order
+  """
+  ✨ Generated from Field `Notification`.`service` of type `Service`
+  """
+  service: Service_Order
+  """
+  ✨ Generated from Field `Notification`.`isRead` of type `Boolean`
+  """
+  isRead: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`message` of type `String!`
+  """
+  message: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`sentAt` of type `Timestamp!`
+  """
+  sentAt: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`type` of type `String!`
+  """
+  type: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`isRead_count` of type `Int!`
+  """
+  isRead_count: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`message_count` of type `Int!`
+  """
+  message_count: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`obituaryId_count` of type `Int!`
+  """
+  obituaryId_count: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`recipientId_count` of type `Int!`
+  """
+  recipientId_count: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`sentAt_count` of type `Int!`
+  """
+  sentAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`serviceId_count` of type `Int!`
+  """
+  serviceId_count: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`type_count` of type `Int!`
+  """
+  type_count: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`sentAt_min` of type `Timestamp`
+  """
+  sentAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Notification`.`sentAt_max` of type `Timestamp`
+  """
+  sentAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Obituary'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Obituary_Data {
+  """
+  ✨ Generated from Field `Obituary`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Obituary`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Obituary`.`creatorId` of type `UUID`
+  """
+  creatorId: UUID
+  """
+  ✨ `_expr` server value variant of `creatorId` (✨ Generated from Field `Obituary`.`creatorId` of type `UUID`)
+  """
+  creatorId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Obituary`.`creator` of type `User`
+  """
+  creator: User_Key
+  """
+  ✨ Generated from Field `Obituary`.`biography` of type `String`
+  """
+  biography: String
+  """
+  ✨ `_expr` server value variant of `biography` (✨ Generated from Field `Obituary`.`biography` of type `String`)
+  """
+  biography_expr: String_Expr
+  """
+  ✨ Generated from Field `Obituary`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Obituary`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Obituary`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Obituary`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Obituary`.`dateOfBirth` of type `Date!`
+  """
+  dateOfBirth: Date
+  """
+  ✨ `_date` server value variant of `dateOfBirth` (✨ Generated from Field `Obituary`.`dateOfBirth` of type `Date!`)
+  """
+  dateOfBirth_date: Date_Relative
+  """
+  ✨ `_expr` server value variant of `dateOfBirth` (✨ Generated from Field `Obituary`.`dateOfBirth` of type `Date!`)
+  """
+  dateOfBirth_expr: Date_Expr
+  """
+  ✨ `_update` server value variant of `dateOfBirth` (✨ Generated from Field `Obituary`.`dateOfBirth` of type `Date!`)
+  """
+  dateOfBirth_update: [Date_Update!]
+  """
+  ✨ Generated from Field `Obituary`.`dateOfDeath` of type `Date!`
+  """
+  dateOfDeath: Date
+  """
+  ✨ `_date` server value variant of `dateOfDeath` (✨ Generated from Field `Obituary`.`dateOfDeath` of type `Date!`)
+  """
+  dateOfDeath_date: Date_Relative
+  """
+  ✨ `_expr` server value variant of `dateOfDeath` (✨ Generated from Field `Obituary`.`dateOfDeath` of type `Date!`)
+  """
+  dateOfDeath_expr: Date_Expr
+  """
+  ✨ `_update` server value variant of `dateOfDeath` (✨ Generated from Field `Obituary`.`dateOfDeath` of type `Date!`)
+  """
+  dateOfDeath_update: [Date_Update!]
+  """
+  ✨ Generated from Field `Obituary`.`firstName` of type `String!`
+  """
+  firstName: String
+  """
+  ✨ `_expr` server value variant of `firstName` (✨ Generated from Field `Obituary`.`firstName` of type `String!`)
+  """
+  firstName_expr: String_Expr
+  """
+  ✨ Generated from Field `Obituary`.`funeralHomeName` of type `String`
+  """
+  funeralHomeName: String
+  """
+  ✨ `_expr` server value variant of `funeralHomeName` (✨ Generated from Field `Obituary`.`funeralHomeName` of type `String`)
+  """
+  funeralHomeName_expr: String_Expr
+  """
+  ✨ Generated from Field `Obituary`.`isPublic` of type `Boolean!`
+  """
+  isPublic: Boolean
+  """
+  ✨ `_expr` server value variant of `isPublic` (✨ Generated from Field `Obituary`.`isPublic` of type `Boolean!`)
+  """
+  isPublic_expr: Boolean_Expr
+  """
+  ✨ Generated from Field `Obituary`.`lastName` of type `String!`
+  """
+  lastName: String
+  """
+  ✨ `_expr` server value variant of `lastName` (✨ Generated from Field `Obituary`.`lastName` of type `String!`)
+  """
+  lastName_expr: String_Expr
+  """
+  ✨ Generated from Field `Obituary`.`maidenName` of type `String`
+  """
+  maidenName: String
+  """
+  ✨ `_expr` server value variant of `maidenName` (✨ Generated from Field `Obituary`.`maidenName` of type `String`)
+  """
+  maidenName_expr: String_Expr
+  """
+  ✨ Generated from Field `Obituary`.`middleName` of type `String`
+  """
+  middleName: String
+  """
+  ✨ `_expr` server value variant of `middleName` (✨ Generated from Field `Obituary`.`middleName` of type `String`)
+  """
+  middleName_expr: String_Expr
+  """
+  ✨ Generated from Field `Obituary`.`photoUrl` of type `String`
+  """
+  photoUrl: String
+  """
+  ✨ `_expr` server value variant of `photoUrl` (✨ Generated from Field `Obituary`.`photoUrl` of type `String`)
+  """
+  photoUrl_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'Obituary'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Obituary_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Obituary_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Obituary_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Obituary_Filter!]
+  """
+  ✨ Generated from Field `Obituary`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `Obituary`.`creatorId` of type `UUID`
+  """
+  creatorId: UUID_Filter
+  """
+  ✨ Generated from Field `Obituary`.`creator` of type `User`
+  """
+  creator: User_Filter
+  """
+  ✨ Generated from Field `Obituary`.`biography` of type `String`
+  """
+  biography: String_Filter
+  """
+  ✨ Generated from Field `Obituary`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Obituary`.`dateOfBirth` of type `Date!`
+  """
+  dateOfBirth: Date_Filter
+  """
+  ✨ Generated from Field `Obituary`.`dateOfDeath` of type `Date!`
+  """
+  dateOfDeath: Date_Filter
+  """
+  ✨ Generated from Field `Obituary`.`firstName` of type `String!`
+  """
+  firstName: String_Filter
+  """
+  ✨ Generated from Field `Obituary`.`funeralHomeName` of type `String`
+  """
+  funeralHomeName: String_Filter
+  """
+  ✨ Generated from Field `Obituary`.`isPublic` of type `Boolean!`
+  """
+  isPublic: Boolean_Filter
+  """
+  ✨ Generated from Field `Obituary`.`lastName` of type `String!`
+  """
+  lastName: String_Filter
+  """
+  ✨ Generated from Field `Obituary`.`maidenName` of type `String`
+  """
+  maidenName: String_Filter
+  """
+  ✨ Generated from Field `Obituary`.`middleName` of type `String`
+  """
+  middleName: String_Filter
+  """
+  ✨ Generated from Field `Obituary`.`photoUrl` of type `String`
+  """
+  photoUrl: String_Filter
+  """
+  ✨ Generated from Field `Obituary`.`invitations_on_obituary` of type `[Invitation!]!`
+  """
+  invitations_on_obituary: Invitation_ListFilter
+  """
+  ✨ Generated from Field `Obituary`.`notifications_on_obituary` of type `[Notification!]!`
+  """
+  notifications_on_obituary: Notification_ListFilter
+  """
+  ✨ Generated from Field `Obituary`.`services_on_obituary` of type `[Service!]!`
+  """
+  services_on_obituary: Service_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'Obituary'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Obituary_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Obituary_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Obituary_Filter
+}
+"""
+✨ Generated having input type for table 'Obituary'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Obituary_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Obituary_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Obituary_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Obituary_Having!]
+  """
+  ✨ Generated from Field `Obituary`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Obituary`.`biography_count` of type `Int!`
+  """
+  biography_count: Int_Filter
+  """
+  ✨ Generated from Field `Obituary`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Obituary`.`creatorId_count` of type `Int!`
+  """
+  creatorId_count: Int_Filter
+  """
+  ✨ Generated from Field `Obituary`.`dateOfBirth_count` of type `Int!`
+  """
+  dateOfBirth_count: Int_Filter
+  """
+  ✨ Generated from Field `Obituary`.`dateOfDeath_count` of type `Int!`
+  """
+  dateOfDeath_count: Int_Filter
+  """
+  ✨ Generated from Field `Obituary`.`firstName_count` of type `Int!`
+  """
+  firstName_count: Int_Filter
+  """
+  ✨ Generated from Field `Obituary`.`funeralHomeName_count` of type `Int!`
+  """
+  funeralHomeName_count: Int_Filter
+  """
+  ✨ Generated from Field `Obituary`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Obituary`.`isPublic_count` of type `Int!`
+  """
+  isPublic_count: Int_Filter
+  """
+  ✨ Generated from Field `Obituary`.`lastName_count` of type `Int!`
+  """
+  lastName_count: Int_Filter
+  """
+  ✨ Generated from Field `Obituary`.`maidenName_count` of type `Int!`
+  """
+  maidenName_count: Int_Filter
+  """
+  ✨ Generated from Field `Obituary`.`middleName_count` of type `Int!`
+  """
+  middleName_count: Int_Filter
+  """
+  ✨ Generated from Field `Obituary`.`photoUrl_count` of type `Int!`
+  """
+  photoUrl_count: Int_Filter
+  """
+  ✨ Generated from Field `Obituary`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Obituary`.`dateOfBirth_min` of type `Date`
+  """
+  dateOfBirth_min: Date_Filter
+  """
+  ✨ Generated from Field `Obituary`.`dateOfDeath_min` of type `Date`
+  """
+  dateOfDeath_min: Date_Filter
+  """
+  ✨ Generated from Field `Obituary`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Obituary`.`dateOfBirth_max` of type `Date`
+  """
+  dateOfBirth_max: Date_Filter
+  """
+  ✨ Generated from Field `Obituary`.`dateOfDeath_max` of type `Date`
+  """
+  dateOfDeath_max: Date_Filter
+}
+"""
+✨ Generated key input type for table 'Obituary'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Obituary_Key {
+  """
+  ✨ Generated from Field `Obituary`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Obituary`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Obituary'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Obituary_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Obituary_Filter
+}
+"""
+✨ Generated order input type for table 'Obituary'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Obituary_Order {
+  """
+  ✨ Generated from Field `Obituary`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`creatorId` of type `UUID`
+  """
+  creatorId: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`creator` of type `User`
+  """
+  creator: User_Order
+  """
+  ✨ Generated from Field `Obituary`.`biography` of type `String`
+  """
+  biography: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`dateOfBirth` of type `Date!`
+  """
+  dateOfBirth: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`dateOfDeath` of type `Date!`
+  """
+  dateOfDeath: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`firstName` of type `String!`
+  """
+  firstName: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`funeralHomeName` of type `String`
+  """
+  funeralHomeName: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`isPublic` of type `Boolean!`
+  """
+  isPublic: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`lastName` of type `String!`
+  """
+  lastName: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`maidenName` of type `String`
+  """
+  maidenName: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`middleName` of type `String`
+  """
+  middleName: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`photoUrl` of type `String`
+  """
+  photoUrl: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`biography_count` of type `Int!`
+  """
+  biography_count: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`creatorId_count` of type `Int!`
+  """
+  creatorId_count: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`dateOfBirth_count` of type `Int!`
+  """
+  dateOfBirth_count: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`dateOfDeath_count` of type `Int!`
+  """
+  dateOfDeath_count: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`firstName_count` of type `Int!`
+  """
+  firstName_count: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`funeralHomeName_count` of type `Int!`
+  """
+  funeralHomeName_count: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`isPublic_count` of type `Int!`
+  """
+  isPublic_count: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`lastName_count` of type `Int!`
+  """
+  lastName_count: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`maidenName_count` of type `Int!`
+  """
+  maidenName_count: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`middleName_count` of type `Int!`
+  """
+  middleName_count: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`photoUrl_count` of type `Int!`
+  """
+  photoUrl_count: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`dateOfBirth_min` of type `Date`
+  """
+  dateOfBirth_min: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`dateOfDeath_min` of type `Date`
+  """
+  dateOfDeath_min: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`dateOfBirth_max` of type `Date`
+  """
+  dateOfBirth_max: OrderDirection
+  """
+  ✨ Generated from Field `Obituary`.`dateOfDeath_max` of type `Date`
+  """
+  dateOfDeath_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Service'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Service_Data {
+  """
+  ✨ Generated from Field `Service`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Service`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Service`.`obituaryId` of type `UUID`
+  """
+  obituaryId: UUID
+  """
+  ✨ `_expr` server value variant of `obituaryId` (✨ Generated from Field `Service`.`obituaryId` of type `UUID`)
+  """
+  obituaryId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Service`.`obituary` of type `Obituary`
+  """
+  obituary: Obituary_Key
+  """
+  ✨ Generated from Field `Service`.`address` of type `String!`
+  """
+  address: String
+  """
+  ✨ `_expr` server value variant of `address` (✨ Generated from Field `Service`.`address` of type `String!`)
+  """
+  address_expr: String_Expr
+  """
+  ✨ Generated from Field `Service`.`dateTime` of type `Timestamp!`
+  """
+  dateTime: Timestamp
+  """
+  ✨ `_expr` server value variant of `dateTime` (✨ Generated from Field `Service`.`dateTime` of type `Timestamp!`)
+  """
+  dateTime_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `dateTime` (✨ Generated from Field `Service`.`dateTime` of type `Timestamp!`)
+  """
+  dateTime_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `dateTime` (✨ Generated from Field `Service`.`dateTime` of type `Timestamp!`)
+  """
+  dateTime_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Service`.`description` of type `String`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `Service`.`description` of type `String`)
+  """
+  description_expr: String_Expr
+  """
+  ✨ Generated from Field `Service`.`locationName` of type `String!`
+  """
+  locationName: String
+  """
+  ✨ `_expr` server value variant of `locationName` (✨ Generated from Field `Service`.`locationName` of type `String!`)
+  """
+  locationName_expr: String_Expr
+  """
+  ✨ Generated from Field `Service`.`mapUrl` of type `String`
+  """
+  mapUrl: String
+  """
+  ✨ `_expr` server value variant of `mapUrl` (✨ Generated from Field `Service`.`mapUrl` of type `String`)
+  """
+  mapUrl_expr: String_Expr
+  """
+  ✨ Generated from Field `Service`.`type` of type `String!`
+  """
+  type: String
+  """
+  ✨ `_expr` server value variant of `type` (✨ Generated from Field `Service`.`type` of type `String!`)
+  """
+  type_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'Service'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Service_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Service_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Service_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Service_Filter!]
+  """
+  ✨ Generated from Field `Service`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `Service`.`obituaryId` of type `UUID`
+  """
+  obituaryId: UUID_Filter
+  """
+  ✨ Generated from Field `Service`.`obituary` of type `Obituary`
+  """
+  obituary: Obituary_Filter
+  """
+  ✨ Generated from Field `Service`.`address` of type `String!`
+  """
+  address: String_Filter
+  """
+  ✨ Generated from Field `Service`.`dateTime` of type `Timestamp!`
+  """
+  dateTime: Timestamp_Filter
+  """
+  ✨ Generated from Field `Service`.`description` of type `String`
+  """
+  description: String_Filter
+  """
+  ✨ Generated from Field `Service`.`locationName` of type `String!`
+  """
+  locationName: String_Filter
+  """
+  ✨ Generated from Field `Service`.`mapUrl` of type `String`
+  """
+  mapUrl: String_Filter
+  """
+  ✨ Generated from Field `Service`.`type` of type `String!`
+  """
+  type: String_Filter
+  """
+  ✨ Generated from Field `Service`.`notifications_on_service` of type `[Notification!]!`
+  """
+  notifications_on_service: Notification_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'Service'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Service_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Service_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Service_Filter
+}
+"""
+✨ Generated having input type for table 'Service'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Service_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Service_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Service_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Service_Having!]
+  """
+  ✨ Generated from Field `Service`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Service`.`address_count` of type `Int!`
+  """
+  address_count: Int_Filter
+  """
+  ✨ Generated from Field `Service`.`dateTime_count` of type `Int!`
+  """
+  dateTime_count: Int_Filter
+  """
+  ✨ Generated from Field `Service`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
+  """
+  ✨ Generated from Field `Service`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Service`.`locationName_count` of type `Int!`
+  """
+  locationName_count: Int_Filter
+  """
+  ✨ Generated from Field `Service`.`mapUrl_count` of type `Int!`
+  """
+  mapUrl_count: Int_Filter
+  """
+  ✨ Generated from Field `Service`.`obituaryId_count` of type `Int!`
+  """
+  obituaryId_count: Int_Filter
+  """
+  ✨ Generated from Field `Service`.`type_count` of type `Int!`
+  """
+  type_count: Int_Filter
+  """
+  ✨ Generated from Field `Service`.`dateTime_min` of type `Timestamp`
+  """
+  dateTime_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Service`.`dateTime_max` of type `Timestamp`
+  """
+  dateTime_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Service'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Service_Key {
+  """
+  ✨ Generated from Field `Service`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Service`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Service'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Service_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Service_Filter
+}
+"""
+✨ Generated order input type for table 'Service'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Service_Order {
+  """
+  ✨ Generated from Field `Service`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`obituaryId` of type `UUID`
+  """
+  obituaryId: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`obituary` of type `Obituary`
+  """
+  obituary: Obituary_Order
+  """
+  ✨ Generated from Field `Service`.`address` of type `String!`
+  """
+  address: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`dateTime` of type `Timestamp!`
+  """
+  dateTime: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`description` of type `String`
+  """
+  description: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`locationName` of type `String!`
+  """
+  locationName: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`mapUrl` of type `String`
+  """
+  mapUrl: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`type` of type `String!`
+  """
+  type: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`address_count` of type `Int!`
+  """
+  address_count: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`dateTime_count` of type `Int!`
+  """
+  dateTime_count: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`locationName_count` of type `Int!`
+  """
+  locationName_count: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`mapUrl_count` of type `Int!`
+  """
+  mapUrl_count: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`obituaryId_count` of type `Int!`
+  """
+  obituaryId_count: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`type_count` of type `Int!`
+  """
+  type_count: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`dateTime_min` of type `Timestamp`
+  """
+  dateTime_min: OrderDirection
+  """
+  ✨ Generated from Field `Service`.`dateTime_max` of type `Timestamp`
+  """
+  dateTime_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'User'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input User_Data {
+  """
+  ✨ Generated from Field `User`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `User`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+  """
+  ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `User`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `User`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `User`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `User`.`displayName` of type `String!`
+  """
+  displayName: String
+  """
+  ✨ `_expr` server value variant of `displayName` (✨ Generated from Field `User`.`displayName` of type `String!`)
+  """
+  displayName_expr: String_Expr
+  """
+  ✨ Generated from Field `User`.`email` of type `String!`
+  """
+  email: String
+  """
+  ✨ `_expr` server value variant of `email` (✨ Generated from Field `User`.`email` of type `String!`)
+  """
+  email_expr: String_Expr
+  """
+  ✨ Generated from Field `User`.`phoneNumber` of type `String`
+  """
+  phoneNumber: String
+  """
+  ✨ `_expr` server value variant of `phoneNumber` (✨ Generated from Field `User`.`phoneNumber` of type `String`)
+  """
+  phoneNumber_expr: String_Expr
+  """
+  ✨ Generated from Field `User`.`profilePictureUrl` of type `String`
+  """
+  profilePictureUrl: String
+  """
+  ✨ `_expr` server value variant of `profilePictureUrl` (✨ Generated from Field `User`.`profilePictureUrl` of type `String`)
+  """
+  profilePictureUrl_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'User'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input User_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [User_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: User_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [User_Filter!]
+  """
+  ✨ Generated from Field `User`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `User`.`displayName` of type `String!`
+  """
+  displayName: String_Filter
+  """
+  ✨ Generated from Field `User`.`email` of type `String!`
+  """
+  email: String_Filter
+  """
+  ✨ Generated from Field `User`.`phoneNumber` of type `String`
+  """
+  phoneNumber: String_Filter
+  """
+  ✨ Generated from Field `User`.`profilePictureUrl` of type `String`
+  """
+  profilePictureUrl: String_Filter
+  """
+  ✨ Generated from Field `User`.`invitations_on_invitedUser` of type `[Invitation!]!`
+  """
+  invitations_on_invitedUser: Invitation_ListFilter
+  """
+  ✨ Generated from Field `User`.`notifications_on_recipient` of type `[Notification!]!`
+  """
+  notifications_on_recipient: Notification_ListFilter
+  """
+  ✨ Generated from Field `User`.`obituaries_on_creator` of type `[Obituary!]!`
+  """
+  obituaries_on_creator: Obituary_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'User'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input User_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [User_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: User_Filter
+}
+"""
+✨ Generated having input type for table 'User'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input User_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [User_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: User_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [User_Having!]
+  """
+  ✨ Generated from Field `User`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`displayName_count` of type `Int!`
+  """
+  displayName_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`email_count` of type `Int!`
+  """
+  email_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`phoneNumber_count` of type `Int!`
+  """
+  phoneNumber_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`profilePictureUrl_count` of type `Int!`
+  """
+  profilePictureUrl_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `User`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'User'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input User_Key {
+  """
+  ✨ Generated from Field `User`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `User`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'User'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input User_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: User_Filter
+}
+"""
+✨ Generated order input type for table 'User'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input User_Order {
+  """
+  ✨ Generated from Field `User`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `User`.`displayName` of type `String!`
+  """
+  displayName: OrderDirection
+  """
+  ✨ Generated from Field `User`.`email` of type `String!`
+  """
+  email: OrderDirection
+  """
+  ✨ Generated from Field `User`.`phoneNumber` of type `String`
+  """
+  phoneNumber: OrderDirection
+  """
+  ✨ Generated from Field `User`.`profilePictureUrl` of type `String`
+  """
+  profilePictureUrl: OrderDirection
+  """
+  ✨ Generated from Field `User`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`displayName_count` of type `Int!`
+  """
+  displayName_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`email_count` of type `Int!`
+  """
+  email_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`phoneNumber_count` of type `Int!`
+  """
+  phoneNumber_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`profilePictureUrl_count` of type `Int!`
+  """
+  profilePictureUrl_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+}

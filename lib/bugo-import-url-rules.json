@@ -1,0 +1,16 @@
+{
+  "allowedHosts": [
+    "wooribugo4.com",
+    "www.wooribugo4.com",
+    "modubugo.com",
+    "www.modubugo.com"
+  ],
+  "wooribugo": {
+    "hosts": ["wooribugo4.com", "www.wooribugo4.com"],
+    "pathIncludes": ["/page/funeral/view", "/page/funeral/view.php"]
+  },
+  "modubugo": {
+    "hosts": ["modubugo.com", "www.modubugo.com"],
+    "pathPattern": "^/bugo/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/?$"
+  }
+}

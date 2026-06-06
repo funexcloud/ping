@@ -1,0 +1,562 @@
+extend type Mutation {
+  """
+  ✨ Insert a single `Invitation` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  invitation_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Invitation_Data!
+  ): Invitation_KeyOutput! @fdc_generated(from: "Invitation", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Notification` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  notification_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Notification_Data!
+  ): Notification_KeyOutput! @fdc_generated(from: "Notification", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Obituary` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  obituary_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Obituary_Data!
+  ): Obituary_KeyOutput! @fdc_generated(from: "Obituary", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Service` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  service_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Service_Data!
+  ): Service_KeyOutput! @fdc_generated(from: "Service", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `User` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  user_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: User_Data!
+  ): User_KeyOutput! @fdc_generated(from: "User", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert `Invitation` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  invitation_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Invitation_Data!]!
+  ): [Invitation_KeyOutput!]! @fdc_generated(from: "Invitation", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Notification` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  notification_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Notification_Data!]!
+  ): [Notification_KeyOutput!]! @fdc_generated(from: "Notification", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Obituary` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  obituary_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Obituary_Data!]!
+  ): [Obituary_KeyOutput!]! @fdc_generated(from: "Obituary", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Service` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  service_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Service_Data!]!
+  ): [Service_KeyOutput!]! @fdc_generated(from: "Service", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `User` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  user_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [User_Data!]!
+  ): [User_KeyOutput!]! @fdc_generated(from: "User", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert or update a single `Invitation` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Invitation`.
+  """
+  invitation_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Invitation_Data!
+  ): Invitation_KeyOutput! @fdc_generated(from: "Invitation", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Notification` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Notification`.
+  """
+  notification_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Notification_Data!
+  ): Notification_KeyOutput! @fdc_generated(from: "Notification", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Obituary` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Obituary`.
+  """
+  obituary_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Obituary_Data!
+  ): Obituary_KeyOutput! @fdc_generated(from: "Obituary", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Service` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Service`.
+  """
+  service_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Service_Data!
+  ): Service_KeyOutput! @fdc_generated(from: "Service", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `User` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `User`.
+  """
+  user_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: User_Data!
+  ): User_KeyOutput! @fdc_generated(from: "User", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update `Invitation` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Invitation`.
+  """
+  invitation_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Invitation_Data!]!
+  ): [Invitation_KeyOutput!]! @fdc_generated(from: "Invitation", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Notification` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Notification`.
+  """
+  notification_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Notification_Data!]!
+  ): [Notification_KeyOutput!]! @fdc_generated(from: "Notification", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Obituary` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Obituary`.
+  """
+  obituary_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Obituary_Data!]!
+  ): [Obituary_KeyOutput!]! @fdc_generated(from: "Obituary", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Service` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Service`.
+  """
+  service_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Service_Data!]!
+  ): [Service_KeyOutput!]! @fdc_generated(from: "Service", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `User` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `User`.
+  """
+  user_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [User_Data!]!
+  ): [User_KeyOutput!]! @fdc_generated(from: "User", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Update a single `Invitation` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Invitation` or `null` if not found.
+  """
+  invitation_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Invitation_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Invitation_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Invitation_Data!
+  ): Invitation_KeyOutput @fdc_generated(from: "Invitation", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Notification` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Notification` or `null` if not found.
+  """
+  notification_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Notification_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Notification_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Notification_Data!
+  ): Notification_KeyOutput @fdc_generated(from: "Notification", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Obituary` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Obituary` or `null` if not found.
+  """
+  obituary_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Obituary_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Obituary_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Obituary_Data!
+  ): Obituary_KeyOutput @fdc_generated(from: "Obituary", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Service` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Service` or `null` if not found.
+  """
+  service_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Service_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Service_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Service_Data!
+  ): Service_KeyOutput @fdc_generated(from: "Service", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `User` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `User` or `null` if not found.
+  """
+  user_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: User_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: User_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: User_Data!
+  ): User_KeyOutput @fdc_generated(from: "User", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update `Invitation` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  invitation_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Invitation_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Invitation_Data!
+  ): Int! @fdc_generated(from: "Invitation", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Notification` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  notification_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Notification_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Notification_Data!
+  ): Int! @fdc_generated(from: "Notification", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Obituary` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  obituary_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Obituary_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Obituary_Data!
+  ): Int! @fdc_generated(from: "Obituary", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Service` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  service_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Service_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Service_Data!
+  ): Int! @fdc_generated(from: "Service", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `User` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  user_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: User_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: User_Data!
+  ): Int! @fdc_generated(from: "User", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Delete a single `Invitation` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  invitation_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Invitation_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Invitation_FirstRow
+  ): Invitation_KeyOutput @fdc_generated(from: "Invitation", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Notification` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  notification_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Notification_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Notification_FirstRow
+  ): Notification_KeyOutput @fdc_generated(from: "Notification", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Obituary` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  obituary_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Obituary_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Obituary_FirstRow
+  ): Obituary_KeyOutput @fdc_generated(from: "Obituary", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Service` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  service_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Service_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Service_FirstRow
+  ): Service_KeyOutput @fdc_generated(from: "Service", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `User` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  user_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: User_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: User_FirstRow
+  ): User_KeyOutput @fdc_generated(from: "User", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete `Invitation` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  invitation_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Invitation_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Invitation", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Notification` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  notification_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Notification_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Notification", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Obituary` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  obituary_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Obituary_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Obituary", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Service` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  service_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Service_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Service", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `User` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  user_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: User_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "User", purpose: DELETE_MULTIPLE)
+}

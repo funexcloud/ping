@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# GEO: AI·검색 보조 (https://llmstxt.org)
+# LLMs: https://ping.funexcloud.com/llms.txt
+
+Sitemap: https://ping.funexcloud.com/sitemap.xml

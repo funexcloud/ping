@@ -1,0 +1,57 @@
+/* obituary-guest-verify.html — ping-ui 토큰만 사용 */
+.touch-manipulation-guest {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#guest-app-shell .ping-top-nav--blend {
+  background: var(--ping-surface);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+#guest-app-shell .ping-main,
+#guest-app-shell .ping-stack,
+#guest-block-info {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+#guest-block-info > .guest-verify-field {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.guest-otp-grid .guest-otp-digit {
+  box-sizing: border-box;
+  border: var(--ping-panel-border-width) solid var(--ping-panel-border);
+  border-radius: var(--ping-radius-md, 10px);
+  background: var(--ping-field-fill);
+  color: var(--ping-ui-text);
+}
+
+#guest-app-shell #guestSendSmsBtn {
+  border: none !important;
+  outline: none;
+  box-shadow: var(--shadow-ping-primary);
+}
+
+.guest-otp-grid {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  margin-top: 4px;
+}
+.guest-otp-grid .guest-otp-digit {
+  flex: 1;
+  min-width: 0;
+  max-width: 2.75rem;
+  aspect-ratio: 1;
+  text-align: center;
+  font-size: 1.125rem;
+  font-weight: 700;
+  padding-left: 0;
+  padding-right: 0;
+}

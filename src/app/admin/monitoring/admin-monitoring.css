@@ -1,0 +1,128 @@
+.admin-monitoring-page {
+  display: flex;
+  min-height: 100dvh;
+  width: 100%;
+  background: #020617;
+  color: #e2e8f0;
+  font-family: Pretendard, system-ui, sans-serif;
+}
+
+.admin-monitoring-sidebar {
+  display: flex;
+  width: 260px;
+  flex-shrink: 0;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+  padding: 1.5rem 1rem;
+}
+
+.admin-monitoring-sidebar__brand {
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.admin-monitoring-sidebar__brand small {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.admin-monitoring-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.admin-monitoring-nav__link,
+.admin-monitoring-nav__button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: 0.625rem;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.admin-monitoring-nav__link {
+  color: #cbd5e1;
+}
+
+.admin-monitoring-nav__link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.admin-monitoring-nav__link--active {
+  background: rgba(0, 151, 169, 0.18);
+  color: #7dd3ea;
+}
+
+.admin-monitoring-nav__button {
+  border: none;
+  background: transparent;
+  color: #cbd5e1;
+  cursor: pointer;
+  text-align: left;
+}
+
+.admin-monitoring-nav__button:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.admin-monitoring-nav__spacer {
+  flex: 1;
+  min-height: 1rem;
+}
+
+.admin-monitoring-main {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.admin-monitoring-main__inner {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 2.5rem;
+}
+
+.admin-monitoring-table-wrap {
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.admin-monitoring-table {
+  width: 100%;
+  min-width: 960px;
+  border-collapse: collapse;
+}
+
+.admin-monitoring-table th {
+  white-space: nowrap;
+}
+
+.admin-monitoring-table td {
+  vertical-align: middle;
+}
+
+.admin-monitoring-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+}

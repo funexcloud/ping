@@ -1,0 +1,72 @@
+/* 전역 상단 바 — PING 로고(홈 링크) + 우측 햄버거 (`/start` bulk-page-header 통일) */
+
+.bulk-flow-logo-bar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: env(safe-area-inset-top, 0px) 20px 0.875rem;
+  background: var(--ping-bg);
+  box-shadow: none;
+}
+
+.bulk-flow-logo-bar__home {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bulk-flow-logo-bar__img {
+  height: auto;
+  max-height: 64px;
+  width: auto;
+  max-width: min(280px, 85vw);
+  object-fit: contain;
+  display: block;
+}
+
+/* 햄버거 버튼 — `/start` bulk-entry.css 에서 이전 (전역 헤더 공용) */
+.hamburger-menu {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  gap: 5px;
+  padding: 4px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+  border: none;
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+
+.hamburger-menu:hover {
+  background-color: var(--ping-bg);
+}
+
+.hamburger-line {
+  width: 20px;
+  height: 2px;
+  background-color: var(--ping-ui-text-sub);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}

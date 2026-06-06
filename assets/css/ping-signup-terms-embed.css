@@ -1,0 +1,25 @@
+/* obituary-signup-terms.html — 본문 타이포는 ping-ui.css
+   (.ping-law-scroll.ping-doc-article-embed) 와 동기 */
+.ping-stack.ping-stack--relaxed.ping-signup-terms-legal-gap {
+    margin-bottom: 1.25rem;
+}
+
+.ping-law-loading {
+    font-size: 11px;
+    color: var(--ping-muted);
+    margin: 0;
+}
+
+.ping-signup-terms-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+}
+
+.ping-signup-terms-actions .ping-footer-action {
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: center;
+}

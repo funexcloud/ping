@@ -1,0 +1,181 @@
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 결제 금액 확인 — 네비·진행바·본문과 동일한 흰 캔버스 (`ping-shell`) */
+html.ping-ui .ping-shell > .ping-top-nav {
+  background: var(--ping-surface);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html.ping-ui .ping-shell > .bulk-flow-progress {
+  background: var(--ping-surface);
+}
+
+/* 테두리·라운드: `ping-bordered-panel` (ping-ui.css) */
+.review-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.review-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--ping-ui-text-sub);
+}
+
+.review-row strong {
+  color: var(--ping-ui-text);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.review-row .amount {
+  font-size: 17px;
+  color: var(--ping-primary);
+  font-weight: 800;
+}
+
+.review-row.total {
+  margin-top: 4px;
+  padding-top: 0;
+  border-top: none;
+}
+
+.review-row.total strong {
+  font-size: 16px;
+}
+
+.review-row.total .amount {
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+
+.review-row--url {
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.review-row--url .review-row__label {
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.review-url-wrap {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.review-url {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ping-ui-text-sub);
+  word-break: break-all;
+  text-align: right;
+}
+
+.review-url-copy-btn {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: -4px -4px 0 0;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: var(--ping-field-fill);
+  color: var(--ping-ui-text-sub);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.review-url-copy-btn:hover {
+  background: var(--ping-tint-bg);
+  color: var(--ping-primary);
+}
+
+.review-url-copy-btn:active {
+  opacity: 0.9;
+}
+
+.review-url-copy-btn .fa-check {
+  color: var(--ping-primary);
+}
+
+.review-preview-panel {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.review-preview {
+  margin: 0;
+  padding: 14px 16px;
+  background: var(--ping-tint-bg);
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ping-ui-text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.review-preview-label {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ping-ui-text);
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+}
+
+.review-foot-note {
+  font-size: 11px;
+  color: var(--ping-caption);
+  text-align: right;
+  margin: 6px 2px 0;
+}
+
+.review-cta-row {
+  display: flex;
+  margin-top: 28px;
+}
+
+.review-cta-row .ping-btn-primary {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.review-summary-lead {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ping-ui-text);
+}

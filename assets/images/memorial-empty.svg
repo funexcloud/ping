@@ -1,0 +1,37 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 배경 원 -->
+  <circle cx="100" cy="100" r="90" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="2"/>
+  
+  <!-- 사진 프레임 -->
+  <rect x="40" y="50" width="120" height="90" rx="4" fill="white" stroke="#D1D6DB" stroke-width="2"/>
+  
+  <!-- 사진 내부 패턴 (산과 하늘) -->
+  <rect x="45" y="55" width="110" height="80" rx="2" fill="#E6F2FF"/>
+  
+  <!-- 산 -->
+  <path d="M45 135 L75 105 L100 120 L125 100 L155 130 L155 135 L45 135 Z" fill="#B0B8C1" opacity="0.3"/>
+  
+  <!-- 구름 -->
+  <circle cx="80" cy="75" r="8" fill="#D1D6DB" opacity="0.4"/>
+  <circle cx="90" cy="75" r="10" fill="#D1D6DB" opacity="0.4"/>
+  <circle cx="100" cy="75" r="8" fill="#D1D6DB" opacity="0.4"/>
+  
+  <circle cx="120" cy="85" r="6" fill="#D1D6DB" opacity="0.3"/>
+  <circle cx="128" cy="85" r="8" fill="#D1D6DB" opacity="0.3"/>
+  <circle cx="136" cy="85" r="6" fill="#D1D6DB" opacity="0.3"/>
+  
+  <!-- 카메라 아이콘 (하단) -->
+  <g transform="translate(100, 160)">
+    <rect x="-20" y="-8" width="40" height="16" rx="2" fill="#8B95A1" opacity="0.5"/>
+    <circle cx="0" cy="0" r="12" fill="none" stroke="#8B95A1" stroke-width="2" opacity="0.5"/>
+    <circle cx="0" cy="0" r="6" fill="#8B95A1" opacity="0.3"/>
+  </g>
+  
+  <!-- 플러스 아이콘 (우측 상단) -->
+  <g transform="translate(150, 50)">
+    <circle cx="0" cy="0" r="12" fill="#0064FF" opacity="0.1"/>
+    <line x1="0" y1="-6" x2="0" y2="6" stroke="#0064FF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="-6" y1="0" x2="6" y2="0" stroke="#0064FF" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>
+

@@ -1,0 +1,24 @@
+# PING 로컬 dev — `docker compose up` (Express 3000 + Next 3002)
+# 프로덕션 UI: Vercel · API: Firebase Functions / PING_BACKEND_API_ORIGIN
+services:
+  ping-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+      - "3002:3002"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PORT: "3000"
+      NEXT_DEV_PORT: "3002"
+      PING_DEV_LIGHT: "1"
+    volumes:
+      - .:/app
+      - ping_node_modules:/app/node_modules
+    init: true
+
+volumes:
+  ping_node_modules:

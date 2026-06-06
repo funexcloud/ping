@@ -1,0 +1,35 @@
+# 캐시 방지 설정 - 간헐적 문제 해결
+# 닷홈 호스팅에서 HTML, CSS, JS 파일의 캐시를 완전히 비활성화
+
+# HTML 파일 캐시 방지
+<FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</FilesMatch>
+
+# CSS 파일 캐시 방지 (개발 중)
+<FilesMatch "\.css$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</FilesMatch>
+
+# JavaScript 파일 캐시 방지 (개발 중)
+<FilesMatch "\.js$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</FilesMatch>
+
+# ETag 비활성화 (캐시 문제 방지)
+FileETag None
+
+# 모든 요청에 대해 캐시 방지 (필요시)
+<IfModule mod_headers.c>
+    Header unset ETag
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</IfModule>
+

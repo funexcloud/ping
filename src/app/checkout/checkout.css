@@ -1,0 +1,281 @@
+/* 결제 페이지 — 레거시 checkout.html 인라인 스타일 (토ss 위젯 z-index 등) */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 전역 레이아웃: 로고바 아래 흰 열 + 하단 푸터까지 연결 */
+html.ping-ui .ping-global-root .checkout-shell {
+  margin-top: 0;
+  margin-bottom: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  flex: 1;
+  min-height: 0;
+  max-width: 100%;
+}
+
+html.ping-ui .ping-global-root .checkout-shell > .ping-top-nav {
+  background: var(--ping-surface);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html.ping-ui .ping-global-root .checkout-shell > .bulk-flow-progress {
+  background: var(--ping-surface);
+}
+
+@media (min-width: 480px) {
+  html.ping-ui .ping-global-root .checkout-shell {
+    margin-top: 0;
+    margin-bottom: 0;
+    border-radius: 0;
+  }
+}
+
+html.ping-ui .checkout-pay-bar {
+  z-index: 40;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+html.ping-ui body.ping-ui-widget-phase .checkout-pay-bar {
+  z-index: 8;
+}
+
+html.ping-ui #checkout-main {
+  min-width: 0;
+  max-width: 100%;
+}
+
+html.ping-ui .checkout-summary-panel {
+  min-width: 0;
+  max-width: 100%;
+}
+
+html.ping-ui .checkout-points-balance-line {
+  word-break: keep-all;
+}
+
+html.ping-ui .checkout-points-input-wrap {
+  box-sizing: border-box;
+}
+
+html.ping-ui #checkout-points-box .checkout-points-input {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+html.ping-ui .checkout-error-panel:not(.hidden) {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+html.ping-ui #ping-ui-widget-wrap,
+html.ping-ui #ping-payment-methods,
+html.ping-ui #ping-payment-agreement {
+  overflow: visible;
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  min-width: 0;
+}
+
+html.ping-ui #ping-payment-methods iframe,
+html.ping-ui #ping-payment-agreement iframe {
+  max-width: 100%;
+}
+/* 결제 수단 — 세그먼트 탭 */
+html.ping-ui .checkout-pay-method-tabs {
+  display: flex;
+  min-width: 0;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 1rem;
+  background: #f2f4f6;
+}
+
+html.ping-ui .checkout-pay-method-tab {
+  display: inline-flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: transparent;
+  padding: 0.625rem 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #6b7280;
+  line-height: 1.25;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+html.ping-ui .checkout-pay-method-tab__icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  opacity: 0.55;
+  transition: opacity 0.2s ease;
+}
+
+html.ping-ui .checkout-pay-method-tab:hover:not(.is-active) {
+  color: #374151;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+html.ping-ui .checkout-pay-method-tab.is-active {
+  background: #fff;
+  color: #0336ff;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+html.ping-ui .checkout-pay-method-tab.is-active .checkout-pay-method-tab__icon {
+  opacity: 1;
+}
+
+html.ping-ui .checkout-pay-method-tab:active {
+  transform: scale(0.98);
+}
+
+html.ping-ui .checkout-pay-method-tab:focus-visible {
+  outline: 2px solid rgba(3, 54, 255, 0.35);
+  outline-offset: 1px;
+  box-shadow: none;
+}
+
+html.ping-ui .checkout-pay-method-tab.is-active:focus-visible {
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+/* 회원 로그인 후 checkout 최초 1회 웰컴 보너스 시트 */
+html.ping-ui .checkout-welcome-sheet-root {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+html.ping-ui .checkout-welcome-sheet-root.is-open,
+html.ping-ui .checkout-welcome-sheet-root.is-leaving {
+  pointer-events: auto;
+}
+
+html.ping-ui .checkout-welcome-sheet-overlay {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(15, 23, 42, 0.5);
+  opacity: 0;
+  transition: opacity 0.32s ease;
+  cursor: pointer;
+}
+
+html.ping-ui .checkout-welcome-sheet-root.is-open .checkout-welcome-sheet-overlay,
+html.ping-ui .checkout-welcome-sheet-root.is-leaving .checkout-welcome-sheet-overlay {
+  opacity: 1;
+}
+
+html.ping-ui .checkout-welcome-sheet-panel {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 10px 22px calc(22px + env(safe-area-inset-bottom, 0));
+  border-radius: 20px 20px 0 0;
+  background: #1c1c1e;
+  color: #fff;
+  box-shadow: 0 -12px 48px rgba(0, 0, 0, 0.35);
+  transform: translateY(100%);
+  transition: transform 0.38s cubic-bezier(0.25, 0.82, 0.25, 1);
+  font-family: var(--font-ping-ui), Pretendard, -apple-system, system-ui, sans-serif;
+  box-sizing: border-box;
+}
+
+html.ping-ui .checkout-welcome-sheet-root.is-open .checkout-welcome-sheet-panel {
+  transform: translateY(0);
+}
+
+html.ping-ui .checkout-welcome-sheet-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: #3a3a3c;
+  margin: 4px auto 16px;
+}
+
+html.ping-ui .checkout-welcome-sheet-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #10b981;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+html.ping-ui .checkout-welcome-sheet-title {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: -0.035em;
+}
+
+html.ping-ui .checkout-welcome-sheet-points {
+  color: #60a5fa;
+}
+
+html.ping-ui .checkout-welcome-sheet-sub {
+  margin-top: 10px !important;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #8e8e93;
+  font-weight: 500;
+}
+
+html.ping-ui .checkout-welcome-sheet-gift {
+  margin-top: 18px !important;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: #fff;
+  text-align: center;
+}
+
+html.ping-ui .checkout-welcome-sheet-cta {
+  margin-top: 20px;
+}
+
+html.ping-ui .checkout-bank-copy-btn {
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background: #fff;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+}
+

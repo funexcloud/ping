@@ -1,0 +1,26 @@
+---
+description: Ping 프로젝트의 핵심 비즈니스 모델인 '턴키(Turnkey) SaaS' 아키텍처 및 멀티테넌시 개발 원칙
+globs: *.js, *.html, firestore.rules
+---
+
+# Ping 프로젝트 아키텍처 원칙: Single Codebase + Wildcard DNS Turnkey SaaS
+
+이 프로젝트는 장례식장 및 장례지도사를 위한 **대량발송 특화 B2B SaaS**입니다.
+가장 중요한 아키텍처 방향성은 **"실제 사이트 소스코드를 복제하지 않고, 와일드카드 도메인을 통해 논리적으로 복제된 것처럼 턴키(Turnkey)로 제공한다"**는 것입니다.
+
+## 1. 멀티테넌시 작동 원리 (절대 잊지 말 것)
+- **Single Codebase**: 소스 코드는 단 1벌만 유지보수합니다. 서버를 물리적으로 여러 개 띄우지 않습니다.
+- **Wildcard Subdomain**: `*.funexcloud.com` 접속은 모두 동일한 Express/Firebase 서버로 들어옵니다.
+- **Tenant Routing**: `server.js`의 라우팅 미들웨어가 접속한 서브도메인을 추출하여 `req.tenantId`로 식별합니다. (예: `ulsan.funexcloud.com` -> tenantId: `ulsan`)
+- **Data Isolation**: 프론트엔드와 백엔드는 `tenantId`를 사용하여 Firestore의 `/workspaces/{tenantId}` 하위 데이터만 격리하여 보여줍니다.
+
+## 2. SaaS 디플로이(생성) 플로우
+1. **랜딩 페이지 (Root Domain)**: 예약된 도메인(www, 빈 서브도메인 등)으로 접속 시 메인 SaaS 랜딩 페이지 노출.
+2. **워크스페이스 생성**: 고객이 원하는 영문 주소(예: `agency_kim`)를 입력하고 "생성하기" 버튼 클릭.
+3. **API 처리**: 서버는 물리적 컨테이너를 띄우는 것이 아니라, **단순히 Firestore `/workspaces/agency_kim` 문서를 하나 생성**하고 기본 설정값(settings)과 크레딧 0을 부여함.
+4. **즉시 사용**: 고객은 즉시 `agency_kim.funexcloud.com`으로 접속하여 독립된 사이트처럼 로그인하고 대량문자 서비스를 이용함.
+
+## 3. 개발 시 주의사항
+- **절대 로컬 JSON에 테넌트별 데이터를 혼합하지 말 것**. 모든 고객 데이터(명단, 발송내역 등)는 Firestore의 `/workspaces/{tenantId}` 하위 컬렉션에 철저히 분리 저장해야 합니다.
+- 랜딩 페이지와 테넌트 페이지의 뷰(View)를 분리하여 제공해야 합니다.
+- 프론트엔드 API 호출 시 항상 현재 브라우저의 서브도메인 기반으로 `workspaceId`를 식별하고 토큰을 검증해야 합니다.

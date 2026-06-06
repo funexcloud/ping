@@ -1,0 +1,231 @@
+/* obituary-form.html — 부고 작성 폼 (ping-ui 본문과 별도 토큰 #0097A9) */
+.form-container {
+  max-width: 480px;
+  margin: 0 auto;
+  background: hsl(var(--card));
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 90px;
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
+  border: 1px solid hsl(var(--border));
+}
+
+@media (max-width: 479px) {
+  .form-container {
+    border-left: none;
+    border-right: none;
+  }
+}
+
+.input-outline {
+  width: 100%;
+  background: transparent;
+  outline: none;
+  font-size: 0.95rem;
+  color: hsl(var(--foreground));
+  padding: 12px 14px;
+  border: 1px solid hsl(var(--input));
+  border-radius: var(--radius);
+  transition: all 0.2s;
+}
+.input-outline::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+.input-outline:focus:not(:focus-visible) {
+  border-color: hsl(var(--input));
+  box-shadow: none;
+  background-color: transparent;
+}
+.input-outline:focus-visible {
+  border-color: #0097a9;
+  box-shadow: 0 0 0 1px #0097a9;
+  background-color: hsl(var(--card));
+}
+
+.select-outline {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  width: 100%;
+  outline: none;
+  cursor: pointer;
+  color: hsl(var(--foreground));
+  font-size: 0.95rem;
+  padding: 12px 14px;
+  padding-right: 32px;
+  border: 1px solid hsl(var(--input));
+  border-radius: var(--radius);
+  transition: all 0.2s;
+}
+.select-outline:focus:not(:focus-visible) {
+  border-color: hsl(var(--input));
+  box-shadow: none;
+  background-color: transparent;
+}
+.select-outline:focus-visible {
+  border-color: #0097a9;
+  box-shadow: 0 0 0 1px #0097a9;
+  background-color: hsl(var(--card));
+}
+
+.label-text {
+  font-size: 0.8rem;
+  color: #0097a9;
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.divider {
+  height: 8px;
+  background-color: hsl(var(--muted));
+  margin: 28px 0;
+  border-top: 1px solid hsl(var(--border));
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.ping-cal-pop {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  width: min(288px, calc(100vw - 24px));
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow:
+    0 14px 44px rgba(65, 39, 59, 0.14),
+    0 6px 16px rgba(0, 0, 0, 0.07);
+  font-family: var(--font-ping-ui), "Pretendard", sans-serif;
+  overflow: hidden;
+}
+.ping-cal-pop.ping-cal-open {
+  display: block;
+}
+.ping-cal-head {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  background: linear-gradient(135deg, #0097a9 0%, #0b7d8c 100%);
+  color: #fff;
+  padding: 10px 6px;
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+.ping-cal-head button {
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.ping-cal-head button:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+.ping-cal-title {
+  text-align: center;
+  user-select: none;
+}
+.ping-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 6px 0;
+}
+.ping-cal-weekdays span {
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #64748b;
+}
+.ping-cal-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  padding: 8px 6px 10px;
+}
+.ping-cal-day {
+  border: none;
+  background: transparent;
+  border-radius: 9px;
+  padding: 8px 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  font-family: inherit;
+}
+.ping-cal-day:hover:not(:disabled) {
+  background: rgba(0, 151, 169, 0.12);
+}
+.ping-cal-day--muted {
+  color: #cbd5e1;
+  font-weight: 500;
+}
+.ping-cal-day--today {
+  box-shadow: inset 0 0 0 1px #0097a9;
+  color: #0097a9;
+}
+.ping-cal-day--selected {
+  background: #0097a9 !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(0, 151, 169, 0.35);
+}
+.ping-cal-day--sun {
+  color: #e11d48;
+}
+.ping-cal-day--sat {
+  color: #2563eb;
+}
+.ping-cal-day--muted.ping-cal-day--sun,
+.ping-cal-day--muted.ping-cal-day--sat {
+  color: #cbd5e1;
+}
+
+.input-emphasis {
+  border-color: #0097a9 !important;
+  box-shadow: 0 0 0 1px rgba(0, 151, 169, 0.28) !important;
+  background: #fff !important;
+}
+.input-muted {
+  background-color: #f8fafc !important;
+  border-color: transparent !important;
+}
+
+.chk-obituary {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  background: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    border-color 0.12s ease,
+    border-width 0.12s ease;
+  margin: 0;
+}
+.chk-obituary:checked {
+  border-color: #0097a9;
+  border-width: 5px;
+  background: #fff;
+}
+.chk-obituary:focus-visible {
+  outline: 2px solid rgba(0, 151, 169, 0.35);
+  outline-offset: 2px;
+}
+
+.ob-form-touch {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}

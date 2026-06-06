@@ -1,0 +1,50 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 유틸리티 함수: 사용자가 해당 워크스페이스의 멤버인지 확인
+    function getUserRole(workspaceId) {
+      return request.auth.token.workspaceRoles[workspaceId];
+    }
+    
+    match /workspaces/{workspaceId} {
+      // 1. 워크스페이스 기본 정보 및 잔여 크레딧 읽기
+      // 클라이언트에서 크레딧이나 발신번호를 임의로 조작할 수 없도록 write 제한
+      allow read: if getUserRole(workspaceId) != null;
+      allow write: if false; 
+      
+      // 2. 주소록 (연락처 명단)
+      // 소속 멤버는 자유롭게 명단을 업로드/수정 가능
+      match /address_books/{bookId} {
+        allow read, write: if getUserRole(workspaceId) != null;
+      }
+      
+      // 3. 발송 내역 (캠페인)
+      // 클라이언트는 조회만 가능. 실제 발송 등록과 상태 업데이트는 백엔드(서버)에서 Admin SDK로만 수행.
+      match /campaigns/{campaignId} {
+        allow read: if getUserRole(workspaceId) != null;
+        allow write: if false;
+      }
+
+      // 4. 포인트 충전/차감 내역 장부
+      // 클라이언트 임의 조작 방지. 결제 완료 후 서버에서만 기록.
+      match /credit_ledgers/{ledgerId} {
+        allow read: if getUserRole(workspaceId) != null;
+        allow write: if false; 
+      }
+      
+      // 5. 부고장 데이터
+      // 보안을 위해 퍼블릭(전체 공개) 읽기를 차단합니다. 
+      // 워크스페이스 멤버만 접근 가능하도록 닫아둡니다.
+      match /obituaries/{obituaryId} {
+        allow read, write: if getUserRole(workspaceId) != null;
+      }
+    }
+    
+    // 글로벌 시스템 설정 등 기본 차단
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

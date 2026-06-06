@@ -1,0 +1,441 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "functions": {
+    "source": "."
+  },
+  "hosting": {
+    "public": ".",
+    "predeploy": [
+      "npm run sync:static-for-next"
+    ],
+    "redirects": [
+      {
+        "source": "/send/review",
+        "destination": "/send/payments",
+        "type": 302
+      },
+      {
+        "source": "/send/review/",
+        "destination": "/send/payments",
+        "type": 302
+      },
+      {
+        "source": "/obituary-entry.html",
+        "destination": "/login",
+        "type": 301
+      },
+      {
+        "source": "/obituary-entry.html/",
+        "destination": "/login",
+        "type": 301
+      },
+      {
+        "source": "/obituary/obituary-entry.html",
+        "destination": "/login",
+        "type": 301
+      },
+      {
+        "source": "/obituary/obituary-entry.html/",
+        "destination": "/login",
+        "type": 301
+      },
+      {
+        "source": "/login.html",
+        "destination": "/login",
+        "type": 301
+      },
+      {
+        "source": "/login.html/",
+        "destination": "/login",
+        "type": 301
+      },
+      {
+        "source": "/terms-of-service.html",
+        "destination": "/legal/terms-of-service",
+        "type": 301
+      },
+      {
+        "source": "/terms-of-service.html/",
+        "destination": "/legal/terms-of-service",
+        "type": 301
+      },
+      {
+        "source": "/privacy-policy.html",
+        "destination": "/legal/privacy-policy",
+        "type": 301
+      },
+      {
+        "source": "/privacy-policy.html/",
+        "destination": "/legal/privacy-policy",
+        "type": 301
+      },
+      {
+        "source": "/refund-policy.html",
+        "destination": "/legal/refund-policy",
+        "type": 301
+      },
+      {
+        "source": "/refund-policy.html/",
+        "destination": "/legal/refund-policy",
+        "type": 301
+      },
+      {
+        "source": "/copyright.html",
+        "destination": "/legal/copyright",
+        "type": 301
+      },
+      {
+        "source": "/copyright.html/",
+        "destination": "/legal/copyright",
+        "type": 301
+      },
+      {
+        "source": "/service-payment-guide.html",
+        "destination": "/legal/service-payment-guide",
+        "type": 301
+      },
+      {
+        "source": "/service-payment-guide.html/",
+        "destination": "/legal/service-payment-guide",
+        "type": 301
+      },
+      {
+        "source": "/legal/terms-of-service.html",
+        "destination": "/legal/terms-of-service",
+        "type": 301
+      },
+      {
+        "source": "/legal/terms-of-service.html/",
+        "destination": "/legal/terms-of-service",
+        "type": 301
+      },
+      {
+        "source": "/legal/privacy-policy.html",
+        "destination": "/legal/privacy-policy",
+        "type": 301
+      },
+      {
+        "source": "/legal/privacy-policy.html/",
+        "destination": "/legal/privacy-policy",
+        "type": 301
+      },
+      {
+        "source": "/legal/refund-policy.html",
+        "destination": "/legal/refund-policy",
+        "type": 301
+      },
+      {
+        "source": "/legal/refund-policy.html/",
+        "destination": "/legal/refund-policy",
+        "type": 301
+      },
+      {
+        "source": "/legal/copyright.html",
+        "destination": "/legal/copyright",
+        "type": 301
+      },
+      {
+        "source": "/legal/copyright.html/",
+        "destination": "/legal/copyright",
+        "type": 301
+      },
+      {
+        "source": "/legal/service-payment-guide.html",
+        "destination": "/legal/service-payment-guide",
+        "type": 301
+      },
+      {
+        "source": "/legal/service-payment-guide.html/",
+        "destination": "/legal/service-payment-guide",
+        "type": 301
+      },
+      {
+        "source": "/index.html",
+        "destination": "/start",
+        "type": 301
+      },
+      {
+        "source": "/index",
+        "destination": "/start",
+        "type": 301
+      },
+      {
+        "source": "/overview.html",
+        "destination": "/products/ping",
+        "type": 301
+      },
+      {
+        "source": "/overview.html/",
+        "destination": "/products/ping",
+        "type": 301
+      },
+      {
+        "source": "/overview",
+        "destination": "/products/ping",
+        "type": 301
+      },
+      {
+        "source": "/overview/",
+        "destination": "/products/ping",
+        "type": 301
+      },
+      {
+        "source": "/customer-center.html",
+        "destination": "/customer-center",
+        "type": 301
+      },
+      {
+        "source": "/customer-center.html/",
+        "destination": "/customer-center",
+        "type": 301
+      },
+      {
+        "source": "/partnership.html",
+        "destination": "/partnership",
+        "type": 301
+      },
+      {
+        "source": "/partnership.html/",
+        "destination": "/partnership",
+        "type": 301
+      },
+      {
+        "source": "/pricing.html",
+        "destination": "/pricing",
+        "type": 301
+      },
+      {
+        "source": "/pricing.html/",
+        "destination": "/pricing",
+        "type": 301
+      },
+      {
+        "source": "/inquiry-board.html",
+        "destination": "/inquiry-board",
+        "type": 301
+      },
+      {
+        "source": "/inquiry-board.html/",
+        "destination": "/inquiry-board",
+        "type": 301
+      },
+      {
+        "source": "/tech-blog.html",
+        "destination": "/tech-blog",
+        "type": 301
+      },
+      {
+        "source": "/tech-blog.html/",
+        "destination": "/tech-blog",
+        "type": 301
+      },
+      {
+        "source": "/guide-naver-contacts.html",
+        "destination": "/guide/naver-contacts",
+        "type": 301
+      },
+      {
+        "source": "/guide-naver-contacts.html/",
+        "destination": "/guide/naver-contacts",
+        "type": 301
+      },
+      {
+        "source": "/checkout.html",
+        "destination": "/checkout",
+        "type": 301
+      },
+      {
+        "source": "/checkout.html/",
+        "destination": "/checkout",
+        "type": 301
+      },
+      {
+        "source": "/payment-success.html",
+        "destination": "/payment-success",
+        "type": 301
+      },
+      {
+        "source": "/payment-success.html/",
+        "destination": "/payment-success",
+        "type": 301
+      },
+      {
+        "source": "/send/url.html",
+        "destination": "/send/url",
+        "type": 301
+      },
+      {
+        "source": "/send/url.html/",
+        "destination": "/send/url",
+        "type": 301
+      },
+      {
+        "source": "/send/payments.html",
+        "destination": "/send/payments",
+        "type": 301
+      },
+      {
+        "source": "/send/payments.html/",
+        "destination": "/send/payments",
+        "type": 301
+      },
+      {
+        "source": "/obituary-member-login.html",
+        "destination": "/member-login",
+        "type": 301
+      },
+      {
+        "source": "/obituary-member-login.html/",
+        "destination": "/member-login",
+        "type": 301
+      },
+      {
+        "source": "/obituary/obituary-member-login.html",
+        "destination": "/member-login",
+        "type": 301
+      },
+      {
+        "source": "/obituary/obituary-member-login.html/",
+        "destination": "/member-login",
+        "type": 301
+      },
+      { "source": "/mourner-info.html", "destination": "/mourner-info", "type": 301 },
+      { "source": "/mourner-info.html/", "destination": "/mourner-info", "type": 301 },
+      { "source": "/obituary-create.html", "destination": "/obituary-create", "type": 301 },
+      { "source": "/obituary-form.html", "destination": "/obituary-form", "type": 301 },
+      { "source": "/obituary-signup-terms.html", "destination": "/obituary-signup-terms", "type": 301 },
+      { "source": "/obituary-signup-register.html", "destination": "/obituary-signup-register", "type": 301 },
+      { "source": "/obituary-verify-email.html", "destination": "/obituary-verify-email", "type": 301 },
+      { "source": "/obituary-guest-verify.html", "destination": "/obituary-guest-verify", "type": 301 },
+      { "source": "/obituary-send.html", "destination": "/obituary/send", "type": 301 },
+      { "source": "/obituary-sales.html", "destination": "/obituary/sales", "type": 301 },
+      { "source": "/obituary-mortuary.html", "destination": "/obituary/mortuary", "type": 301 },
+      { "source": "/obituary-review.html", "destination": "/obituary/review", "type": 301 },
+      { "source": "/obituary-public.html", "destination": "/obituary/public", "type": 301 },
+      { "source": "/obituary/obituary-send.html", "destination": "/obituary/send", "type": 301 },
+      { "source": "/obituary/obituary-sales.html", "destination": "/obituary/sales", "type": 301 },
+      { "source": "/obituary/obituary-mortuary.html", "destination": "/obituary/mortuary", "type": 301 },
+      { "source": "/obituary/obituary-review.html", "destination": "/obituary/review", "type": 301 },
+      { "source": "/obituary/obituary-public.html", "destination": "/obituary/public", "type": 301 },
+      { "source": "/mypage.html", "destination": "/mypage/points", "type": 301 },
+      { "source": "/memorial-auth.html", "destination": "/memorial/auth", "type": 301 },
+      { "source": "/memorial-list.html", "destination": "/memorial/list", "type": 301 },
+      { "source": "/memorial-hall.html", "destination": "/memorial/hall", "type": 301 },
+      { "source": "/admin-auth.html", "destination": "/admin/auth", "type": 301 },
+      { "source": "/admin-dashboard.html", "destination": "/admin/monitoring", "type": 301 },
+      { "source": "/unified-monitoring.html", "destination": "/admin/monitoring", "type": 301 },
+      { "source": "/partner-dashboard.html", "destination": "/admin/partner", "type": 301 },
+      { "source": "/service-status.html", "destination": "/admin/service-status", "type": 301 },
+      { "source": "/admin/admin-auth.html", "destination": "/admin/auth", "type": 301 },
+      { "source": "/admin/unified-monitoring.html", "destination": "/admin/monitoring", "type": 301 },
+      { "source": "/admin/service-status.html", "destination": "/admin/service-status", "type": 301 },
+      { "source": "/admin/partner-dashboard.html", "destination": "/admin/partner", "type": 301 },
+      { "source": "/saas-landing.html", "destination": "/saas", "type": 301 },
+      { "source": "/stitch-wave.html", "destination": "/stitch-wave", "type": 301 },
+      { "source": "/setup-finish.html", "destination": "/setup-finish", "type": 301 },
+      { "source": "/ping-cx-flow.html", "destination": "/intro", "type": 301 },
+      { "source": "/intro.html", "destination": "/intro", "type": 301 }
+    ],
+    "ignore": [
+      "firebase.json",
+      ".firebaserc",
+      "firestore.indexes.json",
+      "firestore.rules",
+      "**/.*",
+      "**/node_modules/**",
+      "**/*.md",
+      "**/*.log",
+      "obituary-drafts.local.json",
+      "obituary-sales.local.json",
+      "mortuary-message-logs.local.json",
+      "index.js",
+      "server.js",
+      "sms-service.js",
+      "send-coupon-api.js",
+      "package.json",
+      "package-lock.json",
+      "api/**",
+      "app/**",
+      "firebase-functions-app/**",
+      "functions/**",
+      "src/**",
+      "dataconnect/**",
+      "test*.html",
+      "test/**",
+      "public/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/approvePayment",
+        "function": "approvePayment"
+      },
+      {
+        "source": "/api/getOrderStatus",
+        "function": "getOrderStatus"
+      },
+      {
+        "source": "/api/createObituaryDraft",
+        "function": "createObituaryDraft"
+      },
+      {
+        "source": "/api/getObituaryEntry",
+        "function": "getObituaryEntry"
+      },
+      {
+        "source": "/api/getObituarySales",
+        "function": "getObituarySales"
+      },
+      {
+        "source": "/api/postObituarySale",
+        "function": "postObituarySale"
+      },
+      {
+        "source": "/api/getMortuaryMessages",
+        "function": "getMortuaryMessages"
+      },
+      {
+        "source": "/api/getMortuaryMessageLogs",
+        "function": "getMortuaryMessageLogs"
+      },
+      {
+        "source": "/api/sendMortuaryMessage",
+        "function": "sendMortuaryMessage"
+      },
+      {
+        "source": "/api/approveObituaryEntry",
+        "function": "approveObituaryEntry"
+      },
+      {
+        "source": "/api/funeralHalls",
+        "function": "funeralHalls"
+      },
+      {
+        "source": "/api/sendCouponAdmin",
+        "function": "sendCouponAdmin"
+      },
+      {
+        "source": "/api/validateSendCoupon",
+        "function": "validateSendCoupon"
+      },
+      {
+        "source": "/api/consumeSendCoupon",
+        "function": "consumeSendCoupon"
+      },
+      {
+        "source": "/api/webhookHandler",
+        "function": "webhookHandler"
+      },
+      {
+        "source": "/api/import/bugo-funeral",
+        "function": "importBugoFuneral"
+      },
+      {
+        "source": "/api/import/wooribugo-funeral",
+        "function": "importBugoFuneral"
+      }
+    ]
+  }
+}

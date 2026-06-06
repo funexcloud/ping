@@ -1,0 +1,50 @@
+type User @table {
+  displayName: String!
+  email: String!
+  createdAt: Timestamp!
+  phoneNumber: String
+  profilePictureUrl: String
+}
+
+type Obituary @table {
+  firstName: String!
+  lastName: String!
+  dateOfBirth: Date!
+  dateOfDeath: Date!
+  createdAt: Timestamp!
+  isPublic: Boolean!
+  middleName: String
+  maidenName: String
+  biography: String
+  photoUrl: String
+  funeralHomeName: String
+  creator: User
+}
+
+type Service @table {
+  type: String!
+  dateTime: Timestamp!
+  locationName: String!
+  address: String!
+  description: String
+  mapUrl: String
+  obituary: Obituary
+}
+
+type Notification @table {
+  type: String!
+  message: String!
+  sentAt: Timestamp!
+  isRead: Boolean
+  obituary: Obituary
+  recipient: User
+  service: Service
+}
+
+type Invitation @table {
+  invitedEmail: String!
+  rsvpStatus: String
+  invitedAt: Timestamp
+  obituary: Obituary
+  invitedUser: User
+}

@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Contact {
+  id              String            @id @default(cuid())
+  name            String?
+  phone           String?
+  condolenceMoney CondolenceMoney?
+
+  @@index([phone])
+}
+
+model BugoRequest {
+  id               String             @id @default(cuid())
+  condolenceMoneys CondolenceMoney[]
+}
+
+model CondolenceMoney {
+  id            String      @id @default(cuid())
+  contactId     String      @unique
+  contact       Contact     @relation(fields: [contactId], references: [id])
+  bugoRequestId String
+  bugoRequest   BugoRequest @relation(fields: [bugoRequestId], references: [id])
+  amount        Int // 원 단위 (예: 50000)
+  note          String? // 메모 (선택)
+  createdAt     DateTime    @default(now())
+}

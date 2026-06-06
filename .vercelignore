@@ -1,0 +1,7 @@
+# Nested Next.js app — excluded from Express root deploy; avoids Vercel TS on this tree.
+spline-next
+# Firebase Cloud Functions (deploy via firebase deploy, not Vercel build)
+
+functions
+# 로컬 symlink — postinstall에서 assets/ 를 복사해 생성
+public/assets
