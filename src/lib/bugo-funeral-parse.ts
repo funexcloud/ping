@@ -1,3 +1,4 @@
+// @ts-nocheck — CJS 동기화 생성물; 타입은 ParsedFuneralData export만 유지
 /**
  * 부고 HTML·모두부고 API → 구조화 데이터.
  * 서버 런타임: lib/bugo-funeral-parse.cjs (npm run build:bugo-parse 로 동기화)

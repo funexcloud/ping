@@ -2,7 +2,7 @@ import { AdminLayoutClient } from "@/app/admin/admin-layout-client";
 import { PING_NOINDEX_METADATA } from "@/lib/ping-site-seo";
 import type { ReactNode } from "react";
 import { Suspense } from "react";
-import "../admin-desktop.css";
+import "./admin-desktop.css";
 
 export const metadata = PING_NOINDEX_METADATA;
 
