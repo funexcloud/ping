@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { isAdminAuthenticated } from "@/lib/admin-auth-session";
+import { verifyAdminSession } from "@/lib/admin-auth-session";
 import { cn } from "@/lib/utils";
 import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
 import {
@@ -159,25 +159,38 @@ export function AdminPartnerClient() {
   }, []);
 
   useEffect(() => {
-    if (adminMode && !isAdminAuthenticated()) {
-      router.replace("/admin/auth?redirect=partner");
-      return;
-    }
+    let cancelled = false;
 
-    if (!partnerParam && !adminMode) {
-      setAccessDenied(true);
+    const run = async () => {
+      if (adminMode) {
+        const ok = await verifyAdminSession();
+        if (cancelled) return;
+        if (!ok) {
+          router.replace("/admin/auth?redirect=partner");
+          return;
+        }
+      }
+
+      if (!partnerParam && !adminMode) {
+        setAccessDenied(true);
+        setReady(true);
+        return;
+      }
+
+      if (partnerParam) {
+        setCurrentPartnerCode(partnerParam);
+        const origin = typeof window !== "undefined" ? window.location.origin : "";
+        setPartnerLink(`${origin}/start?partner=${encodeURIComponent(partnerParam)}`);
+        void loadPartnerData(partnerParam);
+      }
+
       setReady(true);
-      return;
-    }
+    };
 
-    if (partnerParam) {
-      setCurrentPartnerCode(partnerParam);
-      const origin = typeof window !== "undefined" ? window.location.origin : "";
-      setPartnerLink(`${origin}/start?partner=${encodeURIComponent(partnerParam)}`);
-      void loadPartnerData(partnerParam);
-    }
-
-    setReady(true);
+    void run();
+    return () => {
+      cancelled = true;
+    };
   }, [adminMode, partnerParam, router, loadPartnerData]);
 
   const stats = useMemo(() => {

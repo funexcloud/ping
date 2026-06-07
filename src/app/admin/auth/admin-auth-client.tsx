@@ -2,9 +2,8 @@
 
 import {
   adminApiFetch,
-  isAdminAuthenticated,
   resolveAdminRedirect,
-  setAdminAuthenticated,
+  verifyAdminSession,
 } from "@/lib/admin-auth-session";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -20,9 +19,9 @@ export default function AdminAuthClient() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (isAdminAuthenticated()) {
-      router.replace(redirect);
-    }
+    void verifyAdminSession().then((ok) => {
+      if (ok) router.replace(redirect);
+    });
   }, [router, redirect]);
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -40,7 +39,6 @@ export default function AdminAuthClient() {
         message?: string;
       };
       if (res.ok && json.ok) {
-        setAdminAuthenticated();
         router.push(redirect);
         return;
       }

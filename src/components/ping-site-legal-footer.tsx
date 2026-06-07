@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 
+import { PING_COMPANY_LEGAL } from "@/lib/ping-company-legal";
 import { useFontAwesomeCdn } from "@/hooks/use-font-awesome-cdn";
 
 const LEGAL_PAGES = [
@@ -49,32 +50,32 @@ export function PingSiteLegalFooter() {
         <div className="index-footer-accordion-panel">
           <div className="index-footer-legal-company-body pt-3 space-y-1.5 text-[13px] text-ping-body leading-relaxed">
             <p>
-              <strong>한국AIBC융합원</strong>
+              <strong>{PING_COMPANY_LEGAL.legalName}</strong>
             </p>
             <p className="footer-company-rep-reg">
               <span>
-                <strong>대표자:</strong> 송지훈
+                <strong>대표자:</strong> {PING_COMPANY_LEGAL.representative}
               </span>
               <span>
-                <strong>사업자등록번호:</strong> 225-09-26000
+                <strong>사업자등록번호:</strong> {PING_COMPANY_LEGAL.businessRegistrationNumber}
               </span>
             </p>
             <p>
-              <strong>통신판매업신고번호:</strong> 2024울산북구0108호
+              <strong>통신판매업신고번호:</strong> {PING_COMPANY_LEGAL.mailOrderReportNumber}
             </p>
             <p>
-              <strong>사업장주소:</strong> 울산광역시 중구 해오름5길 24 101호
+              <strong>사업장주소:</strong> {PING_COMPANY_LEGAL.address}
             </p>
             <p>
-              <strong>고객센터:</strong> 052-286-4440
+              <strong>고객센터:</strong> {PING_COMPANY_LEGAL.customerServicePhone}
             </p>
             <p className="index-footer-legal-inline-note">
-              한국AIBC융합원에서 운영하는 본 사이트의 모든 유료 서비스는
+              {PING_COMPANY_LEGAL.paidServiceNoticeLines[0]}
               <br />
-              한국AIBC융합원에서 책임지고 제공합니다.
+              {PING_COMPANY_LEGAL.paidServiceNoticeLines[1]}
             </p>
             <p className="index-footer-legal-inline-note index-footer-legal-inline-note--hint">
-              <strong>민원 담당자:</strong> 송지훈 010-4864-2401
+              <strong>민원 담당자:</strong> {PING_COMPANY_LEGAL.complaintContact}
             </p>
           </div>
 
@@ -92,7 +93,7 @@ export function PingSiteLegalFooter() {
       </details>
 
       <p className="index-footer-copyright text-center text-[11px] text-ping-caption px-1 leading-relaxed tracking-tight">
-        Copyright ⓒ 2026 한국AIBC융합원. All rights reserved.
+        Copyright ⓒ 2026 {PING_COMPANY_LEGAL.copyrightHolder}. All rights reserved.
       </p>
     </div>
   );

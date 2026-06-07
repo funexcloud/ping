@@ -26,9 +26,7 @@ const CODE_TTL_MS = 10 * 60 * 1000;
 const RESEND_MS = 60 * 1000;
 const MAX_VERIFY_ATTEMPTS = 8;
 
-function getAdminSecret() {
-    return String(process.env.PING_COUPON_ADMIN_SECRET || process.env.PING_ADMIN_SETTINGS_SECRET || '').trim();
-}
+const { resolveAdminAuth } = require('./ping-admin-auth');
 
 function defaultSettings() {
     return {
@@ -178,14 +176,12 @@ function timingSafeEqualHex(a, b) {
 }
 
 function assertAdmin(req) {
-    const secret = getAdminSecret();
-    if (!secret) {
-        const e = new Error('서버에 PING_COUPON_ADMIN_SECRET(또는 PING_ADMIN_SETTINGS_SECRET)이 없습니다.');
-        e.status = 503;
-        throw e;
-    }
-    const h = String(req.headers['x-ping-admin-secret'] || '').trim();
-    if (h !== secret) {
+    const auth = resolveAdminAuth({
+        adminKey: req.headers['x-ping-admin-key'] || req.headers['x-ping-admin-secret'],
+        cookieHeader: req.headers.cookie,
+        headers: req.headers,
+    });
+    if (!auth.ok) {
         const e = new Error('Unauthorized');
         e.status = 401;
         throw e;

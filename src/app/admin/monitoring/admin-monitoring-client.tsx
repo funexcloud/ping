@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import {
   adminApiFetch,
   clearAdminAuth,
-  isAdminAuthenticated,
 } from "@/lib/admin-auth-session";
 import { PING_CASH_RECEIPT_TYPE_LABELS, type PingCashReceiptType } from "@/lib/ping-cash-receipt";
 import {
@@ -479,7 +478,6 @@ function PermissionDeniedMessage() {
 
 export function AdminMonitoringClient() {
   const router = useRouter();
-  const [ready, setReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [usingMock, setUsingMock] = useState(false);
   const [loadError, setLoadError] = useState<LoadError>("none");
@@ -568,14 +566,9 @@ export function AdminMonitoringClient() {
   }, [applyMockStats]);
 
   useEffect(() => {
-    if (!isAdminAuthenticated()) {
-      router.replace("/admin/auth?redirect=monitoring");
-      return;
-    }
-    setReady(true);
     applyMockStats();
     void loadAllData();
-  }, [router, loadAllData, applyMockStats]);
+  }, [loadAllData, applyMockStats]);
 
   const partnerRows = useMemo(() => {
     const codes = new Set([
@@ -820,14 +813,6 @@ export function AdminMonitoringClient() {
       window.alert(`파트너 삭제 중 오류가 발생했습니다.\n\n오류: ${message}`);
     }
   };
-
-  if (!ready) {
-    return (
-      <div className="admin-monitoring-page flex min-h-dvh items-center justify-center bg-slate-950 text-slate-300">
-        인증 확인 중...
-      </div>
-    );
-  }
 
   return (
     <div className="admin-monitoring-page">

@@ -128,7 +128,8 @@ function resolveAdminAuth(input = {}) {
 
     const adminKey =
         String(input.adminKey || '').trim() ||
-        String(headerVal('x-ping-admin-key') || '').trim();
+        String(headerVal('x-ping-admin-key') || '').trim() ||
+        String(headerVal('x-ping-admin-secret') || '').trim();
 
     if (adminKey && verifyAdminApiKey(adminKey)) {
         return { ok: true, via: 'api_key' };

@@ -11,6 +11,8 @@
     "check": "node scripts/run-check.mjs",
     "check:vercel-env": "node scripts/check-vercel-production-env.cjs",
     "check:vercel-env:strict": "node scripts/check-vercel-production-env.cjs --strict",
+    "github:repo-description": "node scripts/set-github-repo-description.mjs",
+    "wiki:push": "node scripts/push-github-wiki.mjs",
   "sync:vercel-env": "node scripts/sync-vercel-production-env.mjs",
     "push:vercel-member-auth-env": "node scripts/push-vercel-member-auth-env.mjs",
   "deploy:express": "node scripts/deploy-express-cloud-run.mjs",

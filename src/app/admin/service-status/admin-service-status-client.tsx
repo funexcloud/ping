@@ -1,12 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   adminApiFetch,
   clearAdminAuth,
-  isAdminAuthenticated,
 } from "@/lib/admin-auth-session";
 import { cn } from "@/lib/utils";
 import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
@@ -58,7 +56,6 @@ const FIREBASE_CONFIG = {
 };
 
 const SERVICE_START_DATE = new Date("2024-01-01T00:00:00");
-const GUEST_SMS_SECRET_KEY = "ping_x_ping_admin_secret";
 
 type OrderStatus = "waiting_payment" | "paid" | "cancelled" | string;
 
@@ -269,18 +266,23 @@ export function AdminServiceStatusClient() {
   const [pingOutput, setPingOutput] = useState("");
 
   const [guestSmsEnabled, setGuestSmsEnabled] = useState(false);
-  const [guestSmsSecret, setGuestSmsSecret] = useState("");
-  const [guestSmsHasStoredSecret, setGuestSmsHasStoredSecret] = useState(false);
   const [guestSmsMsg, setGuestSmsMsg] = useState("");
   const [guestSmsMsgTone, setGuestSmsMsgTone] = useState<"muted" | "ok" | "err">("muted");
 
-  const loadGuestSmsToggle = useCallback(async () => {
+  const loadGuestSmsSettings = useCallback(async () => {
     try {
-      const r = await fetch("/api/guest-auth/config");
-      const d = (await r.json()) as { ok?: boolean; guestSmsVerificationEnabled?: boolean };
-      if (d?.ok) setGuestSmsEnabled(!!d.guestSmsVerificationEnabled);
+      const r = await adminApiFetch("/api/admin/app-settings");
+      const d = (await r.json()) as {
+        ok?: boolean;
+        settings?: { guestSmsVerificationEnabled?: boolean };
+        error?: string;
+      };
+      if (r.status === 401) return;
+      if (d?.ok && d.settings) {
+        setGuestSmsEnabled(!!d.settings.guestSmsVerificationEnabled);
+      }
     } catch (e) {
-      console.warn("[admin-service-status] guest-auth config", e);
+      console.warn("[admin-service-status] app-settings load", e);
     }
   }, []);
 
@@ -409,25 +411,16 @@ export function AdminServiceStatusClient() {
   }, [loadFromFirebase, applyMock]);
 
   useEffect(() => {
-    if (!isAdminAuthenticated()) {
-      router.replace("/admin/auth?redirect=service-status");
-      return;
-    }
     setReady(true);
     applyMock();
-    void loadGuestSmsToggle();
-    const stored = sessionStorage.getItem(GUEST_SMS_SECRET_KEY);
-    if (stored) {
-      setGuestSmsSecret(stored);
-      setGuestSmsHasStoredSecret(true);
-    }
+    void loadGuestSmsSettings();
     void loadServiceStatus();
 
     const interval = window.setInterval(() => {
       void loadServiceStatus();
     }, 30000);
     return () => window.clearInterval(interval);
-  }, [router, applyMock, loadGuestSmsToggle, loadServiceStatus]);
+  }, [applyMock, loadGuestSmsSettings, loadServiceStatus]);
 
   const recentActivity = useMemo(() => allOrders.slice(0, 20), [allOrders]);
 
@@ -499,24 +492,17 @@ export function AdminServiceStatusClient() {
   };
 
   const saveGuestSmsSettings = async () => {
-    const sec =
-      guestSmsSecret.trim() || sessionStorage.getItem(GUEST_SMS_SECRET_KEY) || "";
-    if (!sec) {
-      setGuestSmsMsg("관리자 시크릿을 입력하세요.");
-      setGuestSmsMsgTone("err");
-      return;
-    }
-    sessionStorage.setItem(GUEST_SMS_SECRET_KEY, sec);
     try {
-      const r = await fetch("/api/admin/app-settings", {
+      const r = await adminApiFetch("/api/admin/app-settings", {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "x-ping-admin-secret": sec,
-        },
-        body: JSON.stringify({ guestSmsVerificationEnabled: guestSmsEnabled }),
+        json: { guestSmsVerificationEnabled: guestSmsEnabled },
       });
       const d = (await r.json()) as { ok?: boolean; error?: string };
+      if (r.status === 401) {
+        clearAdminAuth();
+        router.replace("/admin/auth?redirect=service-status");
+        return;
+      }
       if (!r.ok || !d.ok) throw new Error(d.error || "저장 실패");
       setGuestSmsMsg("저장되었습니다.");
       setGuestSmsMsgTone("ok");
@@ -763,8 +749,8 @@ export function AdminServiceStatusClient() {
             비회원 문자 본인인증
           </h2>
           <p className="mb-4 max-w-3xl text-sm text-slate-400">
-            비회원 본인확인 페이지에서 Solapi LMS로 6자리 코드를 발송합니다. 설정 저장 시 서버 환경변수{" "}
-            <code className="text-teal-300">PING_COUPON_ADMIN_SECRET</code> 값을 요청 헤더로 보냅니다.
+            비회원 본인확인 페이지에서 Solapi LMS로 6자리 코드를 발송합니다. 설정 저장은 관리자 로그인
+            세션(쿠키)으로 인증됩니다.
           </p>
           <div className="flex max-w-2xl flex-col gap-4">
             <label className="flex cursor-pointer select-none items-center gap-3 text-white">
@@ -776,19 +762,7 @@ export function AdminServiceStatusClient() {
               />
               <span className="font-semibold">문자 인증(6자리) 사용</span>
             </label>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Input
-                type="password"
-                autoComplete="off"
-                placeholder={
-                  guestSmsHasStoredSecret
-                    ? "세션에 저장됨 — 재입력 시 갱신"
-                    : "PING_COUPON_ADMIN_SECRET 값 입력"
-                }
-                value={guestSmsSecret}
-                onChange={(e) => setGuestSmsSecret(e.target.value)}
-                className="border-slate-600 bg-slate-800 text-white placeholder:text-slate-500"
-              />
+            <div>
               <Button
                 type="button"
                 className="shrink-0 bg-gradient-to-br from-teal-600 to-teal-800 font-bold hover:from-teal-500 hover:to-teal-700"

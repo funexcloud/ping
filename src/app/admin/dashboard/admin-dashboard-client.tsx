@@ -1,6 +1,6 @@
 "use client";
 
-import { isAdminAuthenticated } from "@/lib/admin-auth-session";
+import { verifyAdminSession } from "@/lib/admin-auth-session";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -9,11 +9,13 @@ export function AdminDashboardClient() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAdminAuthenticated()) {
-      router.replace("/admin/auth?redirect=dashboard");
-      return;
-    }
-    router.replace("/admin/monitoring");
+    void verifyAdminSession().then((ok) => {
+      if (!ok) {
+        router.replace("/admin/auth?redirect=dashboard");
+        return;
+      }
+      router.replace("/admin/monitoring");
+    });
   }, [router]);
 
   return (

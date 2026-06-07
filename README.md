@@ -3,7 +3,9 @@
 **부고 커뮤니케이션 플랫폼** — 부고 URL 불러오기부터 연락처 검증, 결제, 문자·알림톡 발송, 안심 링크, 부의금 명단까지 한 흐름으로 연결합니다.
 
 운영(공개 서비스): [https://ping.funexcloud.com](https://ping.funexcloud.com)  
-소스: [github.com/funexcloud/ping](https://github.com/funexcloud/ping)
+소스: [github.com/funexcloud/ping](https://github.com/funexcloud/ping)  
+**Wiki:** [github.com/funexcloud/ping/wiki](https://github.com/funexcloud/ping/wiki) — **별도 설정 필요** ([`docs/wiki/Wiki-Setup.md`](docs/wiki/Wiki-Setup.md)).  
+원본 마크다운: [`docs/wiki/`](docs/wiki/) (main에 push 후 [tree/main/docs/wiki](https://github.com/funexcloud/ping/tree/main/docs/wiki)에서도 볼 수 있음)
 
 > **서비스 vs 저장소:** 위 URL은 **누구나 접속하는 공개 웹 서비스**입니다. GitHub 저장소의 Public/Private 여부는 **코드 공개 범위**이며, 서비스 배포와는 별개입니다.
 
@@ -199,6 +201,7 @@ ping/
 | [`docs/deployment-playbook.md`](docs/deployment-playbook.md) | PG·Firebase·도메인 총괄 |
 | [`docs/react-integration/`](docs/react-integration/) | HTML→React 이관·API 인벤토리 |
 | [`docs/legal-attorney-review-checklist.md`](docs/legal-attorney-review-checklist.md) | **변호사 검토 체크리스트** (약관·개인정보·IP) |
+| [`docs/wiki/`](docs/wiki/) | **GitHub Wiki 원본** — 로드맵·운영·온보딩 |
 | [`.cursor/rules/ping-bordered-panel.mdc`](.cursor/rules/ping-bordered-panel.mdc) | 패널 UI 규칙 |
 
 ---

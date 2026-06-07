@@ -828,7 +828,13 @@ function PaymentSuccessInner() {
           {isBankAwaitingDeposit
             ? "아래 계좌로 입금해 주세요. 입금 확인 후 문자 발송이 시작됩니다."
             : isBankRegistered
-              ? "체크아웃에서 확인한 계좌로 입금해 주세요. 입금이 확인되면 문자 발송이 시작됩니다."
+              ? (
+                  <>
+                    체크아웃에서 확인한 계좌로 입금해 주세요.
+                    <br />
+                    입금이 확인되면 문자 발송이 시작됩니다.
+                  </>
+                )
               : refundStatus === "refunded"
                 ? "결제 금액이 환불 처리되었습니다."
                 : fulfillmentPhase === "failed"
@@ -1050,9 +1056,19 @@ function PaymentSuccessInner() {
           </div>
         ) : isBankAwaitingDeposit || isBankRegistered ? (
           <p className="pay-ok-bank-pending-foot m-0 text-center text-sm text-[var(--pay-ok-text-sub)]">
-            {isBankRegistered
-              ? "입금하신 뒤에는 이 화면을 닫으셔도 됩니다. 발송 명단은 아래에서 받을 수 있어요."
-              : "입금 후에는 이 화면을 닫으셔도 됩니다. 발송 명단은 아래에서 받을 수 있어요."}
+            {isBankRegistered ? (
+              <>
+                입금하신 뒤에는 이 화면을 닫으셔도 됩니다.
+                <br />
+                발송 명단은 아래에서 받을 수 있어요.
+              </>
+            ) : (
+              <>
+                입금 후에는 이 화면을 닫으셔도 됩니다.
+                <br />
+                발송 명단은 아래에서 받을 수 있어요.
+              </>
+            )}
           </p>
         ) : null}
 
