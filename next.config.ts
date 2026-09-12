@@ -62,6 +62,31 @@ const bugoImportTraceFiles = [
   ...BUGO_IMPORT_TRACE_DEPS,
 ];
 
+const checkoutApiTraceFiles = [
+  "./ping-toss-checkout-api.js",
+  "./payment-points.js",
+  "./benefits-api.js",
+  "./referral-api.js",
+  "./ping-order-finalize.js",
+  "./ping-firebase-admin.js",
+  "./ping-dispatch-send-from.js",
+  "./ping-order-payment-alignment.js",
+  "./ping-order-fulfillment.js",
+  "./ping-cash-receipt.js",
+  "./sms-service.js",
+  "./ping-sms-dispatch-lock.js",
+  "./ping-order-purge.js",
+  "./ping-dispatch/index.js",
+  "./ping-dispatch/config.js",
+  "./ping-dispatch/buildMessages.js",
+  "./ping-dispatch/solapiChunks.js",
+  "./ping-dispatch/dispatchPaidOrder.js",
+  "./ping-dispatch/normalizePhone.js",
+  "./ping-dispatch/backupManifest.js",
+  "./scripts/solapi-auth-fetch.js",
+  "./node_modules/axios/**",
+];
+
 const memberAuthTraceFiles = [
   "./lib/ping-member-auth-app.cjs",
   "./lib/ping-member-store.cjs",
@@ -90,6 +115,10 @@ const nextConfig: NextConfig = {
     "/api/auth/login": memberAuthTraceFiles,
     "/api/guest-auth/config": memberAuthTraceFiles,
     "/api/admin/app-settings": memberAuthTraceFiles,
+    "/api/toss/confirm-payment": checkoutApiTraceFiles,
+    "/api/payment/points-only": checkoutApiTraceFiles,
+    "/api/checkout/bank-transfer": checkoutApiTraceFiles,
+    "/api/checkout/register-session": checkoutApiTraceFiles,
   },
   webpack: (config, { dev }) => {
     if (dev) {

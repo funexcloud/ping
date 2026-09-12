@@ -8,7 +8,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
 const paymentPoints = require('./payment-points');
 const { finalizeOrderPaidAndDispatch } = require('./ping-order-finalize');
 
@@ -323,20 +322,27 @@ async function apiConfirmTossPayment(body) {
         }
 
         const auth = Buffer.from(`${secret}:`, 'utf8').toString('base64');
-        const tossRes = await axios.post(
-            'https://api.tosspayments.com/v1/payments/confirm',
-            {
+        const tossHttp = await fetch('https://api.tosspayments.com/v1/payments/confirm', {
+            method: 'POST',
+            headers: {
+                Authorization: `Basic ${auth}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
                 paymentKey: pkey,
                 orderId: oid,
                 amount: amt,
-            },
-            {
-                headers: {
-                    Authorization: `Basic ${auth}`,
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
+            }),
+        });
+        const tossBody = await tossHttp.json().catch(() => ({}));
+        if (!tossHttp.ok) {
+            const tossErr = new Error(
+                (tossBody && tossBody.message) || '결제 승인에 실패했습니다.',
+            );
+            tossErr.response = { status: tossHttp.status, data: tossBody };
+            throw tossErr;
+        }
+        const tossRes = { data: tossBody };
 
         try {
             if (pu > 0) {
