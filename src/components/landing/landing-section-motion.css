@@ -1,0 +1,19 @@
+.ping-landing-motion__section#start {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, color-mix(in srgb, var(--saas-primary, #0056f3) 8%, transparent), transparent),
+    var(--saas-bg, #fafafa);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ping-landing-motion__section .ping-saas-section-head,
+  .ping-landing-motion__section .ping-saas-trust-card,
+  .ping-landing-motion__section .ping-saas-vertical-step,
+  .ping-landing-motion__section .ping-saas-pricing-panel,
+  .ping-landing-motion__section .ping-saas-step-card,
+  .ping-landing-motion__section .ping-saas-faq-item,
+  .ping-landing-motion__section .ping-saas-final-cta,
+  .ping-landing-motion__section .ping-saas-onboard {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

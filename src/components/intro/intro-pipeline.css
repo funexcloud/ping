@@ -1347,3 +1347,9 @@ html.ping-ui body button.intro-hero__scroll-btn:focus-visible {
 .ping-product-landing.ping-saas-landing #old-way .old-way-flow {
   margin-bottom: 0;
 }
+
+.ping-conversion-preview .hero-phone-fan {
+  margin-top: 0;
+  padding-top: 8px;
+}
+

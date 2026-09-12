@@ -6,14 +6,16 @@ import {
 } from "@/lib/ping-bulk-flow-nav";
 import Script from "next/script";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { pingTrack } from "@/lib/ping-analytics";
 import {
   PING_BULK_PREPARE_CHECKOUT_KEY,
   PING_CHECKOUT_SESSION,
   prepareBulkCheckoutAfterIdentity,
 } from "@/lib/ping-bulk-checkout-prep";
+import { isPingDevFlowPreview, seedPingDevCheckoutPreviewSession } from "@/lib/ping-dev-flow-skip";
 import { loadBulkRecipientsCount } from "@/lib/ping-bulk-session";
 import { BulkFlowProgress } from "@/components/bulk/bulk-flow-progress";
-import { CheckoutMemberWelcomeSheet } from "@/components/checkout/checkout-member-welcome-sheet";
+import { PingDevIdentitySkipBar } from "@/components/bulk/ping-dev-flow-skip-button";
 import { PingLoadingSpinner } from "@/components/ping-loading-spinner";
 import { PingBankAccountCopyAllButton } from "@/components/ping-bank-account-copy-all-button";
 import { PingBankAccountCopyButton } from "@/components/ping-bank-account-copy-button";
@@ -51,6 +53,10 @@ export function CheckoutClient() {
   }
 
   function shouldRunBulkCheckoutPrepare(): boolean {
+    if (isPingDevFlowPreview()) {
+      seedPingDevCheckoutPreviewSession();
+      return false;
+    }
     if (readHasCheckoutSession()) return false;
     try {
       if (sessionStorage.getItem(PING_BULK_PREPARE_CHECKOUT_KEY) === "1") return true;
@@ -65,6 +71,10 @@ export function CheckoutClient() {
     }
     return false;
   }
+
+  useEffect(() => {
+    pingTrack("checkout_start");
+  }, []);
 
   useEffect(() => {
     if (!tossReady || !referralReady || !portoneReady) return;
@@ -100,7 +110,12 @@ export function CheckoutClient() {
   }, [tossReady, referralReady, portoneReady]);
 
   useLayoutEffect(() => {
-    if (!checkoutReady) return;
+    const btn = document.getElementById("checkout-pay-btn") as HTMLButtonElement | null;
+    if (!btn) return;
+    if (!checkoutReady) {
+      btn.disabled = true;
+      return;
+    }
     syncCheckoutPayButton();
   });
 
@@ -145,9 +160,11 @@ export function CheckoutClient() {
 
           <main className="flex-1 min-w-0 px-5 pb-4 pt-4" id="checkout-main">
             <div className="checkout-summary-panel ping-bordered-panel mb-5 min-w-0 max-w-full p-4">
-              <p className="checkout-summary-lead m-0 text-[14px] leading-relaxed text-[#6B7684]">
-                {BULK_FLOW_NINE_COPY[6].subtitle}
-              </p>
+              <div className="ping-step-head ping-step-head--panel">
+                <p className="checkout-summary-lead ping-step-head__sub m-0">
+                  {BULK_FLOW_NINE_COPY[6].subtitle}
+                </p>
+              </div>
               <p
                 hidden
                 className="checkout-portone-banner mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold leading-relaxed text-amber-900"
@@ -252,7 +269,7 @@ export function CheckoutClient() {
                 <input
                   type="checkbox"
                   id="checkout-points-only-agree"
-                  className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#0336FF] focus:ring-[#0336FF]"
+                  className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[var(--ping-primary,#0056F3)] focus:ring-[var(--ping-primary,#0056F3)]"
                 />
                 <span>
                   <span className="font-bold text-red-600">(필수)</span> 결제·서비스 이용 및 개인정보 처리에
@@ -335,33 +352,33 @@ export function CheckoutClient() {
                   </p>
                   <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
-                      <label className="flex flex-1 cursor-pointer items-center gap-2 rounded-lg border border-gray-200 px-3 py-2.5 text-sm has-[:checked]:border-[#0336FF] has-[:checked]:bg-[#0336FF]/5">
+                      <label className="flex flex-1 cursor-pointer items-center gap-2 rounded-lg border border-gray-200 px-3 py-2.5 text-sm has-[:checked]:border-[var(--ping-primary,#0056F3)] has-[:checked]:bg-[var(--ping-primary,#0056F3)]/5">
                         <input
                           type="radio"
                           name="checkout-cash-receipt-choice"
                           value="income_deduction"
                           defaultChecked
-                          className="text-[#0336FF] focus:ring-[#0336FF]"
+                          className="text-[var(--ping-primary,#0056F3)] focus:ring-[var(--ping-primary,#0056F3)]"
                         />
                         <span>소득공제용 (휴대폰)</span>
                       </label>
-                      <label className="flex flex-1 cursor-pointer items-center gap-2 rounded-lg border border-gray-200 px-3 py-2.5 text-sm has-[:checked]:border-[#0336FF] has-[:checked]:bg-[#0336FF]/5">
+                      <label className="flex flex-1 cursor-pointer items-center gap-2 rounded-lg border border-gray-200 px-3 py-2.5 text-sm has-[:checked]:border-[var(--ping-primary,#0056F3)] has-[:checked]:bg-[var(--ping-primary,#0056F3)]/5">
                         <input
                           type="radio"
                           name="checkout-cash-receipt-choice"
                           value="expense_proof"
-                          className="text-[#0336FF] focus:ring-[#0336FF]"
+                          className="text-[var(--ping-primary,#0056F3)] focus:ring-[var(--ping-primary,#0056F3)]"
                         />
                         <span>지출증빙용 (사업자)</span>
                       </label>
                     </div>
-                    <label className="flex w-full cursor-pointer items-center gap-2 rounded-lg border border-gray-200 px-3 py-2.5 text-sm has-[:checked]:border-[#0336FF] has-[:checked]:bg-[#0336FF]/5">
+                    <label className="flex w-full cursor-pointer items-center gap-2 rounded-lg border border-gray-200 px-3 py-2.5 text-sm has-[:checked]:border-[var(--ping-primary,#0056F3)] has-[:checked]:bg-[var(--ping-primary,#0056F3)]/5">
                       <input
                         type="radio"
                         name="checkout-cash-receipt-choice"
                         value="voluntary"
                         id="checkout-cash-receipt-voluntary"
-                        className="text-[#0336FF] focus:ring-[#0336FF]"
+                        className="text-[var(--ping-primary,#0056F3)] focus:ring-[var(--ping-primary,#0056F3)]"
                       />
                       <span
                         id="checkout-cash-receipt-voluntary-hint"
@@ -387,7 +404,7 @@ export function CheckoutClient() {
                   <input
                     type="checkbox"
                     id="checkout-bank-agree"
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#0336FF] focus:ring-[#0336FF]"
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[var(--ping-primary,#0056F3)] focus:ring-[var(--ping-primary,#0056F3)]"
                   />
                   <span>
                     <span className="font-bold text-red-600">(필수)</span> 무통장 입금 예정 및 결제·서비스 이용
@@ -415,8 +432,7 @@ export function CheckoutClient() {
             <button
               type="button"
               id="checkout-pay-btn"
-              className="ob-flow-btn-primary w-full touch-manipulation disabled:opacity-50"
-              disabled={!checkoutReady}
+              className="ob-flow-btn-primary ping-mobile-cta w-full touch-manipulation disabled:opacity-50"
               onClick={() => void startCheckoutPayment()}
             >
               {checkoutReady ? "결제하기" : "결제 준비 중…"}
@@ -424,13 +440,11 @@ export function CheckoutClient() {
           </div>
       </div>
 
-      <CheckoutMemberWelcomeSheet active={checkoutReady && referralReady} />
-
       <div
         id="loading-screen"
-        className="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm"
+        className="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 px-5 backdrop-blur-sm"
       >
-        <div className="flex w-full max-w-sm flex-col items-center rounded-2xl bg-white p-8 text-center shadow-2xl">
+        <div className="flex w-full max-w-[var(--ping-column-max)] min-w-0 flex-col items-center rounded-2xl bg-white p-8 text-center shadow-2xl">
           <PingLoadingSpinner size="lg" label="처리 중" className="mb-4" />
           <h3 className="mb-2 text-xl font-bold text-gray-800" id="loading-title">
             처리 중
@@ -440,6 +454,7 @@ export function CheckoutClient() {
           </p>
         </div>
       </div>
+      <PingDevIdentitySkipBar elevated />
     </>
   );
 }

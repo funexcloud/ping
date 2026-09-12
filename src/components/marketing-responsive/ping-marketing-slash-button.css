@@ -1,0 +1,145 @@
+/**
+ * Funex Cloud slash-button — funexcloud.com 과 동일 마크업·형태
+ * · 좌상·좌하 라운드 · 좌변 수직 · 우상 라운드 + 우측 사선
+ */
+
+.ping-mkt {
+  --slash-tv-gradient: linear-gradient(75deg, #00bce6, #2962ff 50.31%, #d500f9);
+  --slash-skew: -22deg;
+  --slash-shift: -6px;
+  --slash-tip: 12px;
+  --slash-radius-left: 8px;
+  --slash-radius-tr: 11.5px;
+  --slash-radius-br: 4.5px;
+  --slash-funex-blue: var(--ping-primary, #0056f3);
+}
+
+.ping-mkt .slash-button {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  justify-content: center;
+  height: 40px;
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  text-decoration: none;
+  overflow: visible;
+  transition:
+    filter 0.16s ease,
+    transform 0.16s ease;
+}
+
+.ping-mkt .slash-button:hover {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
+}
+
+/* 좌상·좌하 8px 라운드 + overflow 클립 → 좌변은 수직, 우측은 사선 */
+.ping-mkt .slash-button__content {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 0 calc(22.6px + var(--slash-tip)) 0 16px;
+  border-radius: var(--slash-radius-left);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.ping-mkt .slash-button__content::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -18px;
+  right: 1px;
+  z-index: -1;
+  border-radius: var(--slash-radius-left) var(--slash-radius-tr) var(--slash-radius-br)
+    var(--slash-radius-left);
+  transform: skew(var(--slash-skew)) translate(var(--slash-shift));
+  transform-origin: 100% 50%;
+}
+
+.ping-mkt .slash-button__label {
+  position: relative;
+  z-index: 1;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.ping-mkt .slash-button--gradient .slash-button__content::after {
+  background-image: var(--slash-tv-gradient);
+}
+
+/* 이용하기 — Funex Blue */
+.ping-mkt .slash-button--funex {
+  color: #fff;
+}
+
+.ping-mkt .slash-button--funex .slash-button__content::after {
+  background: var(--slash-funex-blue);
+}
+
+.ping-mkt .slash-button--space {
+  color: #0f0f0f;
+}
+
+.ping-mkt .slash-button--space .slash-button__content::after {
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--mkt-line);
+}
+
+.ping-mkt .slash-button--block {
+  width: 100%;
+  justify-content: center;
+}
+
+.ping-mkt .slash-button--block .slash-button__content {
+  width: 100%;
+}
+
+.ping-mkt__slash-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.ping-mkt__slash-cta-row--stack {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* 부모 overflow 로 우상단·사선 끝이 잘리지 않게 */
+.ping-mkt__header-actions,
+.ping-mkt__slash-cta-row,
+.ping-product-landing .ping-landing-hero-actions {
+  overflow: visible;
+}
+
+@media (min-width: 768px) {
+  .ping-mkt .ping-landing-hero-actions .slash-button,
+  .ping-mkt .cta__button.slash-button {
+    height: 48px;
+    min-height: 48px;
+  }
+
+  .ping-mkt .ping-landing-hero-actions .slash-button__content,
+  .ping-mkt .cta__button.slash-button .slash-button__content {
+    height: 48px;
+    padding: 0 calc(26px + var(--slash-tip)) 0 18px;
+  }
+
+  .ping-mkt .ping-landing-hero-actions .slash-button__label,
+  .ping-mkt .cta__button.slash-button .slash-button__label {
+    font-size: 16px;
+    font-weight: 600;
+  }
+}

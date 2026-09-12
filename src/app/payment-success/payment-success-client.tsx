@@ -26,6 +26,7 @@ import { orderCapabilityHeaders } from "@/lib/ping-order-capability-client";
 import { fetchPingSendFromLabel } from "@/lib/ping-send-from-client";
 import { PING_CASH_RECEIPT_TYPE_LABELS, type PingCashReceiptType } from "@/lib/ping-cash-receipt";
 import { pingAssignToLocation } from "@/lib/ping-nav-home";
+import { pingTrack } from "@/lib/ping-analytics";
 import type { BulkFlowStep } from "@/lib/ping-bulk-flow-steps";
 import {
   deriveFulfillmentPhase,
@@ -36,7 +37,7 @@ import {
 import { Building2, FileSpreadsheet } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import type { AnimationEvent } from "react";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import "./payment-success.css";
 
@@ -351,6 +352,13 @@ function PaymentSuccessInner() {
       setRetryDispatching(false);
     }
   }, [orderId, orderAmountNum, retryDispatching]);
+
+  const paymentTrackedRef = useRef(false);
+  useEffect(() => {
+    if (phase !== "valid" || paymentTrackedRef.current) return;
+    paymentTrackedRef.current = true;
+    pingTrack("payment_success");
+  }, [phase]);
 
   useEffect(() => {
     void fetchPingSendFromLabel().then((label) => {

@@ -1,21 +1,22 @@
 import type { Metadata } from "next";
 import { LEGAL_SLUGS } from "@/content/legal";
+import { PING_BRAND_NAME } from "@/lib/ping-brand";
 
 /** 프로덕션 캐논 오리진 (Vercel·메타·사이트맵·JSON-LD 공통) */
 export const PING_SITE_URL =
   (process.env.NEXT_PUBLIC_SITE_URL || "https://ping.funexcloud.com").replace(/\/$/, "");
 
 export const PING_ORG = {
-  name: "PING",
+  name: PING_BRAND_NAME,
   legalName: "한국AIBC융합원",
-  brand: "PING 부고 대량발송",
+  brand: PING_BRAND_NAME,
   email: "kaibcmac@gmail.com",
   locale: "ko_KR",
   country: "KR",
 } as const;
 
 export const PING_DEFAULT_DESCRIPTION =
-  "PING(핑)은 부고 링크 검증, 엑셀·주소록 업로드, 알림톡·SMS 대량 발송, 결제까지 한 흐름으로 처리하는 부고 커뮤니케이션 SaaS입니다.";
+  "PING(핑)은 스마트폰 주소록에서 연락처를 가져와 중요한 부고 소식을 선택한 사람에게 한 번에 전달하는 서비스입니다.";
 
 export const PING_DEFAULT_KEYWORDS = [
   "PING",
@@ -23,17 +24,24 @@ export const PING_DEFAULT_KEYWORDS = [
   "부고",
   "부고 문자",
   "부고 대량발송",
+  "부고 보내기",
+  "부고 알림",
+  "단체 부고 문자",
+  "연락처 부고 발송",
   "알림톡 부고",
   "SMS 부고",
-  "장례 문자",
-  "장례식장 발송",
-  "엑셀 문자 발송",
 ];
 
 const OG_IMAGE = `${PING_SITE_URL}/assets/og/og-index-dispatch.png`;
 
-/** PING 마케팅 상세(기능·요금 요약·도입 CTA) 캐논 경로 */
+/** 소비자 홈 (유가족 랜딩) — `/` → intro → `/start` */
+export const PING_CONSUMER_HOME_PATH = "/";
+
+/** B2B 제품 트리 루트 (`/products/ping` → business 리다이렉트) */
 export const PING_PRODUCT_MARKETING_PATH = "/products/ping";
+
+/** B2B 마케팅 캐논 */
+export const PING_PRODUCT_BUSINESS_PATH = "/products/ping/business";
 
 /** 랜딩·가이드·약관 등 검색·GEO 대상 공개 URL (우선순위 순) */
 export const PING_SITEMAP_ENTRIES: {
@@ -41,17 +49,17 @@ export const PING_SITEMAP_ENTRIES: {
   changeFrequency: "weekly" | "monthly" | "yearly";
   priority: number;
 }[] = [
-  { path: "/", changeFrequency: "weekly", priority: 1 },
-  { path: PING_PRODUCT_MARKETING_PATH, changeFrequency: "weekly", priority: 0.95 },
+  { path: PING_CONSUMER_HOME_PATH, changeFrequency: "weekly", priority: 1 },
+  { path: PING_PRODUCT_BUSINESS_PATH, changeFrequency: "weekly", priority: 0.9 },
   { path: "/start", changeFrequency: "weekly", priority: 0.9 },
   { path: "/intro", changeFrequency: "monthly", priority: 0.85 },
+  { path: "/condolence", changeFrequency: "weekly", priority: 0.85 },
   { path: "/pricing", changeFrequency: "monthly", priority: 0.85 },
   { path: "/saas", changeFrequency: "monthly", priority: 0.8 },
-  { path: "/customer-center", changeFrequency: "monthly", priority: 0.75 },
+  { path: "/customer-center", changeFrequency: "monthly", priority: 0.8 },
   { path: "/partnership", changeFrequency: "monthly", priority: 0.7 },
   { path: "/inquiry-board", changeFrequency: "monthly", priority: 0.65 },
   { path: "/tech-blog", changeFrequency: "monthly", priority: 0.6 },
-  { path: "/guide/naver-contacts", changeFrequency: "monthly", priority: 0.7 },
   ...LEGAL_SLUGS.map((slug) => ({
     path: `/legal/${slug}`,
     changeFrequency: "yearly" as const,
@@ -78,12 +86,14 @@ export const PING_OVERVIEW_FAQ = [
   },
 ] as const;
 
-export const PING_GEO_SUMMARY = `PING(핑, ${PING_SITE_URL})은 한국AIBC융합원이 운영하는 부고·장례 커뮤니케이션 SaaS입니다. 외부 부고 URL 검증, Google·엑셀 주소록, 카카오 알림톡·SMS·MMS 대량 발송, 건당 과금 결제(토스페이먼츠)를 지원합니다. 서비스 소개: ${PING_SITE_URL}${PING_PRODUCT_MARKETING_PATH} · 요금: ${PING_SITE_URL}/pricing · 발송 시작: ${PING_SITE_URL}/start`;
+export const PING_GEO_SUMMARY = `PING(핑, ${PING_SITE_URL})은 스마트폰 주소록에서 연락처를 가져와 중요한 부고 문자·알림을 선택한 사람에게 한 번에 전달하는 서비스입니다. 부고를 준비하고, 보낼 사람을 고른 뒤 발송 결과까지 확인할 수 있습니다. 개인 이용: ${PING_SITE_URL}${PING_CONSUMER_HOME_PATH} · 발송 시작: ${PING_SITE_URL}/start`;
 
 type PublicMetadataInput = {
   title: string;
   description?: string;
   path: string;
+  /** canonical URL 경로 (미지정 시 path 사용) */
+  canonicalPath?: string;
   keywords?: string[];
   ogType?: "website" | "article";
   ogImage?: string;
@@ -92,7 +102,8 @@ type PublicMetadataInput = {
 
 export function buildPublicMetadata(input: PublicMetadataInput): Metadata {
   const description = input.description ?? PING_DEFAULT_DESCRIPTION;
-  const canonical = input.path === "/" ? PING_SITE_URL : `${PING_SITE_URL}${input.path}`;
+  const canonPath = input.canonicalPath ?? input.path;
+  const canonical = canonPath === "/" ? PING_SITE_URL : `${PING_SITE_URL}${canonPath}`;
   const ogImage = input.ogImage ?? OG_IMAGE;
 
   return {
