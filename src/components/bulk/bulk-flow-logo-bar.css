@@ -33,8 +33,28 @@
 }
 
 .bulk-flow-logo-bar .hamburger-menu {
+  position: relative;
   width: 44px;
   height: 44px;
+  display: block;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bulk-flow-logo-bar .hamburger-line {
+  position: absolute;
+  right: 13px;
+  display: block;
+  width: 18px;
+  height: 2px;
+  background-color: #191f28;
+  border-radius: 2px;
 }
 
 .bulk-flow-logo-bar .hamburger-line:nth-child(1) {
@@ -47,9 +67,21 @@
 
 .bulk-flow-logo-bar .hamburger-line:nth-child(3) {
   top: 27px;
+  width: 10px;
 }
 
-.bulk-flow-logo-bar .hamburger-menu.active .hamburger-line:nth-child(1),
+.bulk-flow-logo-bar .hamburger-menu.active .hamburger-line:nth-child(1) {
+  top: 21px;
+  width: 18px;
+  transform: rotate(45deg);
+}
+
+.bulk-flow-logo-bar .hamburger-menu.active .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
 .bulk-flow-logo-bar .hamburger-menu.active .hamburger-line:nth-child(3) {
   top: 21px;
+  width: 18px;
+  transform: rotate(-45deg);
 }
