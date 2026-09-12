@@ -120,6 +120,14 @@ export default function ObEntryClient() {
           </div>
 
           <div className="ob-entry-stack min-w-0 max-w-full w-full">
+            <a
+              id="ob-entry-funex-google"
+              href={`/api/auth/funex/start?returnTo=${encodeURIComponent(nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/start")}`}
+              className="ob-entry-email-login-btn ping-btn-primary ping-mobile-cta w-full no-underline touch-manipulation"
+              aria-label="Google로 계속하기"
+            >
+              Google로 계속하기
+            </a>
             <Link
               id="ob-entry-email-login-link"
               href={emailLoginHref}
