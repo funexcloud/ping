@@ -1,0 +1,24 @@
+.ping-brand-logo--horizontal {
+  display: block;
+  height: 36px;
+  width: auto;
+  max-width: min(168px, 62vw);
+  object-fit: contain;
+  object-position: left center;
+}
+
+.ping-brand-logo--icon {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+  border-radius: 22%;
+}
+
+.ping-brand-logo--mark {
+  display: block;
+  width: 4.5rem;
+  height: 4.5rem;
+  object-fit: cover;
+  object-position: 50% 36%;
+}

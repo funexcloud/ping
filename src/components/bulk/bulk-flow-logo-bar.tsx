@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-import { PING_LOGO_ON_LIGHT_SRC } from "@/lib/ping-brand";
+import { PingBrandLogo } from "@/components/brand/ping-brand-logo";
 import { BulkSideMenu } from "@/components/bulk/bulk-side-menu";
 
 import "./bulk-flow-logo-bar.css";
@@ -25,13 +25,7 @@ export function BulkFlowLogoBar() {
         aria-label="PING"
       >
         <Link href="/" className="bulk-flow-logo-bar__home" aria-label="홈으로">
-          <img
-            src={PING_LOGO_ON_LIGHT_SRC}
-            alt="PING"
-            width={1024}
-            height={1024}
-            className="bulk-flow-logo-bar__img"
-          />
+          <PingBrandLogo variant="horizontal" className="bulk-flow-logo-bar__img" />
         </Link>
         <button
           type="button"

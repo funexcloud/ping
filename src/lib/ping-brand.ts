@@ -8,16 +8,17 @@ export const PING_BRAND_NAME = "PING";
 export const PING_BRAND_PRIMARY = "#0056F3";
 
 /**
- * Approved app logo (P symbol + signal + PING wordmark).
+ * Square master / app icon (kit 01–02).
  * Runtime: `public/brand/ping/ping-app-logo-canonical.png`
- * Docs: `docs/references/ping-brand/ping-app-logo-canonical.png`
+ * Headers must not shrink this file; use `PingBrandLogo` variant="horizontal".
  */
 export const PING_LOGO_CANONICAL_SRC = "/brand/ping/ping-app-logo-canonical.png";
+export const PING_LOGO_HORIZONTAL_SRC = "/brand/ping/ping-logo-horizontal.png";
 
-/** Header / profile — full canonical lockup. */
+/** JSON-LD / legacy img fallback — square master, not header lockup. */
 export const PING_LOGO_ON_LIGHT_SRC = PING_LOGO_CANONICAL_SRC;
 
-/** Sending mark / JSON-LD — same canonical file (do not invent a second symbol). */
+/** Sending mark crop source — same master PNG, displayed via variant="mark". */
 export const PING_LOGO_MARK_SRC = PING_LOGO_CANONICAL_SRC;
 
 /** Next App Router `src/app/icon.png` → `/icon.png` */

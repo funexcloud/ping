@@ -1180,6 +1180,38 @@ html.ping-ui body button.intro-hero__scroll-btn:focus-visible {
   }
 }
 
+@media (max-width: 720px) {
+  .hero-phone-fan {
+    overflow: visible;
+    scroll-snap-type: none;
+    margin-top: 0;
+    padding-top: 0.5rem;
+  }
+
+  .hero-phone-fan__list {
+    display: block;
+    width: 100%;
+    max-width: none;
+    padding-inline: 0;
+  }
+
+  .hero-phone-fan__slot {
+    display: none;
+    transform: none;
+    flex: none;
+    min-width: 0;
+  }
+
+  .hero-phone-fan__slot[data-slot="1"] {
+    display: block;
+  }
+
+  .hero-phone-fan .ping-phone-mockup,
+  .hero-phone-fan__slot[data-slot="1"] .ping-phone-mockup {
+    max-width: min(300px, 86vw);
+  }
+}
+
 .intro-pipeline--magic .intro-hero__bulk-shell .bulk-flow-progress {
   display: none;
 }

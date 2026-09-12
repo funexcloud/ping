@@ -92,5 +92,12 @@ if (canonicalLogoSrc) {
   fs.copyFileSync(canonicalLogoSrc, path.join(canonicalDir, "ping-app-logo-canonical.png"));
 }
 
+const horizontalLogoSrc = path.join(root, "docs", "references", "ping-brand", "ping-logo-horizontal.png");
+if (fs.existsSync(horizontalLogoSrc)) {
+  const canonicalDir = path.join(pub, "brand", "ping");
+  fs.mkdirSync(canonicalDir, { recursive: true });
+  fs.copyFileSync(horizontalLogoSrc, path.join(canonicalDir, "ping-logo-horizontal.png"));
+}
+
 linkOrCopyAssetsDir();
 console.log("[ensure-next-public-static] OK (assets + verification HTML only)");

@@ -12,20 +12,33 @@ html.ping-intro-active {
             -webkit-tap-highlight-color: transparent;
         }
         html.ping-intro-active {
-            background-color: #000000 !important;
+            background-color: #f5f8fc !important;
+        }
+        html.ping-intro-active,
+        html.ping-intro-active body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+        html.ping-intro-active .ping-global-root {
+            align-items: stretch !important;
+        }
+        html.ping-intro-active .ping-global-main {
+            max-width: none !important;
+            width: 100% !important;
+            background: #f5f8fc !important;
         }
         html.ping-intro-active body {
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            background-color: #000000 !important;
+            background-color: #f5f8fc !important;
         }
         /* 서버 HTML에 포함 — 루트 body 배경이 먼저 보이는 플래시 차단 (웨이브·셸 아래 깔림) */
         .intro-paint-guard {
             position: fixed;
             inset: 0;
             z-index: 0;
-            background: #000;
+            background: #f5f8fc;
             pointer-events: none;
         }
         #intro-wave-bg {
@@ -34,9 +47,7 @@ html.ping-intro-active {
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
-            pointer-events: none;
-            contain: strict;
+            display: none;
         }
         #intro-wave-bg canvas {
             display: block;
@@ -48,13 +59,18 @@ html.ping-intro-active {
             position: relative;
             z-index: 1;
             width: 100%;
-            max-width: 28rem;
+            /* Galaxy S26 Ultra — 6.9" QHD+ 1440×3120 @ 3.5x → CSS 412×893, 19.5:9 */
+            --intro-s26u-css-w: 412px;
+            --intro-s26u-aspect: 78.1 / 163.6;
+            --intro-s26u-radius: 2.05rem;
+            --intro-shell-max-w: 100%;
+            max-width: var(--intro-shell-max-w);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             --intro-main-pad-x: 1.25rem;
             --intro-phone-wrap-pad-x: 0.625rem;
-            /* main.cx-main 좌우 패딩 + .phone-wrap 좌우 패딩 — CTA와 폰 목업 너비 정렬 */
+            /* main.cx-main 좌우 패딩 + .phone-wrap 좌우 패딩 — CTA와 #phoneBody 너비 정렬 */
             --intro-phone-gutter-x: calc(var(--intro-main-pad-x) + var(--intro-phone-wrap-pad-x));
         }
         html.ping-intro-active .app-shell.intro-app {
@@ -76,8 +92,9 @@ html.ping-intro-active {
         }
         .intro-app header.cx-head {
             border-bottom: none;
-            padding-top: 2.125rem;
-            padding-bottom: 1.125rem;
+            box-shadow: none;
+            padding-top: 0.5rem;
+            padding-bottom: 0.375rem;
             justify-content: center;
         }
         .intro-app .cx-head-title {
@@ -88,44 +105,45 @@ html.ping-intro-active {
             text-align: center;
             font-size: 24px;
             /* 타이핑 문구·줄바꿈 시에도 아래 폰 데모 높이 안정 */
-            min-height: 4.5rem;
+            min-height: 3.25rem;
             align-content: center;
         }
         .intro-app .cx-head-type-text,
         .intro-app .cx-head-title {
-            color: rgba(255, 255, 255, 0.94);
+            color: #0b1b33;
         }
         .intro-app .cx-head-type-text {
             text-align: center;
         }
         .intro-app .stage-label {
-            color: rgba(255, 255, 255, 0.94);
+            color: #191f28;
         }
         .intro-app .stage-num {
-            color: rgba(255, 255, 255, 0.5);
+            color: #8b95a1;
         }
         .intro-app .stage-top {
             min-height: 1.85rem;
+            margin-bottom: 8px;
         }
         .intro-app .dot {
-            background: rgba(255, 255, 255, 0.22);
+            background: #d7e3f4;
         }
         .intro-app .dot.on {
             background: var(--ping-primary);
         }
         .intro-app .dot.done {
-            background: rgba(49, 130, 246, 0.45);
+            background: rgba(0, 86, 243, 0.45);
         }
         .intro-app .cx-flash-title {
-            color: #ffffff;
+            color: #0b1b33;
         }
         .intro-app .cx-flash-sub {
-            color: rgba(255, 255, 255, 0.72);
+            color: #6b7684;
         }
         .intro-app .spinner,
         .intro-app .cx-flash-spin {
             border-color: rgba(255, 255, 255, 0.22);
-            border-top-color: #0097a9;
+            border-top-color: #0056F3;
         }
         .cx-head-title {
             margin: 0;
@@ -150,7 +168,7 @@ html.ping-intro-active {
             height: 1.05em;
             margin-left: 1px;
             flex-shrink: 0;
-            background: var(--ping-primary, #0097a9);
+            background: var(--ping-primary, #0056F3);
             border-radius: 1px;
             vertical-align: text-bottom;
             animation: cxHeadCaretBlink 1s steps(1, end) infinite;
@@ -170,11 +188,14 @@ html.ping-intro-active {
             border: 0;
         }
 
-        main.cx-main { flex: 1; padding: 1rem 1.25rem 6rem; }
+        main.cx-main { flex: 1; padding: 1rem 1.25rem 2rem; }
+        .intro-app main.cx-main {
+            padding-top: 0.375rem;
+        }
 
         /* 데모 전환 카드 (근조화환 파트너 이동 안내 스타일 — 짧은 스피너 + 문구) */
         .cx-flash-inner {
-            min-height: clamp(400px, 110vw, 600px);
+            min-height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -225,25 +246,209 @@ html.ping-intro-active {
         @keyframes spin { to { transform: rotate(360deg); } }
 
         .phone-wrap {
-            display: block;
+            display: flex;
+            justify-content: center;
             width: 100%;
             padding: 0.5rem 0.625rem 0.25rem;
             box-sizing: border-box;
         }
         .phone {
+            display: flex;
+            flex-direction: column;
             width: 100%;
             max-width: 100%;
             background: var(--color-background-primary);
             border-radius: 24px;
             overflow: hidden;
+            --intro-phone-accent: var(--ping-primary, #0056f3);
+            --intro-phone-accent-soft: var(--ping-primary-light-bg, #e6effc);
+            --intro-phone-accent-ring: rgba(0, 86, 243, 0.12);
+            --intro-phone-accent-muted: rgba(0, 86, 243, 0.08);
+            --intro-phone-accent-border: rgba(0, 86, 243, 0.28);
+        }
+        .intro-app .phone {
+            flex: 1 1 auto;
+            width: 100%;
+            min-height: 0;
+            height: auto;
+            aspect-ratio: auto;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .intro-device {
+            position: relative;
+            width: min(100%, calc(var(--intro-s26u-css-w) + 14px));
+            aspect-ratio: var(--intro-s26u-aspect);
+            flex-shrink: 0;
+        }
+        .intro-device__bezel {
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            padding: 8px 7px 9px;
+            border-radius: var(--intro-s26u-radius);
+            background:
+              linear-gradient(155deg, #5c5c62 0%, #2a2a2e 28%, #111114 72%, #070708 100%);
+            box-shadow:
+              0 22px 56px rgba(0, 0, 0, 0.42),
+              0 2px 0 rgba(255, 255, 255, 0.12) inset,
+              0 -2px 6px rgba(0, 0, 0, 0.45) inset;
+        }
+        .intro-device__screen {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+            overflow: hidden;
+            border-radius: calc(var(--intro-s26u-radius) - 0.45rem);
+            background: var(--color-background-primary, #fff);
+        }
+        .intro-device__status {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 1.75rem;
+            padding: 0.2rem 0.85rem 0;
+            flex-shrink: 0;
+            color: #111;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            background: var(--color-background-primary, #fff);
+        }
+        .intro-device__time {
+            min-width: 2.25rem;
+        }
+        .intro-device__hole {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 0.62rem;
+            height: 0.62rem;
+            border-radius: 999px;
+            background: radial-gradient(circle at 35% 35%, #2a2a30 0%, #050506 55%, #000 100%);
+            box-shadow: 0 0 0 2px #0c0c0e, 0 0 0 3px rgba(0, 0, 0, 0.35);
+            transform: translate(-50%, -50%);
+        }
+        .intro-device__sys {
+            display: flex;
+            align-items: center;
+            gap: 0.28rem;
+        }
+        .intro-device__signal {
+            width: 0.72rem;
+            height: 0.55rem;
+            background:
+              linear-gradient(90deg, currentColor 0 2px, transparent 2px 3px, currentColor 3px 5px, transparent 5px 6px, currentColor 6px 8px, transparent 8px 9px, currentColor 9px 11px);
+            clip-path: polygon(0 100%, 22% 70%, 22% 100%, 44% 45%, 44% 100%, 66% 22%, 66% 100%, 100% 0, 100% 100%);
+            opacity: 0.88;
+        }
+        .intro-device__wifi {
+            width: 0.72rem;
+            height: 0.55rem;
+            border: 1.5px solid currentColor;
+            border-radius: 70% 70% 0 0;
+            border-bottom: 0;
+            opacity: 0.88;
+            transform: translateY(2px);
+        }
+        .intro-device__battery {
+            width: 1.05rem;
+            height: 0.5rem;
+            border: 1.35px solid currentColor;
+            border-radius: 0.15rem;
+            opacity: 0.88;
+            position: relative;
+        }
+        .intro-device__battery::before {
+            content: "";
+            position: absolute;
+            inset: 1px 1px 1px 1px;
+            width: 72%;
+            background: currentColor;
+            border-radius: 1px;
+        }
+        .intro-device__battery::after {
+            content: "";
+            position: absolute;
+            right: -3px;
+            top: 50%;
+            width: 2px;
+            height: 0.22rem;
+            background: currentColor;
+            border-radius: 0 1px 1px 0;
+            transform: translateY(-50%);
+        }
+        .intro-device__home {
+            flex-shrink: 0;
+            height: 1.15rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-background-primary, #fff);
+        }
+        .intro-device__home::after {
+            content: "";
+            width: 7.5rem;
+            height: 0.28rem;
+            border-radius: 999px;
+            background: #1a1a1a;
+            opacity: 0.88;
+        }
+        .intro-device__btn {
+            position: absolute;
+            width: 3px;
+            border-radius: 1px;
+            background: linear-gradient(90deg, #6a6a70, #2c2c30 40%, #1a1a1d);
+            box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.4);
+        }
+        .intro-device__btn--vol {
+            left: -3px;
+            top: 18%;
+            height: 5.4rem;
+        }
+        .intro-device__btn--power {
+            right: -3px;
+            top: 24%;
+            height: 3.35rem;
+        }
+        .phone-wrap .ping-phone-mockup {
+            max-width: min(300px, 78vw);
+        }
+        @media (max-width: 720px) {
+            html.ping-intro-active .app-shell.intro-app {
+                max-width: 100%;
+                width: 100%;
+            }
+            .intro-app .phone-wrap {
+                padding-left: 0;
+                padding-right: 0;
+            }
+            .intro-app .phone-bar {
+                display: none;
+            }
+            .phone-wrap .ping-phone-mockup {
+                max-width: none;
+            }
+        }
+        .intro-app .phone-bar {
+            height: auto;
+            background: transparent;
+            padding: 4px 20px 8px;
         }
         .phone-bar {
             height: 38px;
-            background: #0097a9;
+            background: transparent;
             display: flex;
             align-items: center;
             padding: 0 16px;
             gap: 8px;
+            flex-shrink: 0;
         }
         .phone-logo { font-size: 14px; font-weight: 600; color: #fff; letter-spacing: 0.04em; }
         .intro-brand-hit {
@@ -265,11 +470,648 @@ html.ping-intro-active {
             justify-content: space-between;
             margin-left: auto;
         }
-        .phone-menu span { display: block; height: 2px; background: rgba(255, 255, 255, 0.85); border-radius: 1px; }
+        .phone-menu span { display: none; }
         .phone-body {
-            padding: 14px 12px;
-            min-height: clamp(505px, 116vw, 655px);
+            padding: 14px 12px 10px;
+            min-height: clamp(420px, 98vw, 560px);
             background: var(--color-background-primary);
+        }
+        .intro-app .phone-body {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow: auto;
+        }
+
+        .phone-cta {
+            padding: 0 12px 14px;
+            background: var(--color-background-primary);
+            flex-shrink: 0;
+        }
+
+        .phone-cta .intro-cta-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            line-height: 1.3;
+            color: #fff;
+            background: var(--ping-primary);
+            padding: 14px 16px;
+            min-height: 52px;
+            border-radius: 16px;
+            border: none;
+            text-decoration: none;
+            box-sizing: border-box;
+            box-shadow: var(--shadow-ping-primary);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+        }
+
+        .phone-cta .intro-cta-link:hover {
+            filter: brightness(1.05);
+        }
+
+        .phone-cta .intro-cta-link:active {
+            transform: scale(0.985);
+            filter: brightness(0.96);
+            box-shadow: var(--shadow-ping-sm);
+        }
+
+        /* `/start` → 발송완료 — BulkFlowProgress + ping-bordered-panel 미니 목업 */
+        .phone-body .intro-flow-step {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            min-width: 0;
+        }
+
+        .phone-body .intro-flow-step__progress {
+            padding: 0 0 10px;
+        }
+
+        .phone-body .intro-flow-step__bars {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 6px;
+        }
+
+        .phone-body .intro-flow-step__bar {
+            flex: 1;
+            min-width: 0;
+            height: 3px;
+            border-radius: 999px;
+            background: #e9ecf0;
+        }
+
+        .phone-body .intro-flow-step__bar.is-on {
+            background: var(--ping-primary, #0056f3);
+        }
+
+        .phone-body .intro-flow-step__meta {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .phone-body .intro-flow-step__label {
+            margin: 0;
+            min-width: 0;
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+            color: #191f28;
+        }
+
+        .phone-body .intro-flow-step__label-num {
+            color: var(--ping-primary, #0056f3);
+        }
+
+        .phone-body .intro-flow-step__label-muted {
+            font-weight: 500;
+            color: #b0b8c1;
+        }
+
+        .phone-body .intro-flow-step__label-dot {
+            font-weight: 400;
+            color: #d1d6db;
+        }
+
+        .phone-body .intro-flow-step__pct {
+            flex-shrink: 0;
+            font-size: 9px;
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+            color: #b0b8c1;
+        }
+
+        .phone-body .intro-flow-step__card {
+            padding: 14px;
+        }
+
+        .phone-body .intro-flow-step__eyebrow {
+            margin: 0 0 6px;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--ping-primary, #0056f3);
+        }
+
+        .phone-body .intro-flow-step__head {
+            margin-bottom: 12px;
+        }
+
+        .phone-body .intro-flow-step .ping-step-head--panel .ping-step-head__title,
+        .phone-body .intro-flow-step .ping-step-head--lead .ping-step-head__title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #191f28;
+        }
+
+        .phone-body .intro-flow-step .ping-step-head--panel .ping-step-head__sub,
+        .phone-body .intro-flow-step .ping-step-head--lead .ping-step-head__sub {
+            font-size: 11px;
+            font-weight: 500;
+            color: #6b7684;
+        }
+
+        .phone-body .intro-flow-step__input-wrap {
+            min-width: 0;
+        }
+
+        .phone-body .intro-flow-step__field {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+            min-height: 38px;
+            padding: 9px 10px 9px 1.5ch;
+            font-size: 11px;
+            line-height: 1.35;
+            letter-spacing: -0.01em;
+            color: #191f28;
+            background: #f2f4f6;
+            border-radius: 4px;
+            border: none;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .phone-body .intro-flow-step__field--valid {
+            background: var(--ping-surface, #fff);
+            box-shadow: 0 0 0 2px var(--ping-primary, #0056f3);
+        }
+
+        /* 2단계 — 부고 문자 작성 */
+        .phone-body .intro-compose__title-wrap {
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .phone-body .intro-compose__title {
+            padding-right: 3.25rem;
+            white-space: nowrap;
+        }
+
+        .phone-body .intro-compose__title-count {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--ping-primary, #0056f3);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .phone-body .intro-compose__body-shell {
+            border-radius: 8px;
+            background: #f2f4f6;
+            overflow: hidden;
+            box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .phone-body .intro-compose__textarea {
+            min-height: 88px;
+            padding: 8px 10px;
+            font-size: 10px;
+            line-height: 1.5;
+            color: #191f28;
+            background: #fff;
+        }
+
+        .phone-body .intro-compose__toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 6px 8px;
+            background: #f2f4f6;
+        }
+
+        .phone-body .intro-compose__toolbar-left {
+            display: flex;
+            gap: 6px;
+        }
+
+        .phone-body .intro-compose__tool {
+            display: inline-flex;
+            width: 22px;
+            height: 22px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            background: #fff;
+            font-size: 10px;
+        }
+
+        .phone-body .intro-compose__bytes {
+            font-size: 8px;
+            font-weight: 600;
+            color: #6b7684;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* 3단계 — 연락처 */
+        .phone-body .intro-pick__stack {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .phone-body .intro-pick__btn {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 44px;
+            padding: 8px 12px;
+            border: 1px solid #e9ecf0;
+            border-radius: 16px;
+            background: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            color: #191f28;
+            box-sizing: border-box;
+        }
+
+        .phone-body .intro-pick__selected {
+            padding: 10px;
+            border-radius: 8px;
+            background: #e6effc;
+            border: 1px solid rgba(0, 86, 243, 0.22);
+        }
+
+        .phone-body .intro-pick__selected-name {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--ping-primary, #0056f3);
+        }
+
+        .phone-body .intro-pick__selected-meta {
+            display: block;
+            margin-top: 2px;
+            font-size: 9px;
+            color: #6b7684;
+        }
+
+        /* 4단계 — 결제 금액 */
+        .phone-body .intro-review__source {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 8px;
+            font-size: 10px;
+            color: #4e5968;
+        }
+
+        .phone-body .intro-review__totals {
+            padding: 10px;
+            border-radius: 8px;
+            background: #f2f4f6;
+        }
+
+        .phone-body .intro-review__row,
+        .phone-body .intro-review__total {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 10px;
+            color: #6b7684;
+        }
+
+        .phone-body .intro-review__row + .intro-review__row {
+            margin-top: 4px;
+        }
+
+        .phone-body .intro-review__row strong {
+            color: #191f28;
+            font-weight: 700;
+        }
+
+        .phone-body .intro-review__total {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #e5e8eb;
+            font-size: 11px;
+            font-weight: 700;
+            color: #191f28;
+        }
+
+        .phone-body .intro-review__total strong {
+            font-size: 12px;
+            color: var(--ping-primary, #0056f3);
+        }
+
+        .phone-body .intro-review__note {
+            margin: 4px 0 0;
+            font-size: 8px;
+            text-align: right;
+            color: #b0b8c1;
+        }
+
+        /* 5단계 — 본인 확인 */
+        .phone-body .intro-auth__stack {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .phone-body .intro-auth__kakao,
+        .phone-body .intro-auth__guest,
+        .phone-body .intro-auth__email {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 36px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .phone-body .intro-auth__kakao {
+            background: #fee500;
+            color: #1a1a1a;
+        }
+
+        .phone-body .intro-auth__guest {
+            border: 1px solid #e9ecf0;
+            background: #fff;
+            color: #191f28;
+        }
+
+        .phone-body .intro-auth__email {
+            border: 1px solid #e9ecf0;
+            background: #f2f4f6;
+            color: #4e5968;
+        }
+
+        /* 6단계 — 결제 */
+        .phone-body .intro-checkout__rows {
+            margin-bottom: 8px;
+        }
+
+        .phone-body .intro-checkout__row,
+        .phone-body .intro-checkout__amount {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 10px;
+            color: #6b7684;
+        }
+
+        .phone-body .intro-checkout__row + .intro-checkout__row {
+            margin-top: 4px;
+        }
+
+        .phone-body .intro-checkout__row strong,
+        .phone-body .intro-checkout__amount strong {
+            color: #191f28;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .phone-body .intro-checkout__mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 8px;
+            word-break: break-all;
+        }
+
+        .phone-body .intro-checkout__amount {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #e9ecf0;
+            font-weight: 700;
+            color: #191f28;
+        }
+
+        .phone-body .intro-checkout__amount strong {
+            font-size: 13px;
+            color: var(--ping-primary, #0056f3);
+        }
+
+        .phone-body .intro-checkout__methods {
+            margin-bottom: 8px;
+            font-size: 8px;
+            text-align: center;
+            color: #b0b8c1;
+        }
+
+        .phone-body .intro-checkout__pay {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 38px;
+            border-radius: 10px;
+            background: var(--ping-primary, #0056f3);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* 7단계 — 발송 중 */
+        .phone-body .intro-dispatch__hero {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .phone-body .intro-dispatch__spinner {
+            width: 24px;
+            height: 24px;
+            margin: 0 auto 8px;
+            border: 2px solid #e9ecf0;
+            border-top-color: var(--ping-primary, #0056f3);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .phone-body .intro-dispatch__title {
+            margin: 0;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--ping-primary, #0056f3);
+        }
+
+        .phone-body .intro-dispatch__sub {
+            margin: 4px 0 0;
+            font-size: 9px;
+            line-height: 1.45;
+            color: rgba(0, 86, 243, 0.82);
+        }
+
+        .phone-body .intro-dispatch__track {
+            height: 3px;
+            margin-bottom: 8px;
+            border-radius: 999px;
+            background: #f2f4f6;
+            overflow: hidden;
+        }
+
+        .phone-body .intro-dispatch__track > span {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: var(--ping-primary, #0056f3);
+        }
+
+        .phone-body .intro-dispatch__list {
+            padding: 8px;
+            border-radius: 8px;
+            background: #f2f4f6;
+        }
+
+        .phone-body .intro-dispatch__item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 0;
+            border-bottom: 0.5px solid #e5e8eb;
+            animation: slideIn 0.3s ease both;
+        }
+
+        .phone-body .intro-dispatch__item:last-child {
+            border-bottom: none;
+        }
+
+        .phone-body .intro-dispatch__dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: #d1d6db;
+        }
+
+        .phone-body .intro-dispatch__item--done .intro-dispatch__dot {
+            background: #1d9e75;
+        }
+
+        .phone-body .intro-dispatch__item--active .intro-dispatch__dot {
+            background: var(--ping-primary, #0056f3);
+            animation: pulse 0.8s ease infinite;
+        }
+
+        .phone-body .intro-dispatch__name {
+            flex: 1;
+            min-width: 0;
+            font-size: 9px;
+            color: rgba(0, 86, 243, 0.72);
+        }
+
+        .phone-body .intro-dispatch__status {
+            font-size: 8px;
+            font-weight: 600;
+            color: var(--ping-primary, #0056f3);
+        }
+
+        .phone-body .intro-dispatch__item--done .intro-dispatch__status {
+            color: var(--ping-primary, #0056f3);
+        }
+
+        .phone-body .intro-dispatch__item--active .intro-dispatch__status {
+            color: var(--ping-primary, #0056f3);
+        }
+
+        .phone-body .intro-dispatch__item--wait .intro-dispatch__status {
+            color: rgba(0, 86, 243, 0.45);
+        }
+
+        /* 8단계 — 발송 완료 */
+        .phone-body .intro-complete__hero {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .phone-body .intro-complete__mark {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--ping-primary, #0056f3);
+            box-shadow: 0 8px 20px rgba(0, 86, 243, 0.28);
+        }
+
+        .phone-body .intro-complete__mark svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .phone-body .intro-complete__title {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ping-primary, #0056f3);
+        }
+
+        .phone-body .intro-complete__sub {
+            margin: 4px 0 0;
+            font-size: 9px;
+            color: rgba(0, 86, 243, 0.82);
+        }
+
+        .phone-body .intro-complete__card {
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            background: #f2f4f6;
+        }
+
+        .phone-body .intro-complete__row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 10px;
+            color: rgba(0, 86, 243, 0.72);
+        }
+
+        .phone-body .intro-complete__row + .intro-complete__row {
+            margin-top: 4px;
+        }
+
+        .phone-body .intro-complete__row strong {
+            color: var(--ping-primary, #0056f3);
+            font-weight: 700;
+        }
+
+        .phone-body .intro-complete__ok {
+            color: var(--ping-primary, #0056f3) !important;
+        }
+
+        .phone-body .intro-complete__row--amount strong {
+            color: var(--ping-primary, #0056f3);
+        }
+
+        .phone-body .intro-complete__export {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 34px;
+            border: 1px solid rgba(0, 86, 243, 0.28);
+            border-radius: 8px;
+            background: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--ping-primary, #0056f3);
         }
 
         .tab-bar {
@@ -290,7 +1132,7 @@ html.ping-intro-active {
             color: #4e5968;
             transition: all 0.25s;
         }
-        .tab.on { background: var(--color-background-primary); color: #0097a9; border: 0.5px solid rgba(0, 151, 169, 0.25); }
+        .tab.on { background: var(--color-background-primary); color: var(--intro-phone-accent, var(--ping-primary, #0056f3)); border: 0.5px solid var(--intro-phone-accent-border, rgba(0, 86, 243, 0.28)); }
 
         .label { font-size: 11px; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 5px; }
         .field {
@@ -307,7 +1149,7 @@ html.ping-intro-active {
             color: var(--color-text-secondary);
         }
         .field.filled {
-            border-color: #0097a9;
+            border-color: var(--intro-phone-accent, var(--ping-primary, #0056f3));
             background: var(--color-background-primary);
             color: var(--color-text-primary);
         }
@@ -315,7 +1157,7 @@ html.ping-intro-active {
             width: 100%;
             height: 40px;
             border-radius: 12px;
-            background: #0097a9;
+            background: var(--intro-phone-accent, var(--ping-primary, #0056f3));
             color: #fff;
             font-size: 12px;
             font-weight: 600;
@@ -334,12 +1176,12 @@ html.ping-intro-active {
             text-align: center;
             margin-bottom: 10px;
         }
-        .upload-box.highlight { border-color: #0097a9; background: rgba(0, 151, 169, 0.05); }
+        .upload-box.highlight { border-color: var(--intro-phone-accent, var(--ping-primary, #0056f3)); background: var(--intro-phone-accent-muted, rgba(0, 86, 243, 0.08)); }
         .upload-icon {
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background: rgba(0, 151, 169, 0.12);
+            background: var(--intro-phone-accent-ring, rgba(0, 86, 243, 0.12));
             margin: 0 auto 6px;
             display: flex;
             align-items: center;
@@ -356,7 +1198,7 @@ html.ping-intro-active {
         .price-row.total {
             font-size: 12px;
             font-weight: 600;
-            color: #0097a9;
+            color: var(--intro-phone-accent, var(--ping-primary, #0056f3));
             border-top: 1px dashed var(--color-border-tertiary);
             margin-top: 6px;
             padding-top: 8px;
@@ -376,13 +1218,24 @@ html.ping-intro-active {
             align-items: center;
             color: var(--color-text-secondary);
         }
-        .card-input.active { border-color: #0097a9; }
+        .card-input.active { border-color: var(--intro-phone-accent, var(--ping-primary, #0056f3)); }
+
+        .phone .spinner,
+        .phone-body .spinner {
+            width: 28px;
+            height: 28px;
+            border: 3px solid var(--color-border-tertiary);
+            border-top-color: var(--intro-phone-accent, var(--ping-primary, #0056f3));
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 10px;
+        }
 
         .spinner {
             width: 28px;
             height: 28px;
             border: 3px solid var(--color-border-tertiary);
-            border-top-color: #0097a9;
+            border-top-color: var(--ping-primary, #0056f3);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin: 0 auto 10px;
@@ -397,17 +1250,17 @@ html.ping-intro-active {
             align-items: center;
             justify-content: center;
         }
-        .result-icon.success { background: rgba(0, 151, 169, 0.12); }
+        .result-icon.success { background: var(--intro-phone-accent-ring, rgba(0, 86, 243, 0.12)); }
         .result-icon.fail { background: rgba(226, 75, 74, 0.1); }
         .check-svg { stroke-dasharray: 40; stroke-dashoffset: 40; animation: checkDraw 0.5s 0.2s ease forwards; }
 
         .progress-track { height: 4px; background: var(--color-background-secondary); border-radius: 2px; margin: 12px 0 4px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #0097a9; border-radius: 2px; animation: progressFill 0.8s ease forwards; }
+        .progress-fill { height: 100%; background: var(--intro-phone-accent, var(--ping-primary, #0056f3)); border-radius: 2px; animation: progressFill 0.8s ease forwards; }
 
         .step-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
         .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-border-secondary); transition: all 0.3s; }
-        .dot.on { background: #0097a9; width: 18px; border-radius: 4px; }
-        .dot.done { background: #6bbbae; }
+        .dot.on { background: #0056F3; width: 18px; border-radius: 4px; }
+        .dot.done { background: #7aa7f5; }
 
         .send-item {
             display: flex;
@@ -418,7 +1271,7 @@ html.ping-intro-active {
             animation: slideIn 0.3s ease both;
         }
         .send-item:last-child { border-bottom: none; }
-        .send-dot { width: 7px; height: 7px; border-radius: 50%; background: #0097a9; flex-shrink: 0; }
+        .send-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--intro-phone-accent, var(--ping-primary, #0056f3)); flex-shrink: 0; }
         .send-dot.done { background: #1d9e75; }
 
         .stage-top {
@@ -461,7 +1314,8 @@ html.ping-intro-active {
             z-index: 2;
         }
         .intro-app .cx-cta {
-            /* 토스형 하단 고정: main + phone-wrap 과 동일한 이중 패딩으로 #phoneBody 와 같은 너비 */
+            /* fixed 는 뷰포트 기준이라 shell(400px)과 어긋남 — shell 과 동일 max-width 로 #phoneBody 와 맞춤 */
+            max-width: var(--intro-shell-max-w);
             background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.42) 45%, rgba(0, 0, 0, 0.55) 100%);
             border: none;
             backdrop-filter: none;
@@ -519,14 +1373,13 @@ html.ping-intro-active {
             padding: 0 1rem 0.5rem;
         }
         .intro-hero-brand {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: clamp(2rem, 9vw, 3.25rem);
-            font-weight: 700;
-            letter-spacing: 0.12em;
+            display: flex;
+            justify-content: center;
             margin: 0;
-            color: rgba(255, 255, 255, 0.92);
-            text-transform: uppercase;
-            line-height: 1.1;
+        }
+        .intro-hero-brand .ping-brand-logo--horizontal {
+            height: 40px;
+            max-width: min(200px, 70vw);
         }
         .intro-hero-brand-btn {
             background: transparent;
@@ -541,7 +1394,7 @@ html.ping-intro-active {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: clamp(0.7rem, 2.4vw, 0.95rem);
             font-weight: 700;
-            color: rgba(255, 255, 255, 0.58);
+            color: #6b7684;
             margin: 0.65rem 0 0;
             letter-spacing: 0.06em;
             text-transform: none;
@@ -553,3 +1406,36 @@ html.ping-intro-active {
             .dot { transition: none; }
             .cx-head-caret { animation: none !important; opacity: 0.35; }
         }
+        /* Canonical inner grammar wins over legacy 9px demo type */
+        .intro-app .phone-body .ping-mobile-title {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: #191f28;
+        }
+        .intro-app .phone-body .ping-mobile-count-line {
+            font-size: 16px;
+            color: #191f28;
+        }
+        .intro-app .phone-body .ping-mobile-ratio {
+            font-size: 32px;
+        }
+        .intro-app .phone-body .ping-mobile-wait {
+            font-size: 13px;
+        }
+        .intro-app .phone-body .ping-mobile-signal {
+            width: 120px;
+            height: 120px;
+            margin: 12px auto 8px;
+        }
+        .intro-app .phone-body .ping-mobile-success-mark {
+            width: 72px;
+            height: 72px;
+            margin: 16px auto 12px;
+            font-size: 30px;
+        }
+        .intro-app .phone-body .ping-mobile-complete-lead {
+            font-size: 24px;
+            color: #191f28;
+        }
+

@@ -16,8 +16,12 @@ import {
   User,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
+import { PingBrandLogo } from "@/components/brand/ping-brand-logo";
+import { memberLoginEmailHref } from "@/lib/auth-signup-flow";
+import { usePingMemberSession } from "@/hooks/use-ping-member-session";
 import "./bulk-side-menu.css";
 
 const FLOWER_PARTNER_URL =
@@ -29,6 +33,13 @@ type BulkSideMenuProps = {
 };
 
 export function BulkSideMenu({ open, onClose }: BulkSideMenuProps) {
+  const isLoggedIn = usePingMemberSession();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -45,13 +56,14 @@ export function BulkSideMenu({ open, onClose }: BulkSideMenuProps) {
     }, 320);
   };
 
-  return (
+  const drawer = (
     <>
       <button
         type="button"
         className={`side-menu-overlay${open ? " show" : ""}`}
         aria-label={open ? "메뉴 닫기" : undefined}
         aria-hidden={!open}
+        tabIndex={open ? 0 : -1}
         onClick={onClose}
       />
       <div
@@ -62,7 +74,7 @@ export function BulkSideMenu({ open, onClose }: BulkSideMenuProps) {
       >
         <div className="side-menu-header">
           <div id="bulk-side-menu-title" className="side-menu-title">
-            메뉴
+            <PingBrandLogo variant="horizontal" />
           </div>
           <button
             type="button"
@@ -74,18 +86,21 @@ export function BulkSideMenu({ open, onClose }: BulkSideMenuProps) {
           </button>
         </div>
         <nav className="side-menu-content" aria-labelledby="bulk-side-menu-title">
-          <a href="/products/ping" className="side-menu-item" onClick={onClose}>
+          <a href="/" className="side-menu-item" onClick={onClose}>
             <Home className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
             홈
           </a>
-          <Link href="/mypage" className="side-menu-item" onClick={onClose}>
-            <User className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
-            마이페이지
-          </Link>
-          <Link href="/login" className="side-menu-item" onClick={onClose}>
-            <LogIn className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
-            로그인
-          </Link>
+          {isLoggedIn ? (
+            <Link href="/mypage" className="side-menu-item" onClick={onClose}>
+              <User className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
+              마이페이지
+            </Link>
+          ) : (
+            <Link href={memberLoginEmailHref("/mypage")} className="side-menu-item" onClick={onClose}>
+              <LogIn className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
+              로그인
+            </Link>
+          )}
           <Link href="/start?thankyou=1" className="side-menu-item" onClick={onClose}>
             <HeartHandshake className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
             답례 문자 보내기
@@ -151,7 +166,15 @@ export function BulkSideMenu({ open, onClose }: BulkSideMenuProps) {
             카카오톡 문의
           </a>
         </nav>
+        <div className="side-menu-footer">
+          <Link href="/start" className="side-menu-send-cta" onClick={onClose}>
+            부고 보내기
+          </Link>
+        </div>
       </div>
     </>
   );
+
+  if (!mounted) return null;
+  return createPortal(drawer, document.body);
 }

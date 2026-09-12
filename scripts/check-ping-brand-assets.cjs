@@ -36,7 +36,9 @@ mustExist("src/app/favicon.ico");
 mustExist("src/app/icon.png");
 mustExist("src/app/apple-icon.png");
 mustExist("public/brand/ping/ping-app-logo-canonical.png");
+mustExist("public/brand/ping/ping-logo-horizontal.png");
 mustExist("docs/references/ping-brand/ping-app-logo-canonical.png");
+mustExist("docs/references/ping-brand/ping-logo-horizontal.png");
 
 mustContain("src/lib/ping-brand.ts", 'export const PING_BRAND_PRIMARY = "#0056F3"');
 mustContain(
@@ -45,6 +47,14 @@ mustContain(
 );
 mustContain("src/lib/ping-brand.ts", 'export const PING_APP_ICON_SRC = "/icon.png"');
 mustContain("src/lib/ping-brand.ts", 'export const PING_BRAND_NAME = "PING"');
+mustContain(
+  "src/lib/ping-brand.ts",
+  'export const PING_LOGO_HORIZONTAL_SRC = "/brand/ping/ping-logo-horizontal.png"',
+);
+mustContain("src/components/brand/ping-brand-logo.tsx", "PING_LOGO_HORIZONTAL_SRC");
+mustContain("src/components/brand/ping-brand-logo.tsx", 'variant?: "horizontal" | "icon" | "mark"');
+mustContain("src/components/bulk/bulk-flow-logo-bar.tsx", 'variant="horizontal"');
+mustNotContain("src/components/bulk/bulk-flow-logo-bar.tsx", "PING_LOGO_ON_LIGHT_SRC");
 mustContain("src/app/manifest.ts", "PING_LOGO_CANONICAL_SRC");
 mustContain("src/app/manifest.ts", "PING_APP_ICON_SRC");
 mustContain("src/app/manifest.ts", "PING_BRAND_PRIMARY");

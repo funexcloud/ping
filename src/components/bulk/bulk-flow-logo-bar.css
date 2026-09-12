@@ -1,12 +1,15 @@
-/* 전역 상단 바 — PING 로고(홈 링크) + 우측 햄버거 (`/start` bulk-page-header 통일) */
+/* 전역 상단 바 — PING 가로형 로고 + 우측 햄버거 */
 
 .bulk-flow-logo-bar {
+  position: relative;
+  z-index: 40;
   flex-shrink: 0;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  padding: env(safe-area-inset-top, 0px) 20px 0.875rem;
-  background: var(--ping-surface);
+  padding: env(safe-area-inset-top, 0px) 16px 0.75rem;
+  background: #fff;
   box-shadow: none;
 }
 
@@ -24,11 +27,29 @@
 }
 
 .bulk-flow-logo-bar__img {
-  height: 48px;
+  height: 36px;
   width: auto;
-  max-width: min(160px, 70vw);
-  object-fit: contain;
-  display: block;
+  max-width: min(168px, 62vw);
 }
 
-/* 햄버거 도형·크기는 globals.css `.hamburger-menu` */
+.bulk-flow-logo-bar .hamburger-menu {
+  width: 44px;
+  height: 44px;
+}
+
+.bulk-flow-logo-bar .hamburger-line:nth-child(1) {
+  top: 15px;
+}
+
+.bulk-flow-logo-bar .hamburger-line:nth-child(2) {
+  top: 21px;
+}
+
+.bulk-flow-logo-bar .hamburger-line:nth-child(3) {
+  top: 27px;
+}
+
+.bulk-flow-logo-bar .hamburger-menu.active .hamburger-line:nth-child(1),
+.bulk-flow-logo-bar .hamburger-menu.active .hamburger-line:nth-child(3) {
+  top: 21px;
+}

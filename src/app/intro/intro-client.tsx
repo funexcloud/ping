@@ -11,7 +11,8 @@ import {
 import { INTRO_HEAD_PHRASES } from "@/content/seo/intro-content";
 import { PING_MAIN_APP_PATH } from "@/lib/ping-main-path";
 import { PhoneMockup } from "@/components/ping-mobile/phone-mockup";
-import { PING_LOGO_ON_LIGHT_SRC } from "@/lib/ping-brand";
+import { PingBrandLogo } from "@/components/brand/ping-brand-logo";
+import { BulkFlowLogoBar } from "@/components/bulk/bulk-flow-logo-bar";
 import { introStages } from "./intro-stages";
 import { IntroWaveCanvas } from "./intro-wave-canvas";
 
@@ -213,6 +214,7 @@ export function IntroClient() {
   return (
     <>
       <IntroWaveCanvas />
+      <BulkFlowLogoBar />
       <div className="app-shell intro-app">
         <header className="cx-head">
           <p className="cx-head-title" id="cxHeadTitle">
@@ -248,7 +250,7 @@ export function IntroClient() {
           </div>
 
           <div className="phone-wrap">
-            <PhoneMockup>
+            <PhoneMockup fillViewportOnNarrow>
               <div className="phone ping-mobile-screen">
                 <div className="phone-bar ping-mobile-header">
                   <button
@@ -257,12 +259,9 @@ export function IntroClient() {
                     onClick={goStart}
                     aria-label="부고 발송 시작"
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={PING_LOGO_ON_LIGHT_SRC} alt="PING" />
+                    <PingBrandLogo variant="horizontal" />
                   </button>
-                  <div className="phone-menu ping-mobile-header__meta" aria-hidden="true">
-                    ☰
-                  </div>
+                  <div className="phone-menu ping-mobile-header__meta" aria-hidden="true" />
                 </div>
                 <div
                   className="phone-body ping-mobile-body"
@@ -290,7 +289,7 @@ export function IntroClient() {
               onClick={goStart}
               aria-label="부고 발송 시작"
             >
-              PING
+              <PingBrandLogo variant="horizontal" />
             </button>
             <p className="intro-hero-sub">Where Hearts Connect.</p>
           </div>

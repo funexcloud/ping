@@ -13,6 +13,8 @@ type PhoneMockupProps = {
   showStatusBar?: boolean;
   /** Extra class on the scaled inner viewport */
   viewportClassName?: string;
+  /** Drop the device bezel on narrow viewports (avoid phone-in-phone). */
+  fillViewportOnNarrow?: boolean;
 };
 
 /**
@@ -26,12 +28,14 @@ export function PhoneMockup({
   compact = false,
   showStatusBar = true,
   viewportClassName,
+  fillViewportOnNarrow = false,
 }: PhoneMockupProps) {
   return (
     <div
       className={cn(
         "ping-phone-frame ping-phone-mockup",
         compact && "ping-phone-mockup--compact",
+        fillViewportOnNarrow && "ping-phone-mockup--fill-narrow",
         stack === "back" && "ping-phone-frame--back",
         className,
       )}

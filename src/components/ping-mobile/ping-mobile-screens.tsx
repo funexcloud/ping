@@ -1,6 +1,6 @@
 "use client";
 
-import { PING_LOGO_MARK_SRC, PING_LOGO_ON_LIGHT_SRC } from "@/lib/ping-brand";
+import { PingBrandLogo } from "@/components/brand/ping-brand-logo";
 import { cn } from "@/lib/utils";
 
 const DEMO_CONTACTS = [
@@ -16,8 +16,7 @@ function MobileHeader({ stepLabel }: { stepLabel?: string }) {
   return (
     <header className="ping-mobile-header">
       <span className="ping-mobile-header__brand">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={PING_LOGO_ON_LIGHT_SRC} alt="PING" />
+        <PingBrandLogo variant="horizontal" />
       </span>
       <span className="ping-mobile-header__meta">
         {stepLabel ? <span>{stepLabel}</span> : null}
@@ -79,8 +78,7 @@ export function PingMobileSendingScreen({
       <div className="ping-mobile-body">
         <h2 className="ping-mobile-title">발송 중</h2>
         <div className="ping-mobile-signal">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={PING_LOGO_MARK_SRC} alt="" />
+          <PingBrandLogo variant="mark" />
         </div>
         <p className="ping-mobile-ratio">
           {sent.toLocaleString("ko-KR")}

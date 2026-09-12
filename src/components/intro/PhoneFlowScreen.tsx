@@ -89,13 +89,14 @@ function SafelinkScreen() {
 
 function DispatchScreen({ progress }: { progress: number }) {
   const sent = Math.round(progress * 173) || 173;
-  return <PingMobileSendingScreen sent={sent} total={328} />;
+  return <PingMobileSendingScreen chrome={false} sent={sent} total={328} />;
 }
 
 function ResultScreen({ progress }: { progress: number }) {
   const delivered = Math.round(Math.max(progress, 0.85) * 173);
   return (
     <PingMobileCompletionScreen
+      chrome={false}
       delivered={delivered}
       success={Math.max(delivered - 2, 0)}
       needsReview={2}

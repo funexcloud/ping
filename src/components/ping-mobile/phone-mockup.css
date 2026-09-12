@@ -31,6 +31,35 @@
   max-width: min(200px, 38vw);
 }
 
+@media (max-width: 720px) {
+  .ping-phone-mockup--fill-narrow {
+    max-width: none;
+    width: 100%;
+    aspect-ratio: auto;
+    min-height: min(68dvh, 640px);
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .ping-phone-mockup--fill-narrow .ping-phone-mockup__status {
+    display: none;
+  }
+
+  .ping-phone-mockup--fill-narrow .ping-phone-mockup__screen {
+    border-radius: 0;
+  }
+
+  .ping-phone-mockup--fill-narrow .ping-phone-frame__scale-inner {
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+    transform: none;
+  }
+}
+
 .ping-phone-mockup__screen {
   position: relative;
   display: flex;
