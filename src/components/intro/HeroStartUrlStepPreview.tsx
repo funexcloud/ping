@@ -2,9 +2,9 @@
 
 import type { RefObject } from "react";
 import { BulkFlowProgress } from "@/components/bulk/bulk-flow-progress";
-import { BULK_FLOW_STEP_COPY } from "@/lib/ping-flow-step-copy";
+import { BULK_FLOW_NINE_COPY } from "@/lib/ping-flow-step-copy";
 
-const URL_STEP_COPY = BULK_FLOW_STEP_COPY[1];
+const URL_STEP_COPY = BULK_FLOW_NINE_COPY[1];
 
 type HeroStartUrlStepPreviewProps = {
   inputRef?: RefObject<HTMLInputElement | null>;
