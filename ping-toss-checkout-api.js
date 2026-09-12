@@ -9,7 +9,10 @@
 const fs = require('fs');
 const path = require('path');
 const paymentPoints = require('./payment-points');
-const { finalizeOrderPaidAndDispatch } = require('./ping-order-finalize');
+
+function finalizeOrderPaidAndDispatch(...args) {
+    return require('./ping-order-finalize').finalizeOrderPaidAndDispatch(...args);
+}
 
 const CHECKOUT_SESSION_STORE = path.join(__dirname, 'checkout-sessions.local.json');
 

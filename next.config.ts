@@ -84,7 +84,17 @@ const checkoutApiTraceFiles = [
   "./ping-dispatch/normalizePhone.js",
   "./ping-dispatch/backupManifest.js",
   "./scripts/solapi-auth-fetch.js",
-  "./node_modules/axios/**",
+  ...[
+    "axios",
+    "form-data",
+    "follow-redirects",
+    "proxy-from-env",
+    "mime-types",
+    "mime-db",
+    "combined-stream",
+    "delayed-stream",
+    "asynckit",
+  ].flatMap((pkg) => [`./node_modules/${pkg}/**`]),
 ];
 
 const memberAuthTraceFiles = [
