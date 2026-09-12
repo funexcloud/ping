@@ -1439,3 +1439,81 @@ html.ping-intro-active {
             color: #191f28;
         }
 
+        @media (max-width: 1023px) {
+            html.ping-intro-active .app-shell.intro-app {
+                max-width: 100%;
+                width: 100%;
+            }
+            .intro-app .phone-wrap {
+                padding-left: 0;
+                padding-right: 0;
+            }
+            .intro-app .phone-bar {
+                display: none;
+            }
+            .phone-wrap .ping-phone-mockup {
+                max-width: none;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            html.ping-intro-active body {
+                display: block;
+                justify-content: unset;
+            }
+            .app-shell.intro-app {
+                --intro-shell-max-w: min(1120px, calc(100% - 4rem));
+                width: 100%;
+                max-width: var(--intro-shell-max-w);
+                margin-inline: auto;
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+                column-gap: 4rem;
+                padding: 1.25rem 2.5rem 3.5rem;
+                box-sizing: border-box;
+            }
+            .intro-app header.cx-head {
+                grid-column: 1;
+                justify-content: flex-start;
+                padding-left: 0;
+                padding-right: 0;
+            }
+            .intro-app .cx-head-title {
+                justify-content: flex-start;
+                text-align: left;
+            }
+            .intro-app .cx-head-type-text {
+                text-align: left;
+            }
+            .intro-app main.cx-main {
+                display: contents;
+                padding: 0;
+            }
+            .intro-app .stage-top,
+            .intro-app .step-dots {
+                grid-column: 1;
+            }
+            .intro-app .step-dots {
+                justify-content: flex-start;
+            }
+            .intro-app .phone-wrap {
+                grid-column: 2;
+                grid-row: 1 / span 6;
+                align-self: center;
+                padding: 0;
+            }
+            .phone-wrap .ping-phone-mockup {
+                max-width: 360px;
+            }
+            .intro-app .intro-hero-tagline {
+                grid-column: 1;
+                text-align: left;
+                margin-top: 1.5rem;
+                padding-left: 0;
+            }
+            .intro-app .intro-hero-brand {
+                justify-content: flex-start;
+            }
+        }
+
+

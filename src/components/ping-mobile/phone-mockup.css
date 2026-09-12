@@ -31,7 +31,7 @@
   max-width: min(200px, 38vw);
 }
 
-@media (max-width: 720px) {
+@media (max-width: 1023px) {
   .ping-phone-mockup--fill-narrow {
     max-width: none;
     width: 100%;

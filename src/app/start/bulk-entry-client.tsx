@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { PING_REACT_BULK_PENDING_REVIEW_KEY } from "@/lib/ping-flow-client";
+import { pingTrack } from "@/lib/ping-analytics";
 import { fetchGoogleContactPickerRows } from "@/lib/ping-google-contacts";
 import { computeBulkOrderTotals } from "@/lib/ping-bulk-pricing";
 import {
@@ -14,10 +16,13 @@ import {
 } from "@/lib/ping-bulk-compose-storage";
 import { consumeBulkWizardResumeStep, peekBulkWizardResumeStep } from "@/lib/ping-bulk-flow-nav";
 import { BulkFlowProgress } from "@/components/bulk/bulk-flow-progress";
+import { PingDevFlowSkipButton } from "@/components/bulk/ping-dev-flow-skip-button";
+import { Button } from "@/components/ui/button";
 import { PingLoadingSpinner } from "@/components/ping-loading-spinner";
 import { RecipientExcludeModal } from "@/components/bulk/recipient-exclude-modal";
 import { bulkFlowStepFromWizard, isBulkWizardFirstStep } from "@/lib/ping-bulk-flow-steps";
-import { getBulkWizardStepCopy } from "@/lib/ping-flow-step-copy";
+import { getBulkWizardStepCopy, START_INTENT_COPY } from "@/lib/ping-flow-step-copy";
+import { isPingMemberLoggedIn } from "@/lib/ping-member-session-client";
 import {
   parseAddressbookFile,
   type BulkRecipientRow,
@@ -36,6 +41,7 @@ import {
   pingIntroSeen,
   pingSetIntroReturnPath,
 } from "@/lib/ping-intro-gate";
+import { capturePartnerAttributionFromLocation } from "@/lib/ping-partner-attribution";
 import { PING_MAIN_APP_PATH } from "@/lib/ping-main-path";
 import { pingAssignToLocation } from "@/lib/ping-nav-home";
 import {
@@ -67,10 +73,18 @@ import {
   persistBulkComposeToPingFromIndex,
   readBulkComposeHydrateFromSession,
 } from "@/lib/ping-bugo-import-flow";
+import { PING_CUSTOMER_CENTER_PATH } from "@/lib/ping-obituary-import-trust";
 import {
   consumeBulkEntryQueryEffect,
   markBulkFlowStarted,
 } from "@/lib/ping-bulk-entry-query";
+import {
+  PING_DEV_PREVIEW_URL,
+  consumePingDevWizardStep,
+  markPingDevFlowPreview,
+  peekPingDevWizardStep,
+  seedPingDevBulkPreviewSession,
+} from "@/lib/ping-dev-flow-skip";
 import {
   PING_FLOW_KEY_ROUTE,
   PING_FLOW_KEY_STARTED,
@@ -89,6 +103,7 @@ import {
 } from "react";
 import { useFontAwesomeCdn } from "@/hooks/use-font-awesome-cdn";
 import { cn } from "@/lib/utils";
+import { FilePenLine, Send } from "lucide-react";
 
 /** TEMP — Google 연락처 OAuth 심사 중 배지. 심사 완료 후 false 또는 아래 마크업·CSS 삭제 */
 const SHOW_GOOGLE_CONTACTS_REVIEW_BADGE = true;
@@ -126,6 +141,8 @@ function readInitialThankYouIntent(): boolean {
 function readInitialBulkStep(): WizardStep {
   if (typeof window === "undefined") return "url";
   try {
+    const devStep = peekPingDevWizardStep();
+    if (devStep) return devStep;
     const resume = peekBulkWizardResumeStep();
     if (resume) return resume;
     if (new URLSearchParams(window.location.search).get("thankyou") === "1") return "compose";
@@ -136,6 +153,29 @@ function readInitialBulkStep(): WizardStep {
     /* ignore */
   }
   return "url";
+}
+
+/** 답례·이어하기·명시 쿼리면 분기 화면을 건너뛴다. */
+function readSkipStartIntentChoose(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const sp = new URLSearchParams(window.location.search);
+    if (sp.get("thankyou") === "1") return true;
+    if (sp.get("intent") === "bulk") return true;
+    if (sp.get("intent") === "write") return true;
+    if (sp.get("mergeBulk") === "1") return true;
+    if (sp.get("bulkAfterUrl") === "1") return true;
+    if (peekBulkWizardResumeStep()) return true;
+    if (peekPingDevWizardStep()) return true;
+  } catch {
+    /* ignore */
+  }
+  return false;
+}
+
+function readInitialShowIntentChoose(): boolean {
+  if (typeof window === "undefined") return true;
+  return !readSkipStartIntentChoose();
 }
 
 function readInitialComposeState(): {
@@ -223,7 +263,7 @@ function BulkEntryShellPlaceholder() {
           <span className="ping-top-nav__spacer" aria-hidden="true" />
           <h1 className="ping-top-nav__title">&nbsp;</h1>
         </header>
-        <div className="bulk-flow-progress shrink-0 px-5 pb-3 pt-1" aria-hidden="true">
+        <div className="bulk-flow-progress shrink-0" aria-hidden="true">
           <div className="mb-2 flex gap-0.5">
             {Array.from({ length: 9 }, (_, i) => (
               <span key={i} className="h-1 min-w-0 flex-1 rounded-full bg-[#E9ECF0]" />
@@ -248,9 +288,17 @@ function BulkEntryInner() {
     () => getBulkWizardStepCopy(step, isThankYouFlow),
     [step, isThankYouFlow],
   );
-  const showHeaderBack = !isBulkWizardFirstStep(step, isThankYouFlow);
+  const skipIntentChooseRef = useRef(
+    typeof window === "undefined" ? false : readSkipStartIntentChoose(),
+  );
+  const [showIntentChoose, setShowIntentChoose] = useState(readInitialShowIntentChoose);
+  const showHeaderBack =
+    showIntentChoose ||
+    (!skipIntentChooseRef.current && step === "url" && !isThankYouFlow) ||
+    !isBulkWizardFirstStep(step, isThankYouFlow);
   const [url, setUrl] = useState("");
   const [urlHint, setUrlHint] = useState<string | null>(null);
+  const [urlDomainBlock, setUrlDomainBlock] = useState<string | null>(null);
   const [urlImportLoading, setUrlImportLoading] = useState(false);
   const [urlPassOverlayVisible, setUrlPassOverlayVisible] = useState(false);
   /** compose → url 「이전」 직후에는 URL을 바꿀 때까지 자동 전환 중지 */
@@ -281,6 +329,7 @@ function BulkEntryInner() {
   useFontAwesomeCdn();
 
   useEffect(() => {
+    capturePartnerAttributionFromLocation();
     pingApplyIntroSkipQueryToHistory();
     pingIntroOnReloadClearSeen();
     if (!pingIntroSeen()) {
@@ -290,12 +339,27 @@ function BulkEntryInner() {
       return;
     }
     try {
-      sessionStorage.setItem(PING_FLOW_KEY_ROUTE, ROUTE_BULK_DIRECT);
-      sessionStorage.setItem(PING_FLOW_KEY_STARTED, "1");
+      if (!readSkipStartIntentChoose()) {
+        setShowIntentChoose(true);
+        /* 분기 선택 전에는 대량발송 시작으로 표시하지 않는다 */
+      } else if (new URLSearchParams(window.location.search).get("intent") === "write") {
+        setShowIntentChoose(false);
+        sessionStorage.setItem(PING_FLOW_KEY_ROUTE, ROUTE_OBITUARY_THEN_BULK);
+        router.replace(
+          isPingMemberLoggedIn() ? "/obituary-form" : "/login?next=%2Fobituary-form",
+        );
+        setBootState("redirect-intro");
+        return;
+      } else {
+        setShowIntentChoose(false);
+        sessionStorage.setItem(PING_FLOW_KEY_ROUTE, ROUTE_BULK_DIRECT);
+        sessionStorage.setItem(PING_FLOW_KEY_STARTED, "1");
+      }
     } catch {
       /* ignore */
     }
     setBootState("ready");
+    router.prefetch("/login?next=%2Fobituary-form");
   }, [router]);
 
   const gateReady = bootState === "ready";
@@ -323,6 +387,7 @@ function BulkEntryInner() {
   useEffect(() => {
     if (!gateReady) return;
     consumeBulkWizardResumeStep();
+    consumePingDevWizardStep();
   }, [gateReady]);
 
   useLayoutEffect(() => {
@@ -589,11 +654,18 @@ function BulkEntryInner() {
           body,
         );
         if (!result.ok) {
-          setUrlHint(result.hint);
+          if (result.reason === "host_not_allowed") {
+            setUrlDomainBlock(result.hostname || null);
+            setUrlHint(result.hint);
+          } else {
+            setUrlDomainBlock(null);
+            setUrlHint(result.hint);
+          }
           return;
         }
-        setUrl(result.normalizedUrl);
+        setUrlDomainBlock(null);
         setUrlHint(null);
+        setUrl(result.normalizedUrl);
         if (result.importWarning) window.alert(result.importWarning);
         setTemplateId(result.compose.templateId);
         setBody(result.compose.body);
@@ -611,6 +683,7 @@ function BulkEntryInner() {
     urlAutoAdvancePausedRef.current = false;
     setUrl(raw);
     setUrlHint(null);
+    setUrlDomainBlock(null);
     bugoImportSessionRef.current.resetImportCacheIfUrlChanged(raw);
   }, []);
 
@@ -645,7 +718,7 @@ function BulkEntryInner() {
   );
 
   useEffect(() => {
-    if (!gateReady || step !== "url" || isThankYouFlow) return;
+    if (!gateReady || showIntentChoose || step !== "url" || isThankYouFlow) return;
     if (urlAutoAdvancePausedRef.current) return;
     const nv = normalizeObituaryUrlForField(url);
     if (!isObituaryUrlFieldValid(nv)) return;
@@ -653,7 +726,7 @@ function BulkEntryInner() {
       void advanceUrlStepToCompose(nv);
     }, 480);
     return () => window.clearTimeout(timer);
-  }, [gateReady, step, isThankYouFlow, url, advanceUrlStepToCompose]);
+  }, [gateReady, showIntentChoose, step, isThankYouFlow, url, advanceUrlStepToCompose]);
 
   const pickTemplateAndCloseMenu = useCallback((id: BulkSmsTemplateId) => {
     setTemplateId(id);
@@ -701,7 +774,27 @@ function BulkEntryInner() {
     goPick();
   }, [body, isThankYouFlow, goPick]);
 
+  const onChooseBulk = useCallback(() => {
+    markBulkFlowStarted(ROUTE_BULK_DIRECT);
+    setShowIntentChoose(false);
+  }, []);
+
+  const onChooseObituaryWrite = useCallback(() => {
+    try {
+      sessionStorage.setItem(PING_FLOW_KEY_ROUTE, ROUTE_OBITUARY_THEN_BULK);
+    } catch {
+      /* ignore */
+    }
+    router.push(
+      isPingMemberLoggedIn() ? "/obituary-form" : "/login?next=%2Fobituary-form",
+    );
+  }, [router]);
+
   const onHeaderBack = useCallback(() => {
+    if (showIntentChoose) {
+      pingAssignToLocation("/");
+      return;
+    }
     if (step === "review") {
       setStep("pick");
       return;
@@ -715,8 +808,74 @@ function BulkEntryInner() {
       setStep("url");
       return;
     }
+    if (step === "url" && !isThankYouFlow && !skipIntentChooseRef.current) {
+      setShowIntentChoose(true);
+      return;
+    }
     pingAssignToLocation("/");
-  }, [step, isThankYouFlow]);
+  }, [showIntentChoose, step, isThankYouFlow]);
+
+  const onDevSkipNext = useCallback(() => {
+    markPingDevFlowPreview();
+    if (showIntentChoose) {
+      onChooseBulk();
+      return;
+    }
+    if (step === "url" && !isThankYouFlow) {
+      urlAutoAdvancePausedRef.current = true;
+      const seeded = seedPingDevBulkPreviewSession({
+        title,
+        body: body.trim() ? body : undefined,
+        templateId,
+      });
+      setUrl(seeded.url);
+      setUrlHint(null);
+      setUrlDomainBlock(null);
+      setTitle(seeded.title);
+      setBody(seeded.body);
+      setTemplateId(seeded.templateId);
+      setStep("compose");
+      return;
+    }
+    if (step === "compose") {
+      const nextBody = body.trim() ? body : getStaticBulkTemplateBody(templateId);
+      if (!body.trim()) setBody(nextBody);
+      const nv = isThankYouFlow
+        ? ""
+        : isObituaryUrlFieldValid(normalizeObituaryUrlForField(url))
+          ? normalizeObituaryUrlForField(url)
+          : PING_DEV_PREVIEW_URL;
+      if (!isThankYouFlow && nv === PING_DEV_PREVIEW_URL) setUrl(PING_DEV_PREVIEW_URL);
+      persistBulkComposeToPingFromIndex({
+        title: title || "개발 미리보기",
+        body: nextBody,
+        templateId,
+        obituaryPageUrl: nv,
+        bulkFlowKind: isThankYouFlow ? "thankyou" : "obituary",
+      });
+      setStep("pick");
+      return;
+    }
+    if (step === "pick" || step === "review") {
+      seedPingDevBulkPreviewSession({
+        title: title || "개발 미리보기",
+        body: body.trim() ? body : getStaticBulkTemplateBody(templateId),
+        templateId,
+      });
+      if (!isThankYouFlow && !url.trim()) setUrl(PING_DEV_PREVIEW_URL);
+      navigateToBulkPaymentsStep();
+    }
+  }, [
+    showIntentChoose,
+    onChooseBulk,
+    step,
+    isThankYouFlow,
+    title,
+    body,
+    templateId,
+    url,
+    navigateToBulkPaymentsStep,
+  ]);
 
   const onReviewNext = useCallback(() => {
     if (!isThankYouFlow) {
@@ -775,8 +934,10 @@ function BulkEntryInner() {
       return;
     }
     setGoogleContactsLoading(true);
+    pingTrack("contacts_import_start");
     try {
       const rows = await fetchGoogleContactPickerRows();
+      pingTrack("contacts_import_success", { count: rows.length });
       setPickerIsGoogle(true);
       setPendingPickerRows(rows);
       setExcludeModalOpen(true);
@@ -821,6 +982,7 @@ function BulkEntryInner() {
 
     if (effect.type === "mergeBulk") {
       markBulkFlowStarted(ROUTE_OBITUARY_THEN_BULK);
+      setShowIntentChoose(false);
       setIsThankYouFlow(false);
       const obUrl = effect.obituaryUrl;
       if (obUrl) {
@@ -837,6 +999,7 @@ function BulkEntryInner() {
 
     if (effect.type === "bulkAfterUrl") {
       markBulkFlowStarted(ROUTE_BULK_DIRECT);
+      setShowIntentChoose(false);
       const snap = loadPingFromIndexSnapshot();
       const norm = normalizeObituaryUrlForField(String(snap.obituaryPageUrl || ""));
       if (!isObituaryUrlFieldValid(norm)) {
@@ -873,10 +1036,14 @@ function BulkEntryInner() {
 
   useEffect(() => {
     if (!gateReady) return;
+    if (showIntentChoose) {
+      document.title = START_INTENT_COPY.docTitle;
+      return;
+    }
     const ty = isThankYouFlow;
     document.title =
       getBulkWizardStepCopy(step, ty).docTitle ?? "PING · 대량 발송";
-  }, [gateReady, step, isThankYouFlow]);
+  }, [gateReady, showIntentChoose, step, isThankYouFlow]);
 
   const canUrlNext = isObituaryUrlFieldValid(normalizeObituaryUrlForField(url));
   const canComposeNext = isBulkSmsBodyStepValid(body);
@@ -925,22 +1092,27 @@ function BulkEntryInner() {
         ) : (
           <span className="ping-top-nav__spacer" aria-hidden="true" />
         )}
-        <h1 className="ping-top-nav__title">{wizardStepCopy.title}</h1>
+        <h1 className="ping-top-nav__title">
+          {showIntentChoose ? START_INTENT_COPY.navTitle : wizardStepCopy.title}
+        </h1>
         {showHeaderBack ? (
           <span className="ping-top-nav__spacer" aria-hidden="true" />
         ) : null}
       </header>
 
-      <BulkFlowProgress
-        currentStep={bulkFlowStepFromWizard(step)}
-        labelOverride={
-          isThankYouFlow && step === "compose" ? "답례 문자" : undefined
-        }
-      />
+      {showIntentChoose ? null : (
+        <BulkFlowProgress
+          currentStep={bulkFlowStepFromWizard(step)}
+          labelOverride={
+            isThankYouFlow && step === "compose" ? "답례 문자" : undefined
+          }
+        />
+      )}
 
       <main
         className={cn(
           "index-main-flow flex min-h-0 min-w-0 max-w-full flex-1 flex-col overflow-hidden px-0",
+          showIntentChoose ||
           (step === "url" && !isThankYouFlow) ||
           step === "compose" ||
           step === "pick" ||
@@ -950,7 +1122,59 @@ function BulkEntryInner() {
         )}
         id="bulk-main"
       >
-        {gateReady ? (
+        {gateReady && showIntentChoose ? (
+          <section
+            className="mb-0 flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden bg-[var(--ping-surface)] px-5 pb-4 pt-3"
+            aria-labelledby="start-intent-title"
+          >
+            <div className="flex min-w-0 w-full max-w-full flex-col gap-5">
+              <div className="ping-step-head ping-step-head--panel">
+                <h2 id="start-intent-title" className="ping-step-head__title">
+                  {START_INTENT_COPY.title}
+                </h2>
+                <p className="ping-step-head__sub">{START_INTENT_COPY.subtitle}</p>
+              </div>
+              <div className="flex flex-col gap-3">
+                <Button
+                  type="button"
+                  variant="default"
+                  className="h-auto min-h-[76px] w-full items-start justify-start whitespace-normal rounded-lg border-0 px-4 py-4 text-left shadow-none ring-0 hover:bg-primary-hover focus-visible:ring-0 [&_svg]:size-5"
+                  onClick={onChooseBulk}
+                >
+                  <span className="flex min-w-0 items-start gap-3">
+                    <Send className="mt-0.5 shrink-0" aria-hidden />
+                    <span className="flex min-w-0 flex-col items-start gap-1">
+                      <span className="text-[15px] font-bold leading-snug">
+                        {START_INTENT_COPY.bulkTitle}
+                      </span>
+                      <span className="text-[13px] font-normal leading-snug text-primary-foreground/90">
+                        {START_INTENT_COPY.bulkSub}
+                      </span>
+                    </span>
+                  </span>
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="h-auto min-h-[76px] w-full items-start justify-start whitespace-normal rounded-lg border-2 border-solid border-primary bg-white px-4 py-4 text-left text-primary shadow-none outline-none ring-0 ring-offset-0 transition-none hover:bg-white hover:text-primary focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:ring-transparent [&_svg]:size-5"
+                  onClick={onChooseObituaryWrite}
+                >
+                  <span className="flex min-w-0 items-start gap-3">
+                    <FilePenLine className="mt-0.5 shrink-0" aria-hidden />
+                    <span className="flex min-w-0 flex-col items-start gap-1">
+                      <span className="text-[15px] font-bold leading-snug">
+                        {START_INTENT_COPY.writeTitle}
+                      </span>
+                      <span className="text-[13px] font-normal leading-snug text-muted-foreground">
+                        {START_INTENT_COPY.writeSub}
+                      </span>
+                    </span>
+                  </span>
+                </Button>
+              </div>
+            </div>
+          </section>
+        ) : gateReady ? (
         step === "url" && !isThankYouFlow ? (
           <section
             className="bulk-url-step mb-0 flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden bg-[var(--ping-surface)] px-0"
@@ -980,12 +1204,11 @@ function BulkEntryInner() {
               </div>
             ) : null}
             <div className="flex min-h-0 flex-col bg-[var(--ping-surface)] px-5 pb-4 pt-3">
-              <div className="bulk-url-step__card ping-bordered-panel mb-3 min-w-0 max-w-full p-5">
-                <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.04em] text-[#3182F6]">
+              <div className="bulk-url-step__card ping-bordered-panel mb-3 min-w-0 max-w-full">
+                <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.04em] text-primary">
                   부고 발송
                 </p>
                 <div className="ping-step-head ping-step-head--panel mb-4">
-                  <h1 className="ping-step-head__title">{wizardStepCopy.title}</h1>
                   <p className="ping-step-head__sub">{wizardStepCopy.subtitle}</p>
                 </div>
 
@@ -1012,7 +1235,33 @@ function BulkEntryInner() {
                     placeholder="https://로 시작하는 주소"
                   />
                 </div>
-                {urlHint ? (
+                {urlDomainBlock ? (
+                  <div
+                    className="ping-bordered-panel mt-3 min-w-0 max-w-full p-4"
+                    role="alert"
+                  >
+                    <p className="text-[13px] leading-relaxed text-[var(--ping-text)]">
+                      {urlHint}
+                    </p>
+                    <p className="mt-2 text-[12px] font-medium text-[var(--ping-muted)]">
+                      {urlDomainBlock}
+                    </p>
+                    <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                      <a
+                        href="tel:0522864440"
+                        className="ping-btn-secondary inline-flex min-h-[44px] items-center justify-center px-4 text-[14px]"
+                      >
+                        052-286-4440
+                      </a>
+                      <Link
+                        href={PING_CUSTOMER_CENTER_PATH}
+                        className="ping-btn-primary inline-flex min-h-[44px] items-center justify-center px-4 text-[14px]"
+                      >
+                        고객센터 문의
+                      </Link>
+                    </div>
+                  </div>
+                ) : urlHint ? (
                   <p
                     className="mt-2 text-[13px] leading-relaxed text-red-600"
                     role="alert"
@@ -1043,9 +1292,6 @@ function BulkEntryInner() {
                 aria-label={isThankYouFlow ? "답례 문자메세지 작성" : "부고 문자메세지 작성"}
               >
                 <div className="ping-step-head ping-step-head--panel">
-                  <h2 id="index-bulk-compose-heading" className="ping-step-head__title">
-                    {wizardStepCopy.title}
-                  </h2>
                   <p className="ping-step-head__sub">{wizardStepCopy.subtitle}</p>
                 </div>
                 <div className="index-bulk-compose-title-wrap">
@@ -1238,10 +1484,10 @@ function BulkEntryInner() {
                 aria-hidden="true"
                 onChange={(e) => void onPickAddressbookFile(e.target.files)}
               />
-              <div className="bulk-pick-step__card ping-bordered-panel flex min-w-0 max-w-full flex-col gap-3 p-5">
+              <div className="bulk-pick-step__card ping-bordered-panel ping-mobile-screen flex min-w-0 max-w-full flex-col gap-3 p-5">
                 <div className="ping-step-head ping-step-head--panel">
-                  <h2 className="ping-step-head__title">{wizardStepCopy.title}</h2>
-                  <p className="ping-step-head__sub">{wizardStepCopy.subtitle}</p>
+                  <h2 className="ping-mobile-title text-[22px]">{wizardStepCopy.title}</h2>
+                  <p className="ping-step-head__sub ping-mobile-count-line">{wizardStepCopy.subtitle}</p>
                 </div>
                 <div className="bulk-pick-source-btn-wrap">
                   {SHOW_GOOGLE_CONTACTS_REVIEW_BADGE ? (
@@ -1288,7 +1534,6 @@ function BulkEntryInner() {
             <div className="bulk-review-step__panel flex min-h-0 w-full min-w-0 max-w-full shrink-0 flex-col justify-start px-5 py-2 pb-4">
               <div className="bulk-review-step__card ping-bordered-panel flex min-w-0 max-w-full flex-col gap-3 p-5">
                 <div className="ping-step-head ping-step-head--panel">
-                  <h2 className="ping-step-head__title">{wizardStepCopy.title}</h2>
                   <p className="ping-step-head__sub">{wizardStepCopy.subtitle}</p>
                 </div>
                 {reviewSourceLabelText ? (
@@ -1349,7 +1594,7 @@ function BulkEntryInner() {
         )}
       </main>
 
-      {gateReady && step === "compose" ? (
+      {gateReady && !showIntentChoose && step === "compose" ? (
         <div
           className="bulk-flow-cta shrink-0 w-full bg-[var(--ping-surface)]"
           aria-label="문자 작성 단계 이동"
@@ -1368,7 +1613,7 @@ function BulkEntryInner() {
             </div>
           </div>
         </div>
-      ) : gateReady && step === "review" ? (
+      ) : gateReady && !showIntentChoose && step === "review" ? (
         <div
           className="bulk-flow-cta shrink-0 w-full bg-[var(--ping-surface)]"
           aria-label="결제 금액 확인 단계 이동"
@@ -1389,6 +1634,16 @@ function BulkEntryInner() {
         </div>
       ) : null}
 
+      <PingDevFlowSkipButton
+        onPrev={onHeaderBack}
+        onNext={onDevSkipNext}
+        elevated={
+          gateReady &&
+          !showIntentChoose &&
+          (step === "compose" || step === "review")
+        }
+      />
+
       <RecipientExcludeModal
         open={excludeModalOpen}
         rows={pendingPickerRows}
@@ -1408,7 +1663,7 @@ function BulkEntryInner() {
           }}
         >
           <div
-            className="flex max-h-[min(85dvh,640px)] w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white shadow-xl"
+            className="flex max-h-[min(85dvh,640px)] w-full max-w-[var(--ping-column-max)] flex-col overflow-hidden rounded-2xl bg-white shadow-xl"
             role="dialog"
             aria-modal="true"
             aria-labelledby="bulk-saved-compose-title"
@@ -1488,7 +1743,7 @@ function BulkEntryInner() {
           }}
         >
           <div
-            className="flex max-h-[min(85dvh,640px)] w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white shadow-xl"
+            className="flex max-h-[min(85dvh,640px)] w-full max-w-[var(--ping-column-max)] flex-col overflow-hidden rounded-2xl bg-white shadow-xl"
             role="dialog"
             aria-modal="true"
             aria-labelledby="bulk-recent-sends-title"
