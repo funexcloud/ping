@@ -17,14 +17,10 @@ import { cn } from "@/lib/utils";
 import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
 import {
   collection,
-  deleteDoc,
-  doc,
   getDocs,
   getFirestore,
   orderBy,
   query,
-  serverTimestamp,
-  setDoc,
   type Firestore,
   type Timestamp,
 } from "firebase/firestore";
@@ -742,12 +738,6 @@ export function AdminMonitoringClient() {
   const handleRegisterPartner = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const db = getAdminFirestore();
-    if (!db) {
-      window.alert("Firebase가 초기화되지 않았습니다. 페이지를 새로고침 후 다시 시도해 주세요.");
-      return;
-    }
-
     if (!partnerForm.code.trim()) {
       window.alert("파트너 코드가 생성되지 않았습니다. 상호를 입력해 주세요.");
       return;
@@ -760,24 +750,26 @@ export function AdminMonitoringClient() {
 
     setSubmitting(true);
     try {
-      const partnerData = {
-        name: partnerForm.name.trim(),
-        contact: partnerForm.contact.trim(),
-        phone: partnerForm.phone.trim(),
-        email: partnerForm.email.trim() || null,
-        code: partnerForm.code.trim(),
-        link: partnerForm.link.trim(),
-        bank: partnerForm.bank.trim(),
-        bankCode: partnerForm.bankCode.trim(),
-        accountNumber: partnerForm.accountNumber.trim(),
-        accountHolder: partnerForm.accountHolder.trim(),
-        accountAgreement: partnerForm.accountAgreement,
-        accountAgreementDate: partnerForm.accountAgreement ? serverTimestamp() : null,
-        createdAt: serverTimestamp(),
-        status: "active",
-      };
-
-      await setDoc(doc(db, "ping_partners", partnerData.code), partnerData);
+      const res = await adminApiFetch("/api/admin/partners/register", {
+        method: "POST",
+        json: {
+          name: partnerForm.name.trim(),
+          contact: partnerForm.contact.trim(),
+          phone: partnerForm.phone.trim(),
+          email: partnerForm.email.trim() || null,
+          code: partnerForm.code.trim(),
+          link: partnerForm.link.trim(),
+          bank: partnerForm.bank.trim(),
+          bankCode: partnerForm.bankCode.trim(),
+          accountNumber: partnerForm.accountNumber.trim(),
+          accountHolder: partnerForm.accountHolder.trim(),
+          accountAgreement: partnerForm.accountAgreement,
+        },
+      });
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      if (!res.ok || data.ok !== true) {
+        throw new Error(data.error || "파트너 등록 중 오류가 발생했습니다.");
+      }
       window.alert("파트너가 성공적으로 등록되었습니다!");
       closePartnerModal();
       setLoading(true);
@@ -791,19 +783,20 @@ export function AdminMonitoringClient() {
   };
 
   const handleDeletePartner = async (partnerCode: string, partnerName: string) => {
-    const db = getAdminFirestore();
-    if (!db) {
-      window.alert("Firebase가 초기화되지 않았습니다.");
-      return;
-    }
-
     const confirmed = window.confirm(
       `파트너 "${partnerName}" (${partnerCode})를 삭제하시겠습니까?\n\n주의: 이 작업은 되돌릴 수 없습니다.`,
     );
     if (!confirmed) return;
 
     try {
-      await deleteDoc(doc(db, "ping_partners", partnerCode));
+      const res = await adminApiFetch("/api/admin/partners/delete", {
+        method: "POST",
+        json: { code: partnerCode },
+      });
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      if (!res.ok || data.ok !== true) {
+        throw new Error(data.error || "파트너 삭제 중 오류가 발생했습니다.");
+      }
       window.alert("파트너가 성공적으로 삭제되었습니다.");
       setLoading(true);
       await loadAllData();

@@ -9,9 +9,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-
 import { useFontAwesomeCdn } from "@/hooks/use-font-awesome-cdn";
 import { attachDatePickersById } from "@/lib/calendar-picker";
 import { collectObituaryFormData } from "@/lib/obituary-form-collect";
@@ -24,10 +21,6 @@ import {
   mergeToBulkFlow,
   ROUTE_OBITUARY_THEN_BULK,
 } from "@/lib/ping-flow-client";
-import {
-  getPingFirebaseStorage,
-  getPingFirestore,
-} from "@/lib/ping-firebase-web";
 import "./obituary-form.css";
 
 const HOURS = Array.from({ length: 24 }, (_, i) =>
@@ -255,13 +248,6 @@ export default function ObituaryFormClient() {
       return;
     }
 
-    const db = getPingFirestore();
-    const storage = getPingFirebaseStorage();
-    if (!db) {
-      window.alert("Firebase 설정(NEXT_PUBLIC_FIREBASE_*)이 없습니다.");
-      return;
-    }
-
     if (status === "draft") setSavingDraft(true);
     else setPublishing(true);
 
@@ -271,18 +257,13 @@ export default function ObituaryFormClient() {
         getChecked,
         status,
       ) as Record<string, unknown>;
-
-      if (photoFile && storage) {
-        const uniqueFileName = `${Date.now()}_${photoFile.name}`;
-        const photoRef = ref(storage, `obituaries/photos/${uniqueFileName}`);
-        const snapshot = await uploadBytes(photoRef, photoFile);
-        const downloadURL = await getDownloadURL(snapshot.ref);
-        base.photoUrl = downloadURL;
+      base.createdAt = new Date().toISOString();
+      if (photoFile) base.photoFileName = photoFile.name;
+      try {
+        sessionStorage.setItem("ping_obituary_form_local", JSON.stringify(base));
+      } catch {
+        /* ignore quota */
       }
-
-      base.createdAt = serverTimestamp();
-
-      await addDoc(collection(db, "ping_obituaries"), base);
 
       if (status === "draft") {
         window.alert("부고장이 임시저장 되었습니다.");

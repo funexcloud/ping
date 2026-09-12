@@ -2,7 +2,7 @@
 'use strict';
 
 /**
- * Tier 3 — no new client Firestore/Storage writes in src/,
+ * Tier 3 — no client Firestore/Storage writes in src/,
  * checkout order path is server-owned, ping_orders client create stays denied.
  */
 const fs = require('node:fs');
@@ -30,12 +30,6 @@ function listFiles(dir, ext, acc = []) {
   return acc;
 }
 
-/** Pre-existing origin HEAD writes, not introduced by the checkout-prep checkpoint. */
-const originClientWriteDebt = new Set([
-  'src/app/admin/monitoring/admin-monitoring-client.tsx',
-  'src/app/obituary-form/obituary-form-client.tsx',
-]);
-
 const writePatterns = [/\baddDoc\s*\(/, /\bsetDoc\s*\(/, /\bupdateDoc\s*\(/, /\bdeleteDoc\s*\(/, /\buploadBytes\s*\(/];
 const legacyAllowed = new Set(manifest.clientFirestoreWrites.allowed.filter((p) => p.startsWith('assets/')));
 const legacyDebt = new Map(
@@ -47,7 +41,6 @@ const today = new Date().toISOString().slice(0, 10);
 
 for (const file of listFiles('src', null)) {
   if (!/\.(tsx?|jsx?)$/.test(file)) continue;
-  if (originClientWriteDebt.has(file)) continue;
   const text = read(file);
   if (writePatterns.some((re) => re.test(text))) {
     failures.push(`[tier3-client-writes] ${file} must not use client Firestore/Storage writes`);
