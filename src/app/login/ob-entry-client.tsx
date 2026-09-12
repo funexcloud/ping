@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { BulkFlowProgress } from "@/components/bulk/bulk-flow-progress";
+import { PingDevIdentitySkipBar } from "@/components/bulk/ping-dev-flow-skip-button";
 import { usePingCenteredLayout } from "@/hooks/use-ping-centered-layout";
 import { memberLoginEmailHref, signupJoinTypeHref } from "@/lib/auth-signup-flow";
 import { shouldShowBulkFlowProgressOnLogin } from "@/lib/ping-bulk-flow-login-progress";
@@ -48,10 +49,12 @@ export default function ObEntryClient() {
   const searchParams = useSearchParams();
   const nextParam = searchParams.get("next");
 
+  /* 카카오 로그인 일시 중단
   const kakaoSignupHref = useMemo(
     () => signupJoinTypeHref("kakao", nextParam),
     [nextParam],
   );
+  */
   const guestSignupHref = useMemo(
     () => signupJoinTypeHref("guest", nextParam),
     [nextParam],
@@ -110,15 +113,27 @@ export default function ObEntryClient() {
         style={{ paddingTop: 12 }}
       >
         <div
-          className="ob-entry-panel ping-bordered-panel flex min-w-0 max-w-full flex-col gap-3 p-5"
+          className="ob-entry-panel ping-bordered-panel flex min-w-0 max-w-full flex-col gap-3"
           aria-labelledby="ob-entry-page-title"
         >
           <div id="ob-entry-lead" className="ob-entry-lead-block ping-step-head ping-step-head--lead">
-            <p className="ob-entry-lead-title ping-step-head__title">{copy.title}</p>
-            <p className="ob-entry-lead-sub ping-step-head__sub">{copy.subtitle}</p>
+            <p className="ob-entry-lead-sub ping-step-head__sub ping-mobile-count-line">{copy.subtitle}</p>
           </div>
 
           <div className="ob-entry-stack min-w-0 max-w-full w-full">
+            <Link
+              id="ob-entry-email-login-link"
+              href={emailLoginHref}
+              className="ob-entry-email-login-btn ping-btn-primary ping-mobile-cta w-full no-underline touch-manipulation"
+              aria-label="이메일 회원 로그인"
+            >
+              <span className="ob-entry-email-login-btn__icon" aria-hidden="true">
+                <Mail className="size-[18px]" strokeWidth={2.25} />
+              </span>
+              이메일 회원 로그인
+            </Link>
+
+            {/* 카카오 로그인 일시 중단
             <Link
               id="ob-entry-kakao-login"
               href={kakaoSignupHref}
@@ -137,6 +152,7 @@ export default function ObEntryClient() {
               </span>
               3초만에 카카오싱크
             </Link>
+            */}
 
             <Link
               id="ob-entry-guest-link"
@@ -147,21 +163,9 @@ export default function ObEntryClient() {
               <span className="ob-entry-guest-btn__icon" aria-hidden="true">
                 <Fingerprint className="size-[18px]" strokeWidth={2.25} />
               </span>
-              OTP로 비회원 로그인
+              OTP 비회원 로그인
             </Link>
           </div>
-
-          <Link
-            id="ob-entry-email-login-link"
-            href={emailLoginHref}
-            className="ob-entry-email-login-btn ping-btn-secondary w-full no-underline touch-manipulation"
-            aria-label="이메일 로그인"
-          >
-            <span className="ob-entry-email-login-btn__icon" aria-hidden="true">
-              <Mail className="size-[18px]" strokeWidth={2.25} />
-            </span>
-            이메일 로그인
-          </Link>
 
           <p className="ob-entry-signup-row m-0 text-center text-sm text-[#6B7684]">
             아직 계정이 없으신가요?{" "}
@@ -175,6 +179,7 @@ export default function ObEntryClient() {
           </p>
         </div>
       </main>
+      <PingDevIdentitySkipBar />
     </div>
   );
 }

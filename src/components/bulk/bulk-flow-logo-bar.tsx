@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
+import { PING_LOGO_ON_LIGHT_SRC } from "@/lib/ping-brand";
 import { BulkSideMenu } from "@/components/bulk/bulk-side-menu";
 
 import "./bulk-flow-logo-bar.css";
@@ -12,15 +14,22 @@ import "./bulk-flow-logo-bar.css";
  * 홈(`/`)을 제외한 전역에서 `PingGlobalLayout`이 렌더한다.
  */
 export function BulkFlowLogoBar() {
+  const pathname = usePathname() || "/";
   const [menuOpen, setMenuOpen] = useState(false);
+  const surfaceBar = pathname === "/obituary-form" || pathname === "/start";
 
   return (
     <>
-      <header className="bulk-flow-logo-bar" aria-label="PING">
+      <header
+        className={`bulk-flow-logo-bar${surfaceBar ? " bulk-flow-logo-bar--surface" : ""}`}
+        aria-label="PING"
+      >
         <Link href="/" className="bulk-flow-logo-bar__home" aria-label="홈으로">
           <img
-            src="/ping_logo_svg.svg"
+            src={PING_LOGO_ON_LIGHT_SRC}
             alt="PING"
+            width={1024}
+            height={1024}
             className="bulk-flow-logo-bar__img"
           />
         </Link>

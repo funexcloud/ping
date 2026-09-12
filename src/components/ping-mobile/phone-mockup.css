@@ -1,0 +1,458 @@
+/**
+ * PING Mobile Canonical — generic smartphone shell + inner grammar.
+ * Device is a neutral frame. Do not add notch, Dynamic Island, or manufacturer chrome.
+ */
+
+.ping-phone-mockup {
+  --ping-mobile-navy: var(--ping-ui-text, #191f28);
+  --ping-mobile-muted: var(--ping-ui-text-sub, #6b7684);
+  --ping-mobile-hint: var(--ping-ui-text-hint, #b0b8c1);
+  --ping-mobile-line: var(--ping-divider, #e9ecf0);
+  --ping-mobile-fill: var(--ping-field-fill, #f2f4f6);
+  --ping-mobile-radius-device: 2.15rem;
+  --ping-mobile-radius-screen: 1.7rem;
+  --ping-mobile-radius-control: 14px;
+  --ping-mobile-cta-radius: 16px;
+  --ping-mobile-shadow: 0 22px 48px rgba(15, 23, 42, 0.12);
+  position: relative;
+  width: 100%;
+  max-width: min(300px, 72vw);
+  margin-inline: auto;
+  aspect-ratio: 9 / 19.2;
+  padding: 9px;
+  box-sizing: border-box;
+  border-radius: var(--ping-mobile-radius-device);
+  background: #f4f6f8;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: var(--ping-mobile-shadow);
+}
+
+.ping-phone-mockup--compact {
+  max-width: min(200px, 38vw);
+}
+
+.ping-phone-mockup__screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--ping-mobile-radius-screen);
+  background: #fff;
+  container-type: size;
+}
+
+.ping-phone-mockup__status {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 1.05rem 0.15rem;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ping-mobile-navy);
+}
+
+.ping-phone-mockup__status-meta {
+  display: flex;
+  gap: 0.28rem;
+  color: var(--ping-mobile-muted);
+  font-size: 10px;
+}
+
+.ping-phone-frame.ping-phone-mockup,
+.ping-phone-frame {
+  filter: none;
+}
+
+.ping-phone-mockup .ping-phone-frame__viewport,
+.ping-phone-frame__viewport {
+  position: relative;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  inset: auto;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 0;
+  background: #fff;
+}
+
+.ping-phone-frame__bezel {
+  display: none;
+}
+
+.ping-phone-frame__scale-inner {
+  --phone-logical-w: 375px;
+  --phone-logical-h: 780px;
+  width: var(--phone-logical-w);
+  height: var(--phone-logical-h);
+  transform-origin: top left;
+  transform: scale(
+    min(calc(100cqw / var(--phone-logical-w)), calc(100cqh / var(--phone-logical-h)))
+  );
+  overflow: hidden;
+  background: #fff;
+}
+
+.ping-phone-frame--back {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  transform: scale(0.92) translateY(14px);
+  opacity: 0.42;
+  pointer-events: none;
+}
+
+/* Inner product grammar — landing mockup + runtime */
+.ping-mobile-screen {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  background: #fff;
+  color: var(--ping-mobile-navy, #191f28);
+}
+
+.ping-mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 20px 8px;
+}
+
+.ping-mobile-header__brand {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.ping-mobile-header__brand img {
+  display: block;
+  height: 32px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+}
+
+.ping-mobile-header__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ping-mobile-hint, #b0b8c1);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ping-mobile-body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  padding: 4px 20px 0;
+}
+
+.ping-mobile-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+  color: var(--ping-mobile-navy, #191f28);
+}
+
+.ping-mobile-count-line {
+  margin: 8px 0 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ping-mobile-navy, #191f28);
+}
+
+.ping-mobile-count-line strong {
+  color: var(--ping-primary, #0056F3);
+  font-weight: 800;
+}
+
+.ping-mobile-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--ping-mobile-line, #e9ecf0);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ping-mobile-hint, #b0b8c1);
+  font-size: 14px;
+}
+
+.ping-mobile-list {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  margin: 8px 0 0;
+  overflow: auto;
+}
+
+.ping-mobile-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 8px 0;
+}
+
+.ping-mobile-check {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 1.5px solid #d5dbe3;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+input.ping-mobile-check {
+  appearance: none;
+  margin: 0;
+  cursor: pointer;
+}
+
+.ping-mobile-check.is-on,
+input.ping-mobile-check:checked {
+  border-color: var(--ping-primary, #0056F3);
+  background: var(--ping-primary, #0056F3);
+  box-shadow: inset 0 0 0 2px #fff;
+}
+
+.ping-mobile-avatar {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 999px;
+  background: #eef1f6;
+  color: #5b6573;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ping-mobile-row__text {
+  min-width: 0;
+  flex: 1;
+}
+
+.ping-mobile-row__name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ping-mobile-navy, #191f28);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ping-mobile-row__phone {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--ping-mobile-muted, #6b7684);
+}
+
+.ping-mobile-footer {
+  flex-shrink: 0;
+  padding: 12px 20px 18px;
+}
+
+.ping-mobile-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--ping-mobile-navy, #191f28);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+button.ping-mobile-cta:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ob-flow-btn-primary.ping-mobile-cta,
+.ping-btn-primary.ping-mobile-cta {
+  background: var(--ping-primary, #0056F3);
+}
+
+.ping-mobile-signal {
+  position: relative;
+  display: grid;
+  width: 148px;
+  height: 148px;
+  margin: 28px auto 8px;
+  place-items: center;
+}
+
+.ping-mobile-signal::before,
+.ping-mobile-signal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(0, 86, 243, 0.16) 0%, rgba(0, 86, 243, 0.04) 46%, transparent 70%);
+}
+
+.ping-mobile-signal::after {
+  inset: 18px;
+  background: radial-gradient(circle, rgba(0, 86, 243, 0.18) 0%, rgba(0, 86, 243, 0.05) 50%, transparent 72%);
+}
+
+.ping-mobile-signal img {
+  position: relative;
+  z-index: 1;
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  object-position: 50% 34%;
+  border-radius: 22px;
+}
+
+.ping-mobile-ratio {
+  margin: 8px 0 12px;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--ping-primary, #0056F3);
+}
+
+.ping-mobile-ratio span {
+  color: var(--ping-mobile-hint, #b0b8c1);
+  font-weight: 700;
+}
+
+.ping-mobile-progress {
+  height: 6px;
+  margin: 0 0 22px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8edf3;
+}
+
+.ping-mobile-progress > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ping-primary, #0056F3);
+}
+
+.ping-mobile-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ping-mobile-steps li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--ping-mobile-navy, #191f28);
+}
+
+.ping-mobile-steps__dot {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 1.5px solid #d5dbe3;
+  box-sizing: border-box;
+}
+
+.ping-mobile-steps__dot.is-done {
+  border-color: var(--ping-primary, #0056F3);
+  background: var(--ping-primary, #0056F3);
+}
+
+.ping-mobile-steps__dot.is-active {
+  border-color: var(--ping-primary, #0056F3);
+  box-shadow: inset 0 0 0 4px #fff;
+  background: var(--ping-primary, #0056F3);
+}
+
+.ping-mobile-steps__count {
+  margin-left: auto;
+  color: var(--ping-mobile-hint, #b0b8c1);
+  font-weight: 700;
+}
+
+.ping-mobile-steps__count.is-active {
+  color: var(--ping-primary, #0056F3);
+}
+
+.ping-mobile-wait {
+  margin-top: auto;
+  padding: 20px 0 8px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ping-mobile-hint, #b0b8c1);
+}
+
+.ping-mobile-success-mark {
+  display: grid;
+  width: 88px;
+  height: 88px;
+  margin: 28px auto 16px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--ping-primary, #0056F3);
+  color: #fff;
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.ping-mobile-complete-lead {
+  margin: 0;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.25;
+  color: var(--ping-mobile-navy, #191f28);
+}
+
+.ping-mobile-complete-lead strong {
+  color: var(--ping-primary, #0056F3);
+}
+
+.ping-mobile-mini-stats {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin: 16px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ping-mobile-muted, #6b7684);
+}
+
+@media (max-width: 430px) {
+  .ping-phone-mockup {
+    max-width: min(280px, 78vw);
+  }
+}

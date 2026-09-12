@@ -7,11 +7,12 @@
 
 .recipient-exclude-sheet {
   width: 100%;
-  max-width: min(400px, 100%);
+  max-width: min(var(--ping-column-max), 100%);
   min-width: 0;
   box-sizing: border-box;
   border-radius: 16px 16px 0 0;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
+  overscroll-behavior: contain;
 }
 
 /* 글로벌 ping-ui 가 시트에 24px 전체 라운드를 넣음 → 하단은 직각(레거시 8px 8px 0 0) */
@@ -41,6 +42,7 @@ html.ping-ui body .recipient-exclude-sheet {
 .recipient-exclude-row {
   min-width: 0;
   max-width: 100%;
+  min-height: 56px;
   box-sizing: border-box;
 }
 

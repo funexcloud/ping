@@ -1,0 +1,107 @@
+{
+  "clientFirestoreWrites": {
+    "allowed": [
+      "assets/js/obituary-form.js",
+      "assets/js/index.js"
+    ],
+    "debtExceptions": [
+      {
+        "path": "assets/js/obituary-form.js",
+        "reason": "legacy static obituary form — migrate to /api/obituary/create",
+        "owner": "platform",
+        "expires": "2026-09-30"
+      },
+      {
+        "path": "assets/js/index.js",
+        "reason": "legacy static bulk checkout — migrate to /api/orders/create",
+        "owner": "platform",
+        "expires": "2026-09-30"
+      }
+    ],
+    "note": "src/ 클라이언트 직접 쓰기 금지 (Tier 3). legacy assets만 debtExceptions."
+  },
+  "storagePublicReadPaths": {
+    "knownDebt": [],
+    "note": "allow read: if true 금지 — signed URL은 /api/obituary/photo-url"
+  },
+  "apiRoutes": {
+    "authPatterns": [
+      "enforcePublicRequestSecurity",
+      "requireAdminApiAuth",
+      "loadPingAdminAuth",
+      "resolveAdminAuth",
+      "ping-admin-auth",
+      "verifyOrderCapabilityToken",
+      "createOrderCapabilityToken",
+      "verifyMournerAccountToken",
+      "createMournerAccountToken",
+      "isAuthorized",
+      "CRON_SECRET",
+      "proxyToExpress",
+      "apiAdminLogin",
+      "apiAdminSession",
+      "guestSmsAuth",
+      "member-auth",
+      "handleMemberAuthApi",
+      "requireMemberApiAuth",
+      "requirePartnerApiAuth",
+      "apiPartnerLogin",
+      "resolveObituaryOwner",
+      "apiGetAdminData",
+      "apiRegisterPartner",
+      "apiDeletePartner",
+      "apiConfirmBankDeposit",
+      "authOpts"
+    ],
+    "explicit": {
+      "src/app/api/[[...path]]/route.ts": "express-proxy",
+      "src/app/api/auth/[...segments]/route.ts": "member-auth-entry",
+      "src/app/api/guest-auth/[...segments]/route.ts": "guest-auth-entry",
+      "src/app/api/admin/auth/login/route.ts": "admin-login",
+      "src/app/api/admin/auth/logout/route.ts": "admin-logout",
+      "src/app/api/admin/auth/session/route.ts": "admin-session",
+      "src/app/api/ping-config-send-from/route.ts": "public-non-secret-config",
+      "src/app/api/ping-config-google/route.ts": "public-non-secret-config",
+      "src/app/api/ping-config-portone/route.ts": "public-non-secret-config",
+      "src/app/api/import/wooribugo-funeral/route.ts": "re-export-secured-bugo-import",
+      "src/app/api/obituary/drafts/route.ts": "obituary-draft-owner-cookie-or-member",
+      "src/app/api/obituary/drafts/[id]/route.ts": "obituary-draft-owner-cookie-or-member",
+      "src/app/api/obituary/drafts/[id]/assets/route.ts": "obituary-draft-owner-cookie-or-member",
+      "src/app/api/obituary/drafts/[id]/publish/route.ts": "obituary-draft-owner-cookie-or-member",
+      "src/app/api/obituary/designs/route.ts": "public-non-secret-config",
+      "src/app/api/obituary/funeral-rooms/route.ts": "public-non-secret-config",
+      "src/app/api/crematoriums/route.ts": "public-non-secret-config",
+      "src/app/api/admin/funeral-rooms/route.ts": "admin-session",
+      "src/app/api/mourner-account/route.ts": "mourner-account-capability-token",
+      "src/app/api/mourner-account/notify/route.ts": "obituary-draft-owner-cookie-or-member",
+      "src/app/api/obituary/public/route.ts": "obituary-public-token-app-check"
+    }
+  },
+  "nextPublicAllowedPrefixes": [
+    "NEXT_PUBLIC_FIREBASE_",
+    "NEXT_PUBLIC_SITE_URL",
+    "NEXT_PUBLIC_PING_CONSOLE_URL",
+    "NEXT_PUBLIC_VLEN_BLOG_ORIGIN",
+    "NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY",
+    "NEXT_PUBLIC_EXPRESS_PORT",
+    "NEXT_PUBLIC_NEXT_DEV_PORT"
+  ],
+  "nextPublicForbiddenSubstrings": [
+    "SECRET",
+    "SERVICE_ROLE",
+    "PRIVATE_KEY",
+    "CRON",
+    "ADMIN_API",
+    "SOLAPI",
+    "TOSS",
+    "KMS",
+    "REDIS",
+    "PASSWORD",
+    "TOKEN"
+  ],
+  "npmAudit": {
+    "enforce": true,
+    "failLevel": "critical",
+    "note": "critical=0 목표. high(xlsx 등)는 npm audit 로그로 triage — PING_AUDIT_FAIL_LEVEL=high 로 상향 가능."
+  }
+}

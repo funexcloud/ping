@@ -31,7 +31,6 @@ try {
 fs.mkdirSync(pub, { recursive: true });
 
 function forceRemovePath(p) {
-  if (!fs.existsSync(p)) return;
   try {
     fs.rmSync(p, { recursive: true, force: true });
   } catch {
@@ -40,9 +39,6 @@ function forceRemovePath(p) {
     } catch {
       /* ignore */
     }
-  }
-  if (fs.existsSync(p)) {
-    throw new Error(`[ensure-next-public-static] could not remove: ${p}`);
   }
 }
 
@@ -59,18 +55,16 @@ function linkOrCopyAssetsDir() {
     process.env.PING_ASSETS_COPY === "1";
 
   if (useCopy) {
-    if (fs.existsSync(dstAssets) && !fs.statSync(dstAssets).isDirectory()) {
-      forceRemovePath(dstAssets);
-    }
+    forceRemovePath(dstAssets);
     fs.cpSync(srcAssets, dstAssets, { recursive: true, force: true });
     return;
   }
 
   try {
-    const rel = path.relative(pub, srcAssets);
     if (process.platform === "win32") {
-      fs.symlinkSync(rel, dstAssets, "junction");
+      fs.symlinkSync(srcAssets, dstAssets, "junction");
     } else {
+      const rel = path.relative(pub, srcAssets);
       fs.symlinkSync(rel, dstAssets, "dir");
     }
   } catch (e) {
@@ -86,6 +80,16 @@ function linkOrCopyAssetsDir() {
 const logo = path.join(root, "ping_logo_svg.svg");
 if (fs.existsSync(logo)) {
   fs.copyFileSync(logo, path.join(pub, "ping_logo_svg.svg"));
+}
+
+const canonicalLogoSrc = [
+  path.join(root, "docs", "references", "ping-brand", "ping-app-logo-canonical.png"),
+  path.join(root, "references", "ping-app-logo-canonical.png.png"),
+].find((p) => fs.existsSync(p));
+if (canonicalLogoSrc) {
+  const canonicalDir = path.join(pub, "brand", "ping");
+  fs.mkdirSync(canonicalDir, { recursive: true });
+  fs.copyFileSync(canonicalLogoSrc, path.join(canonicalDir, "ping-app-logo-canonical.png"));
 }
 
 linkOrCopyAssetsDir();

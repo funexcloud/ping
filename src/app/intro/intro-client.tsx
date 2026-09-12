@@ -9,6 +9,10 @@ import {
   type FormEvent,
 } from "react";
 import { INTRO_HEAD_PHRASES } from "@/content/seo/intro-content";
+import { PING_MAIN_APP_PATH } from "@/lib/ping-main-path";
+import { capturePartnerAttributionFromLocation } from "@/lib/ping-partner-attribution";
+import { PhoneMockup } from "@/components/ping-mobile/phone-mockup";
+import { PING_LOGO_ON_LIGHT_SRC } from "@/lib/ping-brand";
 import { introStages } from "./intro-stages";
 import { IntroWaveCanvas } from "./intro-wave-canvas";
 
@@ -21,17 +25,17 @@ const PAUSE_EMPTY_MS = 380;
 
 const INTRO_RETURN_KEY = "ping_intro_return";
 
-/** 인트로 직후 복귀 경로(같은 출처·경로만). 미설정 시 공식 홈 `/`. */
+/** 인트로 직후 복귀 경로(같은 출처·경로만). 미설정 시 발송 시작 `/start`. */
 function consumeIntroReturnPath(): string {
   try {
     const raw = sessionStorage.getItem(INTRO_RETURN_KEY);
     sessionStorage.removeItem(INTRO_RETURN_KEY);
-    if (!raw || typeof raw !== "string") return "/";
-    if (!raw.startsWith("/") || raw.startsWith("//")) return "/";
-    if (raw.includes("..")) return "/";
+    if (!raw || typeof raw !== "string") return PING_MAIN_APP_PATH;
+    if (!raw.startsWith("/") || raw.startsWith("//")) return PING_MAIN_APP_PATH;
+    if (raw.includes("..")) return PING_MAIN_APP_PATH;
     return raw;
   } catch {
-    return "/";
+    return PING_MAIN_APP_PATH;
   }
 }
 
@@ -62,7 +66,7 @@ function clearBulkFlowSessionForFreshMain(): void {
   }
 }
 
-function goMain(): void {
+function goStart(): void {
   try {
     sessionStorage.setItem("ping_intro_seen", "1");
   } catch {
@@ -177,6 +181,10 @@ function useCxHeadTyping(
 export function IntroClient() {
   const reducedMotion = usePrefersReducedMotion();
 
+  useEffect(() => {
+    capturePartnerAttributionFromLocation();
+  }, []);
+
   const [typeText, typeA11y, showCaret] = useCxHeadTyping(reducedMotion);
 
   const [cur, setCur] = useState(0);
@@ -204,7 +212,7 @@ export function IntroClient() {
 
   const onCtaClick = (e: FormEvent): void => {
     e.preventDefault();
-    goMain();
+    goStart();
   };
 
   return (
@@ -245,57 +253,53 @@ export function IntroClient() {
           </div>
 
           <div className="phone-wrap">
-            <div className="phone">
-              <div className="phone-bar">
-                <button
-                  type="button"
-                  className="intro-brand-hit touch-manipulation"
-                  onClick={goMain}
-                  aria-label="메인 화면으로 이동"
-                >
-                  <span className="phone-logo">PING</span>
-                </button>
-                <div className="phone-menu" aria-hidden="true">
-                  <span />
-                  <span />
-                  <span />
+            <PhoneMockup>
+              <div className="phone ping-mobile-screen">
+                <div className="phone-bar ping-mobile-header">
+                  <button
+                    type="button"
+                    className="intro-brand-hit ping-mobile-header__brand touch-manipulation"
+                    onClick={goStart}
+                    aria-label="부고 발송 시작"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={PING_LOGO_ON_LIGHT_SRC} alt="PING" />
+                  </button>
+                  <div className="phone-menu ping-mobile-header__meta" aria-hidden="true">
+                    ☰
+                  </div>
+                </div>
+                <div
+                  className="phone-body ping-mobile-body"
+                  id="phoneBody"
+                  dangerouslySetInnerHTML={{ __html: s.html }}
+                />
+                <div className="phone-cta ping-mobile-footer">
+                  <a
+                    href={PING_MAIN_APP_PATH}
+                    className="touch-manipulation intro-cta-link ping-mobile-cta"
+                    data-go-start
+                    aria-label="부고 발송 시작"
+                    onClick={onCtaClick}
+                  >
+                    시작하기
+                  </a>
                 </div>
               </div>
-              <div
-                className="phone-body"
-                id="phoneBody"
-                dangerouslySetInnerHTML={{ __html: s.html }}
-              />
-            </div>
+            </PhoneMockup>
           </div>
           <div className="intro-hero-tagline">
             <button
               type="button"
               className="intro-hero-brand intro-hero-brand-btn touch-manipulation"
-              onClick={goMain}
-              aria-label="메인 화면으로 이동"
+              onClick={goStart}
+              aria-label="부고 발송 시작"
             >
               PING
             </button>
             <p className="intro-hero-sub">Where Hearts Connect.</p>
           </div>
         </main>
-
-        <div className="cx-cta">
-          <div className="cx-cta-inset">
-            <div className="phone-wrap cx-cta-phone-wrap">
-              <a
-                href="/"
-                className="touch-manipulation intro-cta-link"
-                data-go-main
-                aria-label="메인 화면으로 이동"
-                onClick={onCtaClick}
-              >
-                시작하기
-              </a>
-            </div>
-          </div>
-        </div>
       </div>
     </>
   );

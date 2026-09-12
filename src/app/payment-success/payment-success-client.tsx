@@ -1,7 +1,12 @@
 "use client";
 
 import { BulkFlowProgress } from "@/components/bulk/bulk-flow-progress";
+import { PingDevIdentitySkipBar } from "@/components/bulk/ping-dev-flow-skip-button";
 import { PingLoadingSpinner } from "@/components/ping-loading-spinner";
+import {
+  PingMobileCompletionScreen,
+  PingMobileSendingScreen,
+} from "@/components/ping-mobile/ping-mobile-screens";
 import { PingBankAccountCopyAllButton } from "@/components/ping-bank-account-copy-all-button";
 import { PingBankAccountCopyButton } from "@/components/ping-bank-account-copy-button";
 import {
@@ -18,6 +23,7 @@ import {
   retryOrderDispatch,
   type OrderStatusPayload,
 } from "@/lib/ping-order-status-client";
+import { orderCapabilityHeaders } from "@/lib/ping-order-capability-client";
 import { fetchPingSendFromLabel } from "@/lib/ping-send-from-client";
 import { PING_CASH_RECEIPT_TYPE_LABELS, type PingCashReceiptType } from "@/lib/ping-cash-receipt";
 import { pingAssignToLocation } from "@/lib/ping-nav-home";
@@ -28,6 +34,12 @@ import {
   fulfillmentToBulkFlowStep,
   type FulfillmentDerived,
 } from "@/lib/ping-order-fulfillment";
+import {
+  isPingDevFlowPreview,
+  PING_DEV_PREVIEW_AMOUNT,
+  PING_DEV_PREVIEW_ORDER_ID,
+  seedPingDevPaySuccessPreviewSession,
+} from "@/lib/ping-dev-flow-skip";
 import { Building2, FileSpreadsheet } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import type { AnimationEvent } from "react";
@@ -188,7 +200,6 @@ function PaymentSuccessInner() {
   const [retryDispatching, setRetryDispatching] = useState(false);
   const [refundRequesting, setRefundRequesting] = useState(false);
   const [recipientsSnap, setRecipientsSnap] = useState<PayRecipient[]>([]);
-  const [successBoop, setSuccessBoop] = useState(false);
   const [invalidBoop, setInvalidBoop] = useState(false);
   const [invalidFloatReady, setInvalidFloatReady] = useState(false);
   const [isBankTransfer, setIsBankTransfer] = useState(false);
@@ -245,7 +256,10 @@ function PaymentSuccessInner() {
     try {
       const res = await fetch(`/api/orders/${encodeURIComponent(orderId)}/issue-cash-receipt`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...orderCapabilityHeaders(orderId),
+        },
         body: JSON.stringify({ amount: orderAmountNum }),
       });
       const json = (await res.json().catch(() => ({}))) as {
@@ -353,6 +367,7 @@ function PaymentSuccessInner() {
 
   useEffect(() => {
     if (phase !== "valid" || !orderId || !orderAmountNum) return;
+    if (orderId === PING_DEV_PREVIEW_ORDER_ID) return;
     let cancelled = false;
 
     const poll = async () => {
@@ -388,6 +403,26 @@ function PaymentSuccessInner() {
   }, [phase, orderId, orderAmountNum]);
 
   useEffect(() => {
+    const orderFromUrl = (sp.get("orderId") || "").trim();
+    if (isPingDevFlowPreview() || orderFromUrl === PING_DEV_PREVIEW_ORDER_ID) {
+      seedPingDevPaySuccessPreviewSession();
+      setPhase("valid");
+      setOrderId(PING_DEV_PREVIEW_ORDER_ID);
+      setOrderAmountNum(PING_DEV_PREVIEW_AMOUNT);
+      setAmountLabel(`${PING_DEV_PREVIEW_AMOUNT.toLocaleString("ko-KR")}원`);
+      setSendCountLabel("2건");
+      setChannelLabel("문자");
+      setFulfillment(
+        deriveFulfillmentPhase({
+          status: "paid",
+          smsStatus: "sent",
+          totalCount: 2,
+        }),
+      );
+      document.title = "발송 완료 — PING";
+      return;
+    }
+
     let orderIdVal = (sp.get("orderId") || "").trim();
     let amountRaw = sp.get("amount");
     let amount = Number(amountRaw);
@@ -690,15 +725,6 @@ function PaymentSuccessInner() {
     };
   }, [sp]);
 
-  const onSuccessMarkAnimationEnd = useCallback((e: AnimationEvent<HTMLSpanElement>) => {
-    if (e.animationName === "pay-ok-mark-enter") {
-      e.currentTarget.classList.add("pay-ok-circle-enter-done");
-    }
-    if (e.animationName === "pay-ok-mark-boop") {
-      setSuccessBoop(false);
-    }
-  }, []);
-
   const onInvalidFloatAnimationEnd = useCallback((e: AnimationEvent<HTMLSpanElement>) => {
     if (e.animationName === "pay-ok-invalid-pop") {
       setInvalidFloatReady(true);
@@ -732,6 +758,9 @@ function PaymentSuccessInner() {
 
   const showSuccessCheckmark =
     phase === "valid" && !bankDepositPending && fulfillmentPhase === "complete";
+  const showCanonicalSending =
+    phase === "valid" && !bankDepositPending && fulfillmentPhase === "dispatching";
+  const showCanonicalComplete = showSuccessCheckmark;
 
   return (
     <div className="pay-ok-page">
@@ -766,37 +795,19 @@ function PaymentSuccessInner() {
         id="pay-ok-valid"
         aria-live="polite"
       >
-        {showSuccessCheckmark ? (
-          <div className="pay-ok-hero">
-            <button
-              type="button"
-              className={`pay-ok-success-mark${successBoop ? " is-boop" : ""}`}
-              id="pay-ok-success-mark"
-              aria-label="결제 성공 — 눌러 표시가 한 번 더 튀어 오릅니다"
-              onClick={() => {
-                setSuccessBoop(false);
-                void 0;
-                setSuccessBoop(true);
-              }}
-            >
-              <span className="pay-ok-success-float">
-                <span
-                  className="pay-ok-success-circle"
-                  onAnimationEnd={onSuccessMarkAnimationEnd}
-                >
-                  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path
-                      d="M16 33.5 L28.5 46 L48.5 20"
-                      stroke="#ffffff"
-                      strokeWidth="5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-              </span>
-            </button>
-          </div>
+        {showCanonicalSending ? (
+          <PingMobileSendingScreen
+            chrome={false}
+            sent={fulfillment?.sentCount ?? 0}
+            total={fulfillment?.targetCount ?? 0}
+          />
+        ) : showCanonicalComplete ? (
+          <PingMobileCompletionScreen
+            chrome={false}
+            delivered={fulfillment?.sentCount ?? fulfillment?.targetCount ?? 0}
+            success={fulfillment?.sentCount ?? 0}
+            needsReview={fulfillment?.failedCount ?? 0}
+          />
         ) : isBankAwaitingDeposit ? (
           <div className="pay-ok-bank-pending-hero" aria-hidden>
             <div className="pay-ok-bank-pending-icon">
@@ -805,7 +816,7 @@ function PaymentSuccessInner() {
           </div>
         ) : null}
 
-        <h1 className="pay-ok-title">
+        <h1 className={`pay-ok-title${showCanonicalSending || showCanonicalComplete ? " sr-only" : ""}`}>
           {isBankAwaitingDeposit
             ? "입금 안내"
             : isBankRegistered
@@ -821,10 +832,10 @@ function PaymentSuccessInner() {
                     : fulfillmentPhase === "dispatching"
                       ? isBankTransfer
                         ? "입금 확인 · 발송 중"
-                        : "발송 준비 중"
+                        : "발송 중"
                       : "결제가 완료되었습니다"}
         </h1>
-        <p className="pay-ok-sub">
+        <p className={`pay-ok-sub${showCanonicalSending || showCanonicalComplete ? " sr-only" : ""}`}>
           {isBankAwaitingDeposit
             ? "아래 계좌로 입금해 주세요. 입금 확인 후 문자 발송이 시작됩니다."
             : isBankRegistered
@@ -1083,6 +1094,14 @@ function PaymentSuccessInner() {
             <FileSpreadsheet className="h-[1.1rem] w-[1.1rem] shrink-0" aria-hidden />
             명단 받기
           </button>
+          {orderId && showSuccessCheckmark ? (
+            <a
+              href="/condolence"
+              className="pay-ok-btn w-full border border-[var(--ping-divider)] bg-white text-[var(--ping-text)]"
+            >
+              부의금 정리 (선택)
+            </a>
+          ) : null}
           <a
             href="/"
             className="pay-ok-btn pay-ok-btn--primary"
@@ -1160,6 +1179,7 @@ function PaymentSuccessInner() {
           </a>
         </div>
       </div>
+      <PingDevIdentitySkipBar />
     </div>
   );
 }

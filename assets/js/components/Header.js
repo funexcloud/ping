@@ -31,7 +31,7 @@ export class Header {
      */
     renderDefault() {
         const basePath = config.basePath;
-        const logoPath = `${basePath}ping_logo_svg.svg`;
+        const logoPath = `${basePath}brand/ping/ping-app-logo-canonical.png`;
         
         // 루트·하위 경로 공통: 절대 경로
         const overviewPath = '/overview';
@@ -57,7 +57,7 @@ export class Header {
      */
     renderTailwind() {
         const basePath = config.basePath;
-        const logoPath = `${basePath}ping_logo_svg.svg`;
+        const logoPath = `${basePath}brand/ping/ping-app-logo-canonical.png`;
         // 루트·하위 경로 공통: 절대 경로
         const overviewPath = '/overview';
         const indexPath = '/index.html';

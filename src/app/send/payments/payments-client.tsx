@@ -1,6 +1,7 @@
 "use client";
 
 import { BulkFlowProgress } from "@/components/bulk/bulk-flow-progress";
+import { PingDevIdentitySkipBar } from "@/components/bulk/ping-dev-flow-skip-button";
 import { PingLoadingSpinner } from "@/components/ping-loading-spinner";
 import { BULK_FLOW_NINE_COPY } from "@/lib/ping-flow-step-copy";
 import { useFontAwesomeCdn } from "@/hooks/use-font-awesome-cdn";
@@ -177,10 +178,12 @@ export default function SendPaymentsClient() {
           className="review-card ping-bordered-panel flex min-w-0 max-w-full flex-col gap-3 p-5"
           aria-label="발송 요약"
         >
-          <p className="review-summary-lead">{BULK_FLOW_NINE_COPY[4].subtitle}</p>
+          <div className="ping-step-head ping-step-head--panel">
+            <p className="ping-step-head__sub">{BULK_FLOW_NINE_COPY[4].subtitle}</p>
+          </div>
           <div className="review-row">
             <span>받는 사람</span>
-            <strong>
+            <strong className="ping-mobile-count-line m-0">
               <span>{count.toLocaleString("ko-KR")}</span>건
             </strong>
           </div>
@@ -240,13 +243,14 @@ export default function SendPaymentsClient() {
         <div className="review-cta-row mt-auto">
           <button
             type="button"
-            className="ping-btn-primary touch-manipulation"
+            className="ping-btn-primary ping-mobile-cta touch-manipulation"
             onClick={gotoIdentityVerification}
           >
             다음
           </button>
         </div>
       </main>
+      <PingDevIdentitySkipBar elevated />
     </div>
   );
 }
