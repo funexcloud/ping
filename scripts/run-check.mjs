@@ -66,3 +66,4 @@ run("node", ["scripts/check-mobile-layout-contract.cjs"]);
 run("node", ["scripts/check-ping-brand-assets.cjs"]);
 run("node", ["scripts/check-ping-mobile-canonical.cjs"]);
 run("node", ["scripts/test-server-order-phase2.cjs"]);
+run("node", ["scripts/test-checkout-amount-guard.cjs"]);

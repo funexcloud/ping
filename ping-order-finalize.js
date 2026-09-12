@@ -52,6 +52,16 @@ async function markOrderPaid(orderId, opts) {
     }
 
     const pay = opts.paymentPayload && typeof opts.paymentPayload === 'object' ? opts.paymentPayload : {};
+    const expectedTotal = Math.floor(Number(d.totalAmount));
+    const paidTotal = Math.floor(Number(pay.totalAmount != null ? pay.totalAmount : pay.amount));
+    const pointsUsed = Math.max(0, Math.floor(Number(opts.pointsUsed) || 0));
+    if (Number.isFinite(expectedTotal) && expectedTotal > 0) {
+        const method = String(opts.paymentMethod || 'card').trim() || 'card';
+        const credited = method === 'points' ? pointsUsed : paidTotal + pointsUsed;
+        if (credited > 0 && credited !== expectedTotal) {
+            throw new Error('order_amount_mismatch');
+        }
+    }
     const paymentId =
         String(opts.paymentId || '').trim() ||
         String(pay.paymentKey || pay.paymentId || '').trim() ||

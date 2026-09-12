@@ -65,6 +65,39 @@ function clearCheckoutSession(orderId) {
     }
 }
 
+
+async function canonicalOrderTotal(orderId) {
+    const oid = String(orderId || '').trim();
+    if (!oid) return null;
+    try {
+        const { getPingFirestoreAdmin } = require('./ping-firebase-admin');
+        const snap = await getPingFirestoreAdmin().collection('ping_orders').doc(oid).get();
+        if (!snap.exists) return null;
+        const n = Math.floor(Number((snap.data() || {}).totalAmount));
+        return Number.isFinite(n) && n > 0 ? n : null;
+    } catch (err) {
+        console.error('canonicalOrderTotal', err);
+        return null;
+    }
+}
+
+async function rejectIfAmountMismatch(orderId, clientTotal) {
+    const canonical = await canonicalOrderTotal(orderId);
+    if (canonical == null) {
+        return {
+            status: 400,
+            body: { error: '주문을 찾을 수 없습니다.', code: 'order_not_found' },
+        };
+    }
+    if (Math.floor(Number(clientTotal)) !== canonical) {
+        return {
+            status: 400,
+            body: { error: 'order_amount_mismatch', code: 'order_amount_mismatch' },
+        };
+    }
+    return null;
+}
+
 function getTossSecretKey() {
     if (pingEnvTruthy('PING_USE_TOSS_DOCS_TEST_KEYS')) {
         return TOSS_PAYMENTS_DOCS_WIDGET_SECRET_KEY;
@@ -112,6 +145,8 @@ async function apiPointsOnlyPayment(body) {
         if (!oid || !Number.isFinite(ot) || ot <= 0 || pu !== ot || !did) {
             return { status: 400, body: { error: '주문·포인트 정보가 올바르지 않습니다.' } };
         }
+        const pointsMismatch = await rejectIfAmountMismatch(oid, ot);
+        if (pointsMismatch) return pointsMismatch;
         const verified = getCheckoutSessionOrderTotal(oid);
         if (verified == null || verified !== ot) {
             return {
@@ -191,6 +226,9 @@ async function apiConfirmTossPayment(body) {
                 body: { error: 'paymentKey, orderId, amount가 필요합니다.' },
             };
         }
+
+        const mismatch = await rejectIfAmountMismatch(oid, Math.floor(amt) + pu);
+        if (mismatch) return mismatch;
 
         if (pu > 0) {
             if (!did) {
@@ -423,6 +461,8 @@ async function apiBankTransferPayment(body) {
                 body: { error: '주문·입금 금액 정보가 올바르지 않습니다.' },
             };
         }
+        const bankMismatch = await rejectIfAmountMismatch(oid, ot);
+        if (bankMismatch) return bankMismatch;
         const crt = String(cashReceiptType || '').trim();
         if (!pingCashReceipt.CASH_RECEIPT_TYPES.has(crt)) {
             return { status: 400, body: { error: '현금영수증 유형(소득공제/지출증빙)을 선택해 주세요.' } };
