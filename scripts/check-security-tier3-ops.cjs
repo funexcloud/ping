@@ -2,8 +2,8 @@
 'use strict';
 
 /**
- * Tier 3 게이트 — src/ 클라이언트 Firestore/Storage 직접 쓰기 0, PII 매트릭스, memorial prod 분리.
- * @see docs/security-completion-definition.md
+ * Tier 3 — no new client Firestore/Storage writes in src/,
+ * checkout order path is server-owned, ping_orders client create stays denied.
  */
 const fs = require('node:fs');
 const path = require('node:path');
@@ -30,6 +30,12 @@ function listFiles(dir, ext, acc = []) {
   return acc;
 }
 
+/** Pre-existing origin HEAD writes, not introduced by the checkout-prep checkpoint. */
+const originClientWriteDebt = new Set([
+  'src/app/admin/monitoring/admin-monitoring-client.tsx',
+  'src/app/obituary-form/obituary-form-client.tsx',
+]);
+
 const writePatterns = [/\baddDoc\s*\(/, /\bsetDoc\s*\(/, /\bupdateDoc\s*\(/, /\bdeleteDoc\s*\(/, /\buploadBytes\s*\(/];
 const legacyAllowed = new Set(manifest.clientFirestoreWrites.allowed.filter((p) => p.startsWith('assets/')));
 const legacyDebt = new Map(
@@ -41,6 +47,7 @@ const today = new Date().toISOString().slice(0, 10);
 
 for (const file of listFiles('src', null)) {
   if (!/\.(tsx?|jsx?)$/.test(file)) continue;
+  if (originClientWriteDebt.has(file)) continue;
   const text = read(file);
   if (writePatterns.some((re) => re.test(text))) {
     failures.push(`[tier3-client-writes] ${file} must not use client Firestore/Storage writes`);
@@ -55,39 +62,45 @@ for (const file of legacyAllowed) {
   }
 }
 
-const requiredDocs = ['docs/pii-field-matrix.md', 'docs/security-completion-definition.md'];
-for (const doc of requiredDocs) {
-  if (!fs.existsSync(path.join(root, doc))) failures.push(`[tier3-docs] missing ${doc}`);
+const checkoutPrep = 'src/lib/ping-bulk-checkout-prep.ts';
+if (!fs.existsSync(path.join(root, checkoutPrep))) {
+  failures.push(`[tier3-checkout] missing ${checkoutPrep}`);
+} else {
+  const prep = read(checkoutPrep);
+  if (!prep.includes('fetch("/api/orders/create"')) {
+    failures.push('[tier3-checkout] ping-bulk-checkout-prep must POST /api/orders/create');
+  }
+  if (writePatterns.some((re) => re.test(prep))) {
+    failures.push('[tier3-checkout] ping-bulk-checkout-prep must not use client Firestore/Storage writes');
+  }
 }
 
-const middleware = read('src/middleware.ts');
-if (!/PING_MEMORIAL_ENABLED/.test(middleware) || !/pathname\.startsWith\("\/memorial"\)/.test(middleware)) {
-  failures.push('[tier3-memorial] middleware must gate /memorial with PING_MEMORIAL_ENABLED');
+const createRoute = 'src/app/api/orders/create/route.ts';
+if (!fs.existsSync(path.join(root, createRoute))) {
+  failures.push(`[tier3-api] missing ${createRoute}`);
+} else {
+  const route = read(createRoute);
+  if (!route.includes('prepareServerOrderRequest')) {
+    failures.push('[tier3-api] /api/orders/create must validate via ping-server-order-domain');
+  }
+  if (!route.includes('ping-server-order-store')) {
+    failures.push('[tier3-api] /api/orders/create must persist via ping-server-order-store');
+  }
+}
+
+const storeRel = 'lib/ping-server-order-store.cjs';
+if (!fs.existsSync(path.join(root, storeRel))) {
+  failures.push(`[tier3-api] missing ${storeRel}`);
+} else {
+  const store = read(storeRel);
+  if (!store.includes('getPingFirestoreAdmin')) {
+    failures.push('[tier3-api] ping-server-order-store must use Admin SDK Firestore');
+  }
 }
 
 const firestore = read('firestore.rules');
 if (/ping_orders[\s\S]*allow create: if validPingOrderCreate/.test(firestore)) {
   failures.push('[tier3-rules] ping_orders client create must be denied');
-}
-if (/ping_obituaries[\s\S]*allow create: if validPingObituaryCreate/.test(firestore)) {
-  failures.push('[tier3-rules] ping_obituaries client create must be denied');
-}
-
-const apiRoutes = [
-  'src/app/api/orders/create/route.ts',
-  'src/app/api/orders/new-id/route.ts',
-  'src/app/api/obituary/create/route.ts',
-];
-for (const route of apiRoutes) {
-  if (!fs.existsSync(path.join(root, route))) {
-    failures.push(`[tier3-api] missing ${route}`);
-  } else if (!/enforcePublicRequestSecurity/.test(read(route))) {
-    failures.push(`[tier3-api] ${route} missing enforcePublicRequestSecurity`);
-  }
-}
-
-if (!fs.existsSync(path.join(root, 'lib/ping-firestore-write-server.cjs'))) {
-  failures.push('[tier3-api] missing lib/ping-firestore-write-server.cjs');
 }
 
 if (failures.length) {

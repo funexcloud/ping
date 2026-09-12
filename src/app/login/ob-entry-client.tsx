@@ -6,7 +6,6 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { BulkFlowProgress } from "@/components/bulk/bulk-flow-progress";
-import { PingDevIdentitySkipBar } from "@/components/bulk/ping-dev-flow-skip-button";
 import { usePingCenteredLayout } from "@/hooks/use-ping-centered-layout";
 import { memberLoginEmailHref, signupJoinTypeHref } from "@/lib/auth-signup-flow";
 import { shouldShowBulkFlowProgressOnLogin } from "@/lib/ping-bulk-flow-login-progress";
@@ -179,7 +178,6 @@ export default function ObEntryClient() {
           </p>
         </div>
       </main>
-      <PingDevIdentitySkipBar />
     </div>
   );
 }

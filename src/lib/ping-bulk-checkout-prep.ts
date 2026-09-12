@@ -13,6 +13,7 @@ import {
   markCheckoutWelcomePending,
   readMemberIdFromSession,
 } from "@/lib/ping-member-welcome-bonus";
+import { saveOrderCapability } from "@/lib/ping-order-capability-client";
 
 export const PING_CHECKOUT_SESSION = "ping_checkout_session";
 export const PING_BULK_PREPARE_CHECKOUT_KEY = "ping_bulk_prepare_checkout";
@@ -130,6 +131,7 @@ async function prepareCheckoutWithServerOrder(input: {
     rawRecipientCount?: number;
     droppedRecipientCount?: number;
     checkoutCapability?: string;
+    expiresAt?: number;
   };
   if (!response.ok || data.ok !== true) {
     const message =
@@ -154,6 +156,10 @@ async function prepareCheckoutWithServerOrder(input: {
       droppedRecipientCount: Number(data.droppedRecipientCount) || 0,
     }),
   );
+  saveOrderCapability(data.orderId, {
+    token: String(data.checkoutCapability),
+    expiresAt: Number(data.expiresAt) || Date.now() + 48 * 60 * 60 * 1000,
+  });
   const checkoutSession: PingCheckoutSession = {
     orderId: data.orderId,
     amount: Number(data.amount),

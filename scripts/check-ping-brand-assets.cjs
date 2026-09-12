@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Brand foundation files — icons exist and manifest points at Next app icons.
+ * Brand foundation — canonical logo, PING name, #0056F3 primary.
+ * Legacy webp/svg marks may remain on disk but must not be runtime sources.
  */
 const fs = require("node:fs");
 const path = require("node:path");
@@ -36,8 +37,6 @@ mustExist("src/app/icon.png");
 mustExist("src/app/apple-icon.png");
 mustExist("public/brand/ping/ping-app-logo-canonical.png");
 mustExist("docs/references/ping-brand/ping-app-logo-canonical.png");
-mustExist("assets/images/ping-logo-black.webp");
-mustExist("ping_logo_svg.svg");
 
 mustContain("src/lib/ping-brand.ts", 'export const PING_BRAND_PRIMARY = "#0056F3"');
 mustContain(
@@ -45,10 +44,10 @@ mustContain(
   'export const PING_LOGO_CANONICAL_SRC = "/brand/ping/ping-app-logo-canonical.png"',
 );
 mustContain("src/lib/ping-brand.ts", 'export const PING_APP_ICON_SRC = "/icon.png"');
+mustContain("src/lib/ping-brand.ts", 'export const PING_BRAND_NAME = "PING"');
 mustContain("src/app/manifest.ts", "PING_LOGO_CANONICAL_SRC");
 mustContain("src/app/manifest.ts", "PING_APP_ICON_SRC");
 mustContain("src/app/manifest.ts", "PING_BRAND_PRIMARY");
-mustContain("assets/css/ping-ui.css", "--ping-color-primary: #0056F3");
 mustNotContain("src/app/manifest.ts", "ping_logo.png");
 mustNotContain("src/lib/ping-brand.ts", "ping-logo-black.webp");
 mustNotContain("src/lib/ping-brand.ts", "ping_logo_svg.svg");

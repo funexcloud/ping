@@ -10,7 +10,6 @@ import {
 } from "react";
 import { INTRO_HEAD_PHRASES } from "@/content/seo/intro-content";
 import { PING_MAIN_APP_PATH } from "@/lib/ping-main-path";
-import { capturePartnerAttributionFromLocation } from "@/lib/ping-partner-attribution";
 import { PhoneMockup } from "@/components/ping-mobile/phone-mockup";
 import { PING_LOGO_ON_LIGHT_SRC } from "@/lib/ping-brand";
 import { introStages } from "./intro-stages";
@@ -180,10 +179,6 @@ function useCxHeadTyping(
 
 export function IntroClient() {
   const reducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    capturePartnerAttributionFromLocation();
-  }, []);
 
   const [typeText, typeA11y, showCaret] = useCxHeadTyping(reducedMotion);
 

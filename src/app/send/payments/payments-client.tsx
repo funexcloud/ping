@@ -1,7 +1,6 @@
 "use client";
 
 import { BulkFlowProgress } from "@/components/bulk/bulk-flow-progress";
-import { PingDevIdentitySkipBar } from "@/components/bulk/ping-dev-flow-skip-button";
 import { PingLoadingSpinner } from "@/components/ping-loading-spinner";
 import { BULK_FLOW_NINE_COPY } from "@/lib/ping-flow-step-copy";
 import { useFontAwesomeCdn } from "@/hooks/use-font-awesome-cdn";
@@ -250,7 +249,6 @@ export default function SendPaymentsClient() {
           </button>
         </div>
       </main>
-      <PingDevIdentitySkipBar elevated />
     </div>
   );
 }

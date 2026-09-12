@@ -7,7 +7,7 @@ import {
   DEMO_FUNERAL_URL,
   DEMO_OBITUARY,
   type PhoneFlowStepKey,
-} from "@/lib/intro/config";
+} from "@/lib/intro/phone-flow-config";
 
 const PARSED_ROWS = [
   { label: "고인", value: "김영수(金永洙)" },

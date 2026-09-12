@@ -1,7 +1,6 @@
 "use client";
 
 import { BulkFlowProgress } from "@/components/bulk/bulk-flow-progress";
-import { PingDevIdentitySkipBar } from "@/components/bulk/ping-dev-flow-skip-button";
 import { PingLoadingSpinner } from "@/components/ping-loading-spinner";
 import {
   PingMobileCompletionScreen,
@@ -34,12 +33,6 @@ import {
   fulfillmentToBulkFlowStep,
   type FulfillmentDerived,
 } from "@/lib/ping-order-fulfillment";
-import {
-  isPingDevFlowPreview,
-  PING_DEV_PREVIEW_AMOUNT,
-  PING_DEV_PREVIEW_ORDER_ID,
-  seedPingDevPaySuccessPreviewSession,
-} from "@/lib/ping-dev-flow-skip";
 import { Building2, FileSpreadsheet } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import type { AnimationEvent } from "react";
@@ -367,7 +360,6 @@ function PaymentSuccessInner() {
 
   useEffect(() => {
     if (phase !== "valid" || !orderId || !orderAmountNum) return;
-    if (orderId === PING_DEV_PREVIEW_ORDER_ID) return;
     let cancelled = false;
 
     const poll = async () => {
@@ -403,26 +395,6 @@ function PaymentSuccessInner() {
   }, [phase, orderId, orderAmountNum]);
 
   useEffect(() => {
-    const orderFromUrl = (sp.get("orderId") || "").trim();
-    if (isPingDevFlowPreview() || orderFromUrl === PING_DEV_PREVIEW_ORDER_ID) {
-      seedPingDevPaySuccessPreviewSession();
-      setPhase("valid");
-      setOrderId(PING_DEV_PREVIEW_ORDER_ID);
-      setOrderAmountNum(PING_DEV_PREVIEW_AMOUNT);
-      setAmountLabel(`${PING_DEV_PREVIEW_AMOUNT.toLocaleString("ko-KR")}원`);
-      setSendCountLabel("2건");
-      setChannelLabel("문자");
-      setFulfillment(
-        deriveFulfillmentPhase({
-          status: "paid",
-          smsStatus: "sent",
-          totalCount: 2,
-        }),
-      );
-      document.title = "발송 완료 — PING";
-      return;
-    }
-
     let orderIdVal = (sp.get("orderId") || "").trim();
     let amountRaw = sp.get("amount");
     let amount = Number(amountRaw);
@@ -1179,7 +1151,6 @@ function PaymentSuccessInner() {
           </a>
         </div>
       </div>
-      <PingDevIdentitySkipBar />
     </div>
   );
 }

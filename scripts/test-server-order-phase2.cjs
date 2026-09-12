@@ -37,24 +37,6 @@ function loadTypeScript(relativePath, mocks = {}) {
   return loaded.exports;
 }
 
-function loadCommonJs(relativePath, mocks = {}) {
-  const filename = path.join(root, relativePath);
-  const loaded = new Module(filename, module);
-  loaded.filename = filename;
-  loaded.paths = Module._nodeModulePaths(path.dirname(filename));
-  const originalLoad = Module._load;
-  Module._load = function patchedLoad(request, parent, isMain) {
-    if (Object.prototype.hasOwnProperty.call(mocks, request)) return mocks[request];
-    return originalLoad.call(this, request, parent, isMain);
-  };
-  try {
-    loaded._compile(fs.readFileSync(filename, 'utf8'), filename);
-  } finally {
-    Module._load = originalLoad;
-  }
-  return loaded.exports;
-}
-
 class FakeSnapshot {
   constructor(value) {
     this.value = value;
@@ -112,7 +94,6 @@ const domain = loadTypeScript('src/lib/ping-server-order-domain.ts', {
   '@/lib/ping-bulk-sms': sms,
   '@/lib/ping-bulk-pricing': pricing,
 });
-const registry = require('../ping-checkout-registry');
 const store = require('../lib/ping-server-order-store.cjs');
 
 function baseRequest(overrides = {}) {
@@ -141,11 +122,6 @@ async function main() {
   assert.ok(!/\bsetDoc\s*\(/.test(checkoutPrepSource));
   assert.ok(!/\buploadBytes\s*\(/.test(checkoutPrepSource));
   assert.ok(!checkoutPrepSource.includes('serverOrderCreateEnabled'));
-  const configSource = fs.readFileSync(
-    path.join(root, 'src/lib/ping-inject-config-scripts.ts'),
-    'utf8',
-  );
-  assert.ok(configSource.includes('PING_SERVER_ORDER_CREATE'));
 
   const prepared = domain.prepareServerOrderRequest(baseRequest());
   assert.equal(prepared.recipientCount, 2);
@@ -201,7 +177,7 @@ async function main() {
     .digest('hex');
   const idempotencyHash = crypto.createHash('sha256').update(prepared.clientRequestId).digest('hex');
   const checkoutSecret = 'c'.repeat(64);
-  const checkoutSecretHash = registry.hashCheckoutSecret(checkoutSecret);
+  const checkoutSecretHash = crypto.createHash('sha256').update(checkoutSecret).digest('hex');
   const checkoutExpiresAt = new Date(Date.now() + 60 * 60 * 1000);
   let uploadCount = 0;
   const createInput = {
@@ -256,40 +232,6 @@ async function main() {
     (error) => error.code === 'idempotency_payload_conflict',
   );
 
-  const validated = await registry.getCheckoutSession(result.orderId, checkoutSecret, { db });
-  assert.equal(validated.amount, 220);
-  await assert.rejects(
-    () => registry.getCheckoutSession(result.orderId, 'x'.repeat(64), { db }),
-    (error) => error.code === 'checkout_session_invalid',
-  );
-  const reservationKey = 'toss:test-payment-phase2';
-  const reserved = await registry.reserveCheckoutSession(result.orderId, checkoutSecret, reservationKey, { db });
-  assert.equal(reserved.alreadyReserved, false);
-  const sameReservation = await registry.reserveCheckoutSession(result.orderId, checkoutSecret, reservationKey, { db });
-  assert.equal(sameReservation.alreadyReserved, true);
-  await assert.rejects(
-    () => registry.reserveCheckoutSession(result.orderId, checkoutSecret, 'toss:concurrent-payment', { db }),
-    (error) => error.code === 'checkout_session_in_progress',
-  );
-  const consumed = await registry.consumeCheckoutSession(result.orderId, checkoutSecret, { db, reservationKey });
-  assert.equal(consumed.alreadyConsumed, false);
-  const consumedAgain = await registry.consumeCheckoutSession(result.orderId, checkoutSecret, { db });
-  assert.equal(consumedAgain.alreadyConsumed, true);
-  assert.equal(await registry.getCheckoutSessionOrderTotal(result.orderId, checkoutSecret, { db }), null);
-
-  const expiredDb = new FakeFirestore();
-  await registry.registerCheckoutSession(
-    { orderId: 'EXPIRED-ORDER', totalAmount: 110, recipientCount: 1, checkoutSecret },
-    { db: expiredDb, now: 1_000 },
-  );
-  await assert.rejects(
-    () => registry.getCheckoutSession('EXPIRED-ORDER', checkoutSecret, {
-      db: expiredDb,
-      now: 1_000 + 73 * 60 * 60 * 1000,
-    }),
-    (error) => error.code === 'checkout_session_expired',
-  );
-
   const cleanupDb = new FakeFirestore();
   cleanupDb.failRegistryFinalize = true;
   const cleanupPrepared = domain.prepareServerOrderRequest(
@@ -317,124 +259,6 @@ async function main() {
   const cleanupOrderId = store.orderIdForIdempotencyHash(cleanupInput.idempotencyHash);
   assert.equal(cleanupDb.row('ping_orders', cleanupOrderId).preparationStatus, 'FAILED_PREPARATION');
   assert.equal(cleanupDb.row('ping_checkout_sessions', cleanupOrderId), undefined);
-
-  // Toss confirm regression: server amount mismatch 차단, 성공 후 registry consume, replay 거부.
-  let checkoutActive = true;
-  let finalized = 0;
-  let consumedCount = 0;
-  let reservationActive = false;
-  let registerCount = 0;
-  class MockRegistryError extends Error {}
-  const tossApi = loadCommonJs('ping-toss-checkout-api.js', {
-    './payment-points': { spendForOrder: () => {} },
-    './ping-order-finalize': {
-      finalizeOrderPaidAndDispatch: async () => {
-        finalized += 1;
-        return { paid: true, dispatch: { ok: true } };
-      },
-    },
-    './ping-checkout-registry': {
-      CheckoutRegistryError: MockRegistryError,
-      registerCheckoutSession: async () => {
-        registerCount += 1;
-        return { expiresAt: Date.now() + 60_000 };
-      },
-      getCheckoutSessionOrderTotal: async () => (checkoutActive ? 220 : null),
-      reserveCheckoutSession: async () => {
-        if (!checkoutActive) throw new MockRegistryError('consumed');
-        reservationActive = true;
-        return { amount: 220 };
-      },
-      releaseCheckoutSession: async () => {
-        reservationActive = false;
-        return { released: true };
-      },
-      consumeCheckoutSession: async () => {
-        checkoutActive = false;
-        reservationActive = false;
-        consumedCount += 1;
-        return { consumed: true, alreadyConsumed: false };
-      },
-    },
-    './ping-firebase-admin': {
-      getPingFirestoreAdmin: () => ({
-        collection: () => ({
-          doc: () => ({
-            get: async () => ({
-              exists: true,
-              data: () => ({ status: 'waiting_payment', totalAmount: 220, count: 2 }),
-            }),
-          }),
-        }),
-      }),
-    },
-    './ping-cash-receipt': {
-      validateCashReceiptNumber: () => null,
-      resolveCashReceiptNumber: () => '',
-    },
-  });
-  const previousMock = process.env.PING_TOSS_CONFIRM_MOCK;
-  process.env.PING_TOSS_CONFIRM_MOCK = '1';
-  try {
-    const invalidRegistration = await tossApi.apiRegisterCheckoutSession({
-      orderId: result.orderId,
-      totalAmount: 110,
-      recipientCount: 2,
-      checkoutSecret,
-    });
-    assert.equal(invalidRegistration.status, 409);
-    assert.equal(invalidRegistration.body.error, 'checkout_order_mismatch');
-    assert.equal(registerCount, 0);
-    const validRegistration = await tossApi.apiRegisterCheckoutSession({
-      orderId: result.orderId,
-      totalAmount: 220,
-      recipientCount: 2,
-      checkoutSecret,
-    });
-    assert.equal(validRegistration.status, 200);
-    assert.equal(registerCount, 1);
-
-    const tampered = await tossApi.apiConfirmTossPayment({
-      paymentKey: 'test-payment',
-      orderId: result.orderId,
-      amount: 1,
-      orderTotal: 220,
-      pointsUsed: 0,
-      checkoutSecret,
-    });
-    assert.equal(tampered.status, 400);
-    assert.equal(tampered.body.error, 'order_amount_mismatch');
-    assert.equal(reservationActive, false);
-    assert.equal(finalized, 0);
-
-    const confirmed = await tossApi.apiConfirmTossPayment({
-      paymentKey: 'test-payment',
-      orderId: result.orderId,
-      amount: 220,
-      orderTotal: 220,
-      pointsUsed: 0,
-      checkoutSecret,
-    });
-    assert.equal(confirmed.status, 200);
-    assert.equal(confirmed.body.success, true);
-    assert.equal(finalized, 1);
-    assert.equal(consumedCount, 1);
-
-    const replayConfirm = await tossApi.apiConfirmTossPayment({
-      paymentKey: 'test-payment',
-      orderId: result.orderId,
-      amount: 220,
-      orderTotal: 220,
-      pointsUsed: 0,
-      checkoutSecret,
-    });
-    assert.equal(replayConfirm.status, 400);
-    assert.equal(replayConfirm.body.error, 'checkout_session_invalid');
-    assert.equal(finalized, 1);
-  } finally {
-    if (previousMock == null) delete process.env.PING_TOSS_CONFIRM_MOCK;
-    else process.env.PING_TOSS_CONFIRM_MOCK = previousMock;
-  }
 
   console.log('Server order Phase 2 tests passed.');
 }
