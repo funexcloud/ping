@@ -1,5 +1,9 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 
+import { sanitizeFunexReturnTo } from "./funex-return-to";
+
+export { sanitizeFunexReturnTo } from "./funex-return-to";
+
 export const FUNEX_SSO_SERVICE = "ping";
 export const FUNEX_SSO_CALLBACK_PATH = "/auth/funex/callback";
 export const FUNEX_SSO_TX_COOKIE = "ping_funex_sso_tx";
@@ -10,12 +14,6 @@ const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
 
 export function funexAuthBaseUrl(): string {
   return (process.env.FUNEX_AUTH_BASE_URL || "https://auth.funexcloud.com").replace(/\/$/, "");
-}
-
-export function sanitizeFunexReturnTo(raw: string | null | undefined): string {
-  if (!raw || raw.length > 2048) return "/start";
-  if (!raw.startsWith("/") || raw.startsWith("//") || raw.includes("\\")) return "/start";
-  return raw;
 }
 
 export function createPkcePair(): { verifier: string; challenge: string } {
@@ -76,6 +74,26 @@ export function decodeFunexSsoSession(raw: string | undefined, secret: string): 
   const tx = decodeFunexSsoTx(raw, secret);
   if (!tx || tx.verifier !== "session") return null;
   return tx.state;
+}
+
+export function ssoCookieSecret(): string {
+  return String(process.env.FUNEX_PING_CLIENT_SECRET || process.env.PING_OAUTH_STATE_SECRET || "").trim();
+}
+
+export function readFunexUserIdFromCookieHeader(cookieHeader: string | null | undefined): string | null {
+  const secret = ssoCookieSecret();
+  if (!secret || !cookieHeader) return null;
+  const raw = cookieHeader
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${FUNEX_SSO_SESSION_COOKIE}=`))
+    ?.slice(FUNEX_SSO_SESSION_COOKIE.length + 1);
+  if (!raw) return null;
+  try {
+    return decodeFunexSsoSession(decodeURIComponent(raw), secret);
+  } catch {
+    return decodeFunexSsoSession(raw, secret);
+  }
 }
 
 export function newFunexSsoTx(returnTo: string): FunexSsoTx {

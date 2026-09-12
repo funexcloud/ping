@@ -12,6 +12,7 @@ const os = require('os');
 const path = require('path');
 const {
     sendVerificationEmail,
+    sendPasswordResetEmail,
     resendErrorFromException,
     defaultResendFailHint,
 } = require('./email-resend');
@@ -46,6 +47,18 @@ const RESEND_MAX_PER_WINDOW = 8;
 /** 코드 추측 방지: 15분에 최대 시도 횟수 */
 const VERIFY_CODE_MAX_ATTEMPTS = 10;
 const JOIN_TYPES = new Set(['general', 'group', 'admin']);
+/** 로컬 개발 미리보기 전용. 비밀번호는 응답에 넣지 않는다. */
+const DEV_LOGIN_EMAIL = 'dev@ping.local';
+const DEV_LOGIN_DISPLAY_NAME = '미리보기';
+const DEV_LOGIN_PHONE = '01000000001';
+
+function isPingDevLoginAllowed() {
+    if (String(process.env.VERCEL_ENV || '') === 'production') return false;
+    if (String(process.env.VERCEL || '') === '1') return false;
+    if (String(process.env.K_SERVICE || '')) return false;
+    if (String(process.env.NODE_ENV || '') === 'production') return false;
+    return true;
+}
 
 function skipEmailVerification() {
     return String(process.env.PING_SKIP_EMAIL_VERIFICATION || '') === '1';
@@ -88,6 +101,78 @@ function normalizeLoginKey(value) {
 
 function normalizePhone(value) {
     return String(value || '').replace(/\s/g, '').replace(/[^0-9+]/g, '').slice(0, 32);
+}
+
+/** 아이디 찾기 대조 — 숫자만, +82 → 0 */
+function phoneLookupKey(value) {
+    let d = String(value || '').replace(/\D/g, '');
+    if (d.startsWith('82') && d.length >= 10) d = '0' + d.slice(2);
+    return d.slice(0, 32);
+}
+
+function maskEmail(email) {
+    const key = normalizeEmail(email);
+    const at = key.indexOf('@');
+    if (at <= 0) return '***';
+    const local = key.slice(0, at);
+    const domain = key.slice(at + 1);
+    return `${local.slice(0, 1)}***@${domain}`;
+}
+
+function isSyntheticLoginEmail(email) {
+    const key = normalizeEmail(email);
+    return key.endsWith('@guest.local') || key.endsWith('@kakao.local');
+}
+
+function hasPasswordLogin(member) {
+    return Boolean(member && member.passwordSalt && member.passwordHash);
+}
+
+function canResetPassword(member) {
+    return (
+        hasPasswordLogin(member) &&
+        isValidEmail(member.email) &&
+        !isSyntheticLoginEmail(member.email)
+    );
+}
+
+function describeRecoverableAccount(member) {
+    if (!member) return null;
+    if (String(member.authProvider || '') === 'guest_sms') return null;
+    if (normalizeEmail(member.email).endsWith('@guest.local')) return null;
+
+    const kakaoOnly = String(member.authProvider || '') === 'kakao' && !hasPasswordLogin(member);
+    if (kakaoOnly) {
+        if (isSyntheticLoginEmail(member.email) || !isValidEmail(member.email)) {
+            return { kind: 'kakao' };
+        }
+        return { kind: 'kakao', email: member.email };
+    }
+    if (!hasPasswordLogin(member) || isSyntheticLoginEmail(member.email) || !isValidEmail(member.email)) {
+        return null;
+    }
+    return { kind: 'email', email: member.email };
+}
+
+function listRecoverableAccountsFromMembers(members, phoneRaw) {
+    const key = phoneLookupKey(phoneRaw);
+    if (!key || !Array.isArray(members)) return [];
+    const seen = new Set();
+    const out = [];
+    for (const member of members) {
+        if (!member || phoneLookupKey(member.phone) !== key) continue;
+        const row = describeRecoverableAccount(member);
+        if (!row) continue;
+        const dedupe = `${row.kind}:${row.email || ''}`;
+        if (seen.has(dedupe)) continue;
+        seen.add(dedupe);
+        out.push(row);
+    }
+    return out;
+}
+
+function listRecoverableAccountsByPhone(phoneRaw) {
+    return listRecoverableAccountsFromMembers(readMembers(), phoneRaw);
 }
 
 function isValidEmail(email) {
@@ -226,6 +311,81 @@ function nextResendAfterSec(member) {
     return Math.max(1, Math.ceil(getResendCooldownMs(member) / 1000));
 }
 
+function stripPasswordResetSecrets(m) {
+    delete m.passwordResetCodeSalt;
+    delete m.passwordResetCodeHash;
+    delete m.passwordResetCodeExpiresAt;
+    delete m.passwordResetAttemptCount;
+    delete m.passwordResetAttemptWindowStart;
+}
+
+function assignPasswordResetCode(member, plainCodeSix, nowMs) {
+    const code = normalizeSixDigitCode(plainCodeSix);
+    if (!isValidSixDigitCode(code)) {
+        throw new Error('invalid_verification_code');
+    }
+    const { salt, hash } = hashSixDigitVerificationCode(code);
+    stripPasswordResetSecrets(member);
+    member.passwordResetCodeSalt = salt;
+    member.passwordResetCodeHash = hash;
+    member.passwordResetCodeExpiresAt = nowMs + VERIFY_CODE_MAX_AGE_MS;
+}
+
+function markPasswordResetSent(member, sentAtMs) {
+    member.passwordResetLastSentAt = sentAtMs;
+    const windowStart = Number(member.passwordResetResendWindowStart) || 0;
+    if (!windowStart || sentAtMs - windowStart >= VERIFY_CODE_MAX_AGE_MS) {
+        member.passwordResetResendWindowStart = sentAtMs;
+        member.passwordResetResendCount = 1;
+        return;
+    }
+    member.passwordResetResendCount = (Number(member.passwordResetResendCount) || 0) + 1;
+}
+
+function getPasswordResetCooldownMs(member) {
+    const sentCount = Number(member.passwordResetResendCount) || 0;
+    if (!Number(member.passwordResetLastSentAt)) return 0;
+    if (sentCount <= 1) return RESEND_COOLDOWN_FIRST_MS;
+    return RESEND_COOLDOWN_MS;
+}
+
+function checkPasswordResetSendLimit(member) {
+    const now = Date.now();
+    const windowStart = Number(member.passwordResetResendWindowStart) || 0;
+    const count = Number(member.passwordResetResendCount) || 0;
+    if (windowStart && count >= RESEND_MAX_PER_WINDOW && now - windowStart < VERIFY_CODE_MAX_AGE_MS) {
+        return { ok: false };
+    }
+    const last = Number(member.passwordResetLastSentAt) || 0;
+    if (!last) return { ok: true };
+    const cooldown = getPasswordResetCooldownMs(member);
+    if (now - last < cooldown) return { ok: false };
+    return { ok: true };
+}
+
+function recordPasswordResetAttemptFail(member) {
+    const now = Date.now();
+    const windowStart = Number(member.passwordResetAttemptWindowStart) || 0;
+    if (!windowStart || now - windowStart >= VERIFY_CODE_MAX_AGE_MS) {
+        member.passwordResetAttemptWindowStart = now;
+        member.passwordResetAttemptCount = 1;
+        return 1;
+    }
+    member.passwordResetAttemptCount = (Number(member.passwordResetAttemptCount) || 0) + 1;
+    return member.passwordResetAttemptCount;
+}
+
+function isPasswordResetAttemptBlocked(member) {
+    const now = Date.now();
+    const windowStart = Number(member.passwordResetAttemptWindowStart) || 0;
+    const count = Number(member.passwordResetAttemptCount) || 0;
+    return (
+        windowStart > 0 &&
+        count >= VERIFY_CODE_MAX_ATTEMPTS &&
+        now - windowStart < VERIFY_CODE_MAX_AGE_MS
+    );
+}
+
 /**
  * @returns {{ ok: true } | { ok: false, retryAfterSec: number, error: string }}
  */
@@ -274,6 +434,12 @@ function readSessions() {
 
 function writeSessions(rows) {
     memberStore.setStore('sessions', rows);
+}
+
+function revokeSessionsForUser(userId) {
+    if (!userId) return;
+    const sessions = readSessions().filter((s) => s && s.userId !== userId);
+    writeSessions(sessions);
 }
 
 function pruneExpiredSessions(sessions) {
@@ -352,6 +518,44 @@ function getUserIdFromToken(token) {
     return row ? row.userId : null;
 }
 
+function getFunexUserIdFromCookies(cookieHeader) {
+    const secret = String(process.env.FUNEX_PING_CLIENT_SECRET || process.env.PING_OAUTH_STATE_SECRET || '').trim();
+    if (!secret || !cookieHeader) return null;
+    const match = String(cookieHeader).match(/(?:^|;\s*)ping_funex_id=([^;]+)/);
+    if (!match) return null;
+    let raw = match[1].trim();
+    try {
+        raw = decodeURIComponent(raw);
+    } catch (_) {
+        /* keep raw */
+    }
+    const dot = raw.lastIndexOf('.');
+    if (dot < 1) return null;
+    const body = raw.slice(0, dot);
+    const sig = raw.slice(dot + 1);
+    const expect = crypto.createHash('sha256').update(`${body}.${secret}`).digest('base64url');
+    const actualBuf = Buffer.from(sig);
+    const expectBuf = Buffer.from(expect);
+    if (actualBuf.length !== expectBuf.length || !crypto.timingSafeEqual(actualBuf, expectBuf)) {
+        return null;
+    }
+    try {
+        const tx = JSON.parse(Buffer.from(body, 'base64url').toString('utf8'));
+        if (!tx || tx.verifier !== 'session' || !tx.state || tx.exp < Date.now()) return null;
+        return String(tx.state);
+    } catch (_) {
+        return null;
+    }
+}
+
+function getUserIdFromRequest(req) {
+    const token = parseBearer(req);
+    const fromToken = getUserIdFromToken(token);
+    if (fromToken) return fromToken;
+    const headers = req && req.headers ? req.headers : {};
+    return getFunexUserIdFromCookies(headers.cookie);
+}
+
 async function registerHandler(req, res) {
     try {
         const body = req.body && typeof req.body === 'object' ? req.body : {};
@@ -409,6 +613,22 @@ async function registerHandler(req, res) {
 
         members.unshift(row);
         writeMembers(members);
+
+        if (joinType === 'group' || joinType === 'admin') {
+            try {
+                const { notifyAdminPartnerSignup } = require('./ping-partner-admin-notify');
+                void notifyAdminPartnerSignup({
+                    displayName,
+                    email,
+                    phone: phone || '',
+                    joinType,
+                }).catch((err) => {
+                    console.error('registerHandler partner admin notify:', err);
+                });
+            } catch (notifyErr) {
+                console.error('registerHandler partner admin notify load:', notifyErr);
+            }
+        }
 
         if (skipVerify) {
             const token = createSessionForUser(id);
@@ -494,21 +714,91 @@ function loginHandler(req, res) {
     }
 }
 
+function randomDevLoginPassword() {
+    return `DevLoginZ1!${crypto.randomBytes(16).toString('hex')}`;
+}
+
+function ensureDevLoginMember() {
+    const members = readMembers();
+    const now = new Date().toISOString();
+    let member = findMemberByEmail(members, DEV_LOGIN_EMAIL);
+    if (!member) {
+        const { salt, hash } = hashPassword(randomDevLoginPassword());
+        member = {
+            id: createUserId(),
+            email: DEV_LOGIN_EMAIL,
+            passwordSalt: salt,
+            passwordHash: hash,
+            displayName: DEV_LOGIN_DISPLAY_NAME,
+            phone: DEV_LOGIN_PHONE,
+            joinType: 'general',
+            createdAt: now,
+            updatedAt: now,
+            emailVerifiedAt: now,
+        };
+        members.unshift(member);
+        writeMembers(members);
+        return member;
+    }
+    if (!isEmailVerified(member)) {
+        member.emailVerifiedAt = now;
+        member.updatedAt = now;
+        stripEmailVerificationSecrets(member);
+        writeMembers(members);
+    }
+    return member;
+}
+
+function devLoginHandler(req, res) {
+    if (!isPingDevLoginAllowed()) {
+        res.status(404).json({ ok: false, error: 'not_found' });
+        return;
+    }
+    try {
+        const member = ensureDevLoginMember();
+        const token = createSessionForUser(member.id);
+        res.status(200).json({
+            ok: true,
+            token,
+            user: publicUser(member),
+        });
+    } catch (e) {
+        console.error('devLoginHandler:', e);
+        res.status(500).json({ ok: false, error: '개발 로그인 처리 중 오류가 발생했습니다.' });
+    }
+}
+
 function meHandler(req, res) {
     try {
         const token = parseBearer(req);
-        const userId = getUserIdFromToken(token);
-        if (!userId) {
+        const fromToken = getUserIdFromToken(token);
+        if (fromToken) {
+            const members = readMembers();
+            const member = members.find(u => u.id === fromToken);
+            if (!member) {
+                res.status(401).json({ ok: false, error: '계정을 찾을 수 없습니다.' });
+                return;
+            }
+            res.status(200).json({ ok: true, user: publicUser(member) });
+            return;
+        }
+        const funexUserId = getFunexUserIdFromCookies(req.headers && req.headers.cookie);
+        if (!funexUserId) {
             res.status(401).json({ ok: false, error: '로그인이 필요합니다.' });
             return;
         }
-        const members = readMembers();
-        const member = members.find(u => u.id === userId);
-        if (!member) {
-            res.status(401).json({ ok: false, error: '계정을 찾을 수 없습니다.' });
-            return;
-        }
-        res.status(200).json({ ok: true, user: publicUser(member) });
+        res.status(200).json({
+            ok: true,
+            user: {
+                id: funexUserId,
+                email: '',
+                displayName: '',
+                phone: '',
+                joinType: 'google',
+                createdAt: null,
+                emailVerified: true,
+            },
+        });
     } catch (e) {
         console.error('meHandler:', e);
         res.status(500).json({ ok: false, error: '사용자 정보를 불러오지 못했습니다.' });
@@ -679,6 +969,57 @@ function upsertMemberFromKakaoSync(payload) {
     return { token, user: publicUser(member) };
 }
 
+function upsertGuestMemberFromSmsSync(payload) {
+    const phone = normalizePhone((payload && payload.phone) || '');
+    if (!phone) {
+        throw new Error('missing_guest_phone');
+    }
+
+    const members = readMembers();
+    const now = new Date().toISOString();
+    const displayName =
+        String((payload && payload.displayName) || (payload && payload.name) || '')
+            .trim()
+            .slice(0, 80) || '비회원';
+    const guestEmail = `guest_${phone}@guest.local`;
+
+    let member = members.find(
+        u =>
+            u &&
+            (String(u.authProvider || '') === 'guest_sms' || String(u.email || '').endsWith('@guest.local')) &&
+            normalizePhone(u.phone || '') === phone,
+    );
+    if (!member) {
+        member = findMemberByEmail(members, guestEmail);
+    }
+
+    if (member) {
+        member.displayName = displayName || member.displayName || '비회원';
+        member.phone = phone;
+        member.authProvider = 'guest_sms';
+        member.joinType = member.joinType || 'general';
+        member.emailVerifiedAt = member.emailVerifiedAt || now;
+        member.updatedAt = now;
+    } else {
+        member = {
+            id: createUserId(),
+            email: guestEmail,
+            displayName,
+            phone,
+            joinType: 'general',
+            authProvider: 'guest_sms',
+            createdAt: now,
+            updatedAt: now,
+            emailVerifiedAt: now,
+        };
+        members.unshift(member);
+    }
+
+    writeMembers(members);
+    const token = createSessionForUser(member.id);
+    return { token, user: publicUser(member) };
+}
+
 async function resendVerificationHandler(req, res) {
     try {
         const body = req.body && typeof req.body === 'object' ? req.body : {};
@@ -742,19 +1083,134 @@ async function resendVerificationHandler(req, res) {
     }
 }
 
+async function forgotPasswordHandler(req, res) {
+    try {
+        const body = req.body && typeof req.body === 'object' ? req.body : {};
+        const email = normalizeEmail(body.email || '');
+        if (!isValidEmail(email)) {
+            res.status(400).json({ ok: false, error: '올바른 이메일 주소를 입력해 주세요.' });
+            return;
+        }
+
+        const members = readMembers();
+        const member = findMemberByEmail(members, email);
+        if (canResetPassword(member) && checkPasswordResetSendLimit(member).ok) {
+            try {
+                const plainCode = generateSixDigitCode();
+                await sendPasswordResetEmail({
+                    toEmail: member.email,
+                    code: plainCode,
+                    displayName: member.displayName,
+                });
+                assignPasswordResetCode(member, plainCode, Date.now());
+                markPasswordResetSent(member, Date.now());
+                member.updatedAt = new Date().toISOString();
+                writeMembers(members);
+            } catch (sendErr) {
+                console.error('forgotPasswordHandler send:', sendErr.message || sendErr);
+            }
+        }
+
+        res.status(200).json({ ok: true });
+    } catch (e) {
+        console.error('forgotPasswordHandler:', e);
+        res.status(500).json({ ok: false, error: '요청 처리 중 오류가 발생했습니다.' });
+    }
+}
+
+function resetPasswordHandler(req, res) {
+    try {
+        const body = req.body && typeof req.body === 'object' ? req.body : {};
+        const email = normalizeEmail(body.email || '');
+        const code = normalizeSixDigitCode(body.code);
+        const password = body.password != null ? String(body.password) : '';
+        const failMsg = '인증 코드가 올바르지 않거나 만료되었습니다.';
+
+        if (!isValidEmail(email) || !code) {
+            res.status(400).json({ ok: false, error: '이메일과 6자리 인증 코드를 입력해 주세요.' });
+            return;
+        }
+        const pwdErr = getPasswordPolicyError(password);
+        if (pwdErr) {
+            res.status(400).json({ ok: false, error: pwdErr });
+            return;
+        }
+
+        const members = readMembers();
+        const member = findMemberByEmail(members, email);
+        if (!canResetPassword(member)) {
+            res.status(400).json({ ok: false, error: failMsg });
+            return;
+        }
+        if (
+            !member.passwordResetCodeHash ||
+            !member.passwordResetCodeSalt ||
+            Date.now() > Number(member.passwordResetCodeExpiresAt)
+        ) {
+            res.status(400).json({ ok: false, error: failMsg });
+            return;
+        }
+        if (isPasswordResetAttemptBlocked(member)) {
+            res.status(429).json({
+                ok: false,
+                error: '인증 시도 횟수가 많습니다. 메일을 다시 요청해 주세요.',
+            });
+            return;
+        }
+        const okHash = verifySixDigitCodeHash(
+            code,
+            member.passwordResetCodeSalt,
+            member.passwordResetCodeHash,
+        );
+        if (!okHash) {
+            recordPasswordResetAttemptFail(member);
+            member.updatedAt = new Date().toISOString();
+            writeMembers(members);
+            res.status(400).json({ ok: false, error: failMsg });
+            return;
+        }
+
+        const { salt, hash } = hashPassword(password);
+        member.passwordSalt = salt;
+        member.passwordHash = hash;
+        member.updatedAt = new Date().toISOString();
+        stripPasswordResetSecrets(member);
+        writeMembers(members);
+        revokeSessionsForUser(member.id);
+        res.status(200).json({ ok: true });
+    } catch (e) {
+        console.error('resetPasswordHandler:', e);
+        res.status(500).json({ ok: false, error: '비밀번호 변경 중 오류가 발생했습니다.' });
+    }
+}
+
 module.exports = {
     getPasswordPolicyError,
     registerHandler,
     loginHandler,
+    isPingDevLoginAllowed,
+    DEV_LOGIN_EMAIL,
+    devLoginHandler,
     meHandler,
     logoutHandler,
     verifyEmailHandler,
     resendVerificationHandler,
+    forgotPasswordHandler,
+    resetPasswordHandler,
     parseBearer,
     getUserIdFromToken,
+    getUserIdFromRequest,
     publicUser,
     readMembers,
     isEmailVerified,
     skipEmailVerification,
     upsertMemberFromKakaoSync,
+    upsertGuestMemberFromSmsSync,
+    listRecoverableAccountsByPhone,
+    listRecoverableAccountsFromMembers,
+    maskEmail,
+    phoneLookupKey,
+    isSyntheticLoginEmail,
+    hasPasswordLogin,
+    canResetPassword,
 };

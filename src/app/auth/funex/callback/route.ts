@@ -60,8 +60,10 @@ export async function GET(request: Request) {
   const userId = identity?.userId || identity?.subject;
   if (!userId) return fail;
 
-  const dest = sanitizeFunexReturnTo(tx.returnTo);
-  const response = NextResponse.redirect(new URL(dest, url.origin));
+        const dest = sanitizeFunexReturnTo(tx.returnTo);
+  const next = new URL(dest, url.origin);
+  next.searchParams.set("funex", "1");
+  const response = NextResponse.redirect(next);
   response.cookies.set(FUNEX_SSO_TX_COOKIE, "", { ...cookieOptions(0, "/"), maxAge: 0 });
   response.cookies.set(
     FUNEX_SSO_SESSION_COOKIE,
