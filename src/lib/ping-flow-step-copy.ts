@@ -94,15 +94,24 @@ export function getBulkWizardStepCopy(
   return (thankYouFlow ? THANKYOU_WIZARD_COPY : OBITUARY_WIZARD_COPY)[wizard];
 }
 
-/** `/start` 첫 화면 — 상담을 마친 맏상주가 오고 있는 가족에게 동시에 전하는 자리 */
+/** 랜딩·인트로 설명용. 로그인은 단계가 아니라 연락처 가져오기 직전 JIT. */
+export const CANONICAL_SEND_JOURNEY_STEPS = [
+  { title: "부고 준비", desc: "부고 링크를 넣거나 내용을 작성하고 미리보기에서 확인합니다." },
+  { title: "연락처 가져오기", desc: "주소록에서 연락처를 불러옵니다. 필요할 때만 Google로 이어집니다." },
+  { title: "발송 대상 선택", desc: "전할 사람만 고릅니다." },
+  { title: "발송 준비", desc: "건수와 내용을 확인한 뒤 결제로 이어갑니다." },
+  { title: "발송 및 결과 확인", desc: "선택한 사람에게 전달하고 결과를 확인합니다." },
+] as const;
+
+/** `/start` 분기 — 연락처 가져오기를 첫 화면으로 두지 않는다. */
 export const START_INTENT_COPY = {
   navTitle: "시작하기",
-  title: "중요한 소식을 한 번에 전하세요",
-  subtitle: "부고를 준비하고, 주소록에서 연락처를 가져와 보낼 사람을 고릅니다.",
-  writeTitle: "부고부터 작성하기",
-  writeSub: "부고장을 만든 뒤 연락처를 불러와 바로 전해요",
-  bulkTitle: "연락처 가져와서 보내기",
-  bulkSub: "있는 부고 주소에 주소록 연락처를 붙여 한 번에 발송해요",
+  title: "부고를 준비한 뒤 한 번에 전하세요",
+  subtitle: "링크를 넣거나 부고를 작성하고, 미리보기 다음에 연락처를 가져옵니다.",
+  writeTitle: "부고장 직접 작성하기",
+  writeSub: "부고 링크가 없으면 내용을 작성한 뒤 연락처를 불러옵니다",
+  bulkTitle: "부고 주소로 시작하기",
+  bulkSub: "받은 부고 링크를 넣고 내용을 확인한 뒤 연락처를 가져옵니다",
   docTitle: "PING · 시작하기",
 } as const;
 

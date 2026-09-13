@@ -14,7 +14,11 @@ import {
   type BulkRecentSendEntry,
   type BulkSavedComposeEntry,
 } from "@/lib/ping-bulk-compose-storage";
-import { consumeBulkWizardResumeStep, peekBulkWizardResumeStep } from "@/lib/ping-bulk-flow-nav";
+import {
+  consumeBulkWizardResumeStep,
+  peekBulkWizardResumeStep,
+  resumeBulkWizardStep,
+} from "@/lib/ping-bulk-flow-nav";
 import { BulkFlowProgress } from "@/components/bulk/bulk-flow-progress";
 import { PingDevFlowSkipButton } from "@/components/bulk/ping-dev-flow-skip-button";
 import { Button } from "@/components/ui/button";
@@ -22,7 +26,8 @@ import { PingLoadingSpinner } from "@/components/ping-loading-spinner";
 import { RecipientExcludeModal } from "@/components/bulk/recipient-exclude-modal";
 import { bulkFlowStepFromWizard, isBulkWizardFirstStep } from "@/lib/ping-bulk-flow-steps";
 import { getBulkWizardStepCopy, START_INTENT_COPY } from "@/lib/ping-flow-step-copy";
-import { isPingMemberLoggedIn } from "@/lib/ping-member-session-client";
+import { hydratePingFunexSession, isPingMemberLoggedIn } from "@/lib/ping-member-session-client";
+import { FUNEX_JIT_CONTACTS_RETURN } from "@/lib/funex-return-to";
 import {
   parseAddressbookFile,
   type BulkRecipientRow,
@@ -161,6 +166,9 @@ function readSkipStartIntentChoose(): boolean {
   try {
     const sp = new URLSearchParams(window.location.search);
     if (sp.get("thankyou") === "1") return true;
+    if (sp.get("skipIntro") === "1") return true;
+    if (sp.get("resumeContacts") === "1") return true;
+    if (sp.get("authError") === "1") return true;
     if (sp.get("intent") === "bulk") return true;
     if (sp.get("intent") === "write") return true;
     if (sp.get("mergeBulk") === "1") return true;
@@ -174,7 +182,7 @@ function readSkipStartIntentChoose(): boolean {
 }
 
 function readInitialShowIntentChoose(): boolean {
-  if (typeof window === "undefined") return true;
+  if (typeof window === "undefined") return false;
   return !readSkipStartIntentChoose();
 }
 
@@ -186,20 +194,14 @@ function readInitialComposeState(): {
   if (typeof window === "undefined") {
     return { title: "", body: "", templateId: "1" };
   }
-  try {
-    if (new URLSearchParams(window.location.search).get("thankyou") === "1") {
-      return {
-        title: "",
-        body: truncateBulkSmsBodyToMaxBytes(BULK_THANKYOU_SMS_DEFAULT),
-        templateId: "1",
-      };
-    }
-  } catch {
-    /* ignore */
-  }
-  if (!readThankYouSessionFromStorage()) {
-    return { title: "", body: "", templateId: "1" };
-  }
+  const thankyou =
+    (() => {
+      try {
+        return new URLSearchParams(window.location.search).get("thankyou") === "1";
+      } catch {
+        return false;
+      }
+    })() || readThankYouSessionFromStorage();
   try {
     const raw = sessionStorage.getItem("ping_from_index");
     const d = raw
@@ -210,18 +212,42 @@ function readInitialComposeState(): {
         })
       : {};
     const draft = String(d.bulkSmsMessageDraft || "").trim();
-    const body = draft
-      ? truncateBulkSmsBodyToMaxBytes(sanitizeBulkSmsBodyText(draft))
-      : truncateBulkSmsBodyToMaxBytes(BULK_THANKYOU_SMS_DEFAULT);
     const title = String(d.bulkSmsTitle || "").slice(0, BULK_SMS_TITLE_MAX_CHARS);
     const templateId: BulkSmsTemplateId = d.smsTemplateId === "2" ? "2" : "1";
-    return { title, body, templateId };
+    if (thankyou) {
+      const body = draft
+        ? truncateBulkSmsBodyToMaxBytes(sanitizeBulkSmsBodyText(draft))
+        : truncateBulkSmsBodyToMaxBytes(BULK_THANKYOU_SMS_DEFAULT);
+      return { title, body, templateId };
+    }
+    if (draft || title) {
+      return {
+        title,
+        body: draft ? truncateBulkSmsBodyToMaxBytes(sanitizeBulkSmsBodyText(draft)) : "",
+        templateId,
+      };
+    }
   } catch {
-    return {
-      title: "",
-      body: truncateBulkSmsBodyToMaxBytes(BULK_THANKYOU_SMS_DEFAULT),
-      templateId: "1",
-    };
+    if (thankyou) {
+      return {
+        title: "",
+        body: truncateBulkSmsBodyToMaxBytes(BULK_THANKYOU_SMS_DEFAULT),
+        templateId: "1",
+      };
+    }
+  }
+  return { title: "", body: "", templateId: "1" };
+}
+
+function readInitialObituaryUrl(): string {
+  if (typeof window === "undefined") return "";
+  try {
+    if (new URLSearchParams(window.location.search).get("thankyou") === "1") return "";
+    if (readThankYouSessionFromStorage()) return "";
+    const snap = loadPingFromIndexSnapshot();
+    return normalizeObituaryUrlForField(String(snap.obituaryPageUrl || ""));
+  } catch {
+    return "";
   }
 }
 
@@ -296,7 +322,7 @@ function BulkEntryInner() {
     showIntentChoose ||
     (!skipIntentChooseRef.current && step === "url" && !isThankYouFlow) ||
     !isBulkWizardFirstStep(step, isThankYouFlow);
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState(readInitialObituaryUrl);
   const [urlHint, setUrlHint] = useState<string | null>(null);
   const [urlDomainBlock, setUrlDomainBlock] = useState<string | null>(null);
   const [urlImportLoading, setUrlImportLoading] = useState(false);
@@ -330,6 +356,7 @@ function BulkEntryInner() {
 
   useEffect(() => {
     capturePartnerAttributionFromLocation();
+    const skipIntroQuery = new URLSearchParams(window.location.search).get("skipIntro") === "1";
     pingApplyIntroSkipQueryToHistory();
     pingIntroOnReloadClearSeen();
     if (!pingIntroSeen()) {
@@ -339,17 +366,15 @@ function BulkEntryInner() {
       return;
     }
     try {
-      if (!readSkipStartIntentChoose()) {
-        setShowIntentChoose(true);
-        /* 분기 선택 전에는 대량발송 시작으로 표시하지 않는다 */
-      } else if (new URLSearchParams(window.location.search).get("intent") === "write") {
+      if (new URLSearchParams(window.location.search).get("intent") === "write") {
         setShowIntentChoose(false);
         sessionStorage.setItem(PING_FLOW_KEY_ROUTE, ROUTE_OBITUARY_THEN_BULK);
-        router.replace(
-          isPingMemberLoggedIn() ? "/obituary-form" : "/login?next=%2Fobituary-form",
-        );
+        router.replace("/obituary-form");
         setBootState("redirect-intro");
         return;
+      }
+      if (!readSkipStartIntentChoose() && !skipIntroQuery) {
+        setShowIntentChoose(true);
       } else {
         setShowIntentChoose(false);
         sessionStorage.setItem(PING_FLOW_KEY_ROUTE, ROUTE_BULK_DIRECT);
@@ -359,10 +384,22 @@ function BulkEntryInner() {
       /* ignore */
     }
     setBootState("ready");
-    router.prefetch("/login?next=%2Fobituary-form");
+    router.prefetch("/obituary-form");
   }, [router]);
 
   const gateReady = bootState === "ready";
+
+  useEffect(() => {
+    if (!gateReady || showIntentChoose || step !== "url" || isThankYouFlow) return;
+    pingTrack("obituary_input_start");
+  }, [gateReady, showIntentChoose, step, isThankYouFlow]);
+
+  useEffect(() => {
+    if (!gateReady || showIntentChoose) return;
+    if (step === "url" || step === "compose" || step === "pick") {
+      resumeBulkWizardStep(step);
+    }
+  }, [gateReady, showIntentChoose, step]);
 
   /** Phase 4: step 4는 `/send/payments` 단일 화면 */
   const navigateToBulkPaymentsStep = useCallback(() => {
@@ -759,6 +796,8 @@ function BulkEntryInner() {
       obituaryPageUrl: isThankYouFlow ? "" : nv,
       bulkFlowKind: isThankYouFlow ? "thankyou" : "obituary",
     });
+    resumeBulkWizardStep("pick");
+    pingTrack("obituary_preview");
     setStep("pick");
   }, [url, body, title, templateId, isThankYouFlow]);
 
@@ -785,9 +824,7 @@ function BulkEntryInner() {
     } catch {
       /* ignore */
     }
-    router.push(
-      isPingMemberLoggedIn() ? "/obituary-form" : "/login?next=%2Fobituary-form",
-    );
+    router.push("/obituary-form");
   }, [router]);
 
   const onHeaderBack = useCallback(() => {
@@ -920,6 +957,19 @@ function BulkEntryInner() {
     }
   }, []);
 
+  const persistWizardForContactsJit = useCallback(() => {
+    const nv = normalizeObituaryUrlForField(url);
+    persistBulkComposeToPingFromIndex({
+      title,
+      body,
+      templateId,
+      obituaryPageUrl: isThankYouFlow ? "" : nv,
+      bulkFlowKind: isThankYouFlow ? "thankyou" : "obituary",
+    });
+    resumeBulkWizardStep("pick");
+    markBulkFlowStarted(ROUTE_BULK_DIRECT);
+  }, [url, title, body, templateId, isThankYouFlow]);
+
   const onPickGoogleContacts = useCallback(async () => {
     if (!isThankYouFlow) {
       const nv = normalizeObituaryUrlForField(url);
@@ -933,8 +983,17 @@ function BulkEntryInner() {
       setStep("compose");
       return;
     }
+    persistWizardForContactsJit();
+    pingTrack("contacts_import_click");
+    await hydratePingFunexSession();
+    if (!isPingMemberLoggedIn()) {
+      pingTrack("google_login_start");
+      window.location.assign(
+        `/api/auth/funex/start?returnTo=${encodeURIComponent(FUNEX_JIT_CONTACTS_RETURN)}`,
+      );
+      return;
+    }
     setGoogleContactsLoading(true);
-    pingTrack("contacts_import_start");
     try {
       const rows = await fetchGoogleContactPickerRows();
       pingTrack("contacts_import_success", { count: rows.length });
@@ -946,7 +1005,7 @@ function BulkEntryInner() {
     } finally {
       setGoogleContactsLoading(false);
     }
-  }, [url, body, isThankYouFlow]);
+  }, [url, body, isThankYouFlow, persistWizardForContactsJit]);
 
   const onConfirmRecipientPicker = useCallback(
     (effective: BulkRecipientRow[]) => {
@@ -969,6 +1028,7 @@ function BulkEntryInner() {
       );
       setExcludeModalOpen(false);
       setPendingPickerRows([]);
+      pingTrack("recipient_selection_complete", { count: effective.length });
       navigateToBulkPaymentsStep();
     },
     [url, title, body, templateId, isThankYouFlow, pickerIsGoogle, navigateToBulkPaymentsStep],
@@ -1010,6 +1070,22 @@ function BulkEntryInner() {
       setUrl(norm);
       applyComposeHydrateFromSession(templateId);
       setStep("compose");
+      return;
+    }
+
+    if (effect.type === "resumeContacts") {
+      markBulkFlowStarted(ROUTE_BULK_DIRECT);
+      setShowIntentChoose(false);
+      applyComposeHydrateFromSession(templateId);
+      const snap = loadPingFromIndexSnapshot();
+      const norm = normalizeObituaryUrlForField(String(snap.obituaryPageUrl || ""));
+      if (norm) setUrl(norm);
+      setStep("pick");
+      if (effect.authError) {
+        window.alert("로그인을 마치지 못했습니다. 부고 내용은 그대로 있으니 다시 시도해 주세요.");
+        return;
+      }
+      window.setTimeout(() => void onPickGoogleContacts(), 160);
       return;
     }
 
@@ -1269,6 +1345,14 @@ function BulkEntryInner() {
                     {urlHint}
                   </p>
                 ) : null}
+                <button
+                  type="button"
+                  className="mt-4 inline-flex min-h-[44px] items-center gap-2 text-left text-[14px] font-semibold text-primary"
+                  onClick={onChooseObituaryWrite}
+                >
+                  <FilePenLine className="size-4 shrink-0" aria-hidden />
+                  부고 링크가 없으면 직접 작성하기
+                </button>
               </div>
             </div>
           </section>

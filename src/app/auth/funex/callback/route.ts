@@ -19,14 +19,18 @@ function ssoSecret(): string {
   return String(process.env.FUNEX_PING_CLIENT_SECRET || process.env.PING_OAUTH_STATE_SECRET || "").trim();
 }
 
+function authFailRedirect(origin: string, returnTo?: string | null) {
+  const dest = sanitizeFunexReturnTo(returnTo, "/start?skipIntro=1");
+  const next = new URL(dest, origin);
+  next.searchParams.set("authError", "1");
+  return NextResponse.redirect(next);
+}
+
 export async function GET(request: Request) {
   const secret = ssoSecret();
   const url = new URL(request.url);
   const code = url.searchParams.get("code") || "";
   const state = url.searchParams.get("state") || "";
-  const fail = NextResponse.redirect(new URL("/login?error=funex_sso", url.origin));
-
-  if (!secret || code.length < 32 || !state) return fail;
 
   const cookieHeader = request.headers.get("cookie") || "";
   const rawTx = cookieHeader
@@ -34,7 +38,12 @@ export async function GET(request: Request) {
     .map((part) => part.trim())
     .find((part) => part.startsWith(`${FUNEX_SSO_TX_COOKIE}=`))
     ?.slice(FUNEX_SSO_TX_COOKIE.length + 1);
-  const tx = decodeFunexSsoTx(rawTx ? decodeURIComponent(rawTx) : undefined, secret);
+  const tx = secret
+    ? decodeFunexSsoTx(rawTx ? decodeURIComponent(rawTx) : undefined, secret)
+    : null;
+  const fail = authFailRedirect(url.origin, tx?.returnTo);
+
+  if (!secret || code.length < 32 || !state) return fail;
   if (!tx || tx.state !== state) return fail;
 
   const clientSecret = String(process.env.FUNEX_PING_CLIENT_SECRET || "").trim();
@@ -60,7 +69,7 @@ export async function GET(request: Request) {
   const userId = identity?.userId || identity?.subject;
   if (!userId) return fail;
 
-        const dest = sanitizeFunexReturnTo(tx.returnTo);
+  const dest = sanitizeFunexReturnTo(tx.returnTo);
   const next = new URL(dest, url.origin);
   next.searchParams.set("funex", "1");
   const response = NextResponse.redirect(next);

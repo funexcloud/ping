@@ -17,7 +17,8 @@ export type BulkEntryQueryEffect =
       openGoogleContacts: boolean;
     }
   | { type: "bulkAfterUrl" }
-  | { type: "openGoogleContacts" };
+  | { type: "openGoogleContacts" }
+  | { type: "resumeContacts"; authError: boolean };
 
 export function getPingObituaryPublicUrl(): string {
   if (typeof window === "undefined") return "";
@@ -51,6 +52,11 @@ export function consumeBulkEntryQueryEffect(): BulkEntryQueryEffect | null {
   } else if (sp.get("bulkAfterUrl") === "1") {
     effect = { type: "bulkAfterUrl" };
     sp.delete("bulkAfterUrl");
+  } else if (sp.get("resumeContacts") === "1") {
+    effect = { type: "resumeContacts", authError: sp.get("authError") === "1" };
+    sp.delete("resumeContacts");
+    sp.delete("authError");
+    sp.delete("funex");
   } else if (
     sp.get("openGoogleContacts") === "1" ||
     sp.get("bulkOpenGoogleContacts") === "1"
@@ -58,6 +64,9 @@ export function consumeBulkEntryQueryEffect(): BulkEntryQueryEffect | null {
     effect = { type: "openGoogleContacts" };
     sp.delete("openGoogleContacts");
     sp.delete("bulkOpenGoogleContacts");
+  } else if (sp.get("authError") === "1") {
+    effect = { type: "resumeContacts", authError: true };
+    sp.delete("authError");
   }
 
   if (effect) {
