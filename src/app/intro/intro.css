@@ -1,1519 +1,350 @@
 html.ping-intro-active {
-            --color-background-primary: var(--ping-surface);
-            --color-background-secondary: var(--ping-bg);
-            --color-text-primary: var(--ping-text);
-            --color-text-secondary: var(--ping-muted);
-            --color-text-tertiary: var(--ping-ui-text-hint);
-            --color-border-secondary: var(--ping-ui-line-strong);
-            --color-border-tertiary: #e5e8eb;
-        }
-        .touch-manipulation {
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-        }
-        html.ping-intro-active {
-            background-color: #f5f8fc !important;
-        }
-        html.ping-intro-active,
-        html.ping-intro-active body {
-            overflow-x: hidden;
-            max-width: 100%;
-        }
-        html.ping-intro-active .ping-global-root {
-            align-items: stretch !important;
-        }
-        html.ping-intro-active .ping-global-main {
-            max-width: none !important;
-            width: 100% !important;
-            background: #f5f8fc !important;
-        }
-        html.ping-intro-active body {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            background-color: #f5f8fc !important;
-        }
-        /* 서버 HTML에 포함 — 루트 body 배경이 먼저 보이는 플래시 차단 (웨이브·셸 아래 깔림) */
-        .intro-paint-guard {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            background: #f5f8fc;
-            pointer-events: none;
-        }
-        #intro-wave-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-        }
-        #intro-wave-bg canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-            transform: translateZ(0);
-        }
-        .app-shell.intro-app {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            /* Galaxy S26 Ultra — 6.9" QHD+ 1440×3120 @ 3.5x → CSS 412×893, 19.5:9 */
-            --intro-s26u-css-w: 412px;
-            --intro-s26u-aspect: 78.1 / 163.6;
-            --intro-s26u-radius: 2.05rem;
-            --intro-shell-max-w: 100%;
-            max-width: var(--intro-shell-max-w);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            --intro-main-pad-x: 1.25rem;
-            --intro-phone-wrap-pad-x: 0.625rem;
-            /* main.cx-main 좌우 패딩 + .phone-wrap 좌우 패딩 — CTA와 #phoneBody 너비 정렬 */
-            --intro-phone-gutter-x: calc(var(--intro-main-pad-x) + var(--intro-phone-wrap-pad-x));
-        }
-        html.ping-intro-active .app-shell.intro-app {
-            background: transparent !important;
-            box-shadow: none !important;
-            border: none !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            border-radius: 0 !important;
-            margin: 0 !important;
-        }
-        header.cx-head {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 1.25rem;
-            border-bottom: none;
-            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
-        }
-        .intro-app header.cx-head {
-            border-bottom: none;
-            box-shadow: none;
-            padding-top: 0.5rem;
-            padding-bottom: 0.375rem;
-            justify-content: center;
-        }
-        .intro-app .cx-head-title {
-            flex: none;
-            width: 100%;
-            max-width: 100%;
-            justify-content: center;
-            text-align: center;
-            font-size: 24px;
-            /* 타이핑 문구·줄바꿈 시에도 아래 폰 데모 높이 안정 */
-            min-height: 3.25rem;
-            align-content: center;
-        }
-        .intro-app .cx-head-type-text,
-        .intro-app .cx-head-title {
-            color: #0b1b33;
-        }
-        .intro-app .cx-head-type-text {
-            text-align: center;
-        }
-        .intro-app .stage-label {
-            color: #191f28;
-        }
-        .intro-app .stage-num {
-            color: #8b95a1;
-        }
-        .intro-app .stage-top {
-            min-height: 1.85rem;
-            margin-bottom: 8px;
-        }
-        .intro-app .dot {
-            background: #d7e3f4;
-        }
-        .intro-app .dot.on {
-            background: var(--ping-primary);
-        }
-        .intro-app .dot.done {
-            background: rgba(0, 86, 243, 0.45);
-        }
-        .intro-app .cx-flash-title {
-            color: #0b1b33;
-        }
-        .intro-app .cx-flash-sub {
-            color: #6b7684;
-        }
-        .intro-app .spinner,
-        .intro-app .cx-flash-spin {
-            border-color: rgba(255, 255, 255, 0.22);
-            border-top-color: #0056F3;
-        }
-        .cx-head-title {
-            margin: 0;
-            flex: 1;
-            min-width: 0;
-            font-size: 0.9375rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            line-height: 1.35;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0;
-        }
-        .cx-head-type-text {
-            word-break: keep-all;
-            overflow-wrap: break-word;
-        }
-        .cx-head-caret {
-            display: inline-block;
-            width: 2px;
-            height: 1.05em;
-            margin-left: 1px;
-            flex-shrink: 0;
-            background: var(--ping-primary, #0056F3);
-            border-radius: 1px;
-            vertical-align: text-bottom;
-            animation: cxHeadCaretBlink 1s steps(1, end) infinite;
-        }
-        @keyframes cxHeadCaretBlink {
-            50%, 100% { opacity: 0; }
-        }
-        .cx-sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        main.cx-main { flex: 1; padding: 1rem 1.25rem 2rem; }
-        .intro-app main.cx-main {
-            padding-top: 0.375rem;
-        }
-
-        /* 데모 전환 카드 (근조화환 파트너 이동 안내 스타일 — 짧은 스피너 + 문구) */
-        .cx-flash-inner {
-            min-height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px 12px;
-        }
-        .cx-flash-spin {
-            width: 32px;
-            height: 32px;
-            border-width: 3px;
-            margin-bottom: 16px;
-        }
-        .cx-flash-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--color-text-primary);
-            line-height: 1.38;
-            letter-spacing: -0.02em;
-            width: 100%;
-            text-align: center;
-        }
-        .cx-flash-sub {
-            margin-top: 10px;
-            margin-left: auto;
-            margin-right: auto;
-            font-size: 11px;
-            color: var(--color-text-secondary);
-            line-height: 1.55;
-            max-width: 220px;
-            text-align: center;
-        }
-
-        .stage { display: none; animation: fadeUp 0.4s ease both; }
-        .stage.active { display: block; }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-16px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes checkDraw { from { stroke-dashoffset: 40; } to { stroke-dashoffset: 0; } }
-        @keyframes progressFill { from { width: 0; } to { width: var(--w); } }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .phone-wrap {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            padding: 0.5rem 0.625rem 0.25rem;
-            box-sizing: border-box;
-        }
-        .phone {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            max-width: 100%;
-            background: var(--color-background-primary);
-            border-radius: 24px;
-            overflow: hidden;
-            --intro-phone-accent: var(--ping-primary, #0056f3);
-            --intro-phone-accent-soft: var(--ping-primary-light-bg, #e6effc);
-            --intro-phone-accent-ring: rgba(0, 86, 243, 0.12);
-            --intro-phone-accent-muted: rgba(0, 86, 243, 0.08);
-            --intro-phone-accent-border: rgba(0, 86, 243, 0.28);
-        }
-        .intro-app .phone {
-            flex: 1 1 auto;
-            width: 100%;
-            min-height: 0;
-            height: auto;
-            aspect-ratio: auto;
-            border-radius: 0;
-            box-shadow: none;
-        }
-        .intro-device {
-            position: relative;
-            width: min(100%, calc(var(--intro-s26u-css-w) + 14px));
-            aspect-ratio: var(--intro-s26u-aspect);
-            flex-shrink: 0;
-        }
-        .intro-device__bezel {
-            box-sizing: border-box;
-            width: 100%;
-            height: 100%;
-            padding: 8px 7px 9px;
-            border-radius: var(--intro-s26u-radius);
-            background:
-              linear-gradient(155deg, #5c5c62 0%, #2a2a2e 28%, #111114 72%, #070708 100%);
-            box-shadow:
-              0 22px 56px rgba(0, 0, 0, 0.42),
-              0 2px 0 rgba(255, 255, 255, 0.12) inset,
-              0 -2px 6px rgba(0, 0, 0, 0.45) inset;
-        }
-        .intro-device__screen {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-            min-height: 0;
-            overflow: hidden;
-            border-radius: calc(var(--intro-s26u-radius) - 0.45rem);
-            background: var(--color-background-primary, #fff);
-        }
-        .intro-device__status {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 1.75rem;
-            padding: 0.2rem 0.85rem 0;
-            flex-shrink: 0;
-            color: #111;
-            font-size: 0.6875rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            line-height: 1;
-            background: var(--color-background-primary, #fff);
-        }
-        .intro-device__time {
-            min-width: 2.25rem;
-        }
-        .intro-device__hole {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: 0.62rem;
-            height: 0.62rem;
-            border-radius: 999px;
-            background: radial-gradient(circle at 35% 35%, #2a2a30 0%, #050506 55%, #000 100%);
-            box-shadow: 0 0 0 2px #0c0c0e, 0 0 0 3px rgba(0, 0, 0, 0.35);
-            transform: translate(-50%, -50%);
-        }
-        .intro-device__sys {
-            display: flex;
-            align-items: center;
-            gap: 0.28rem;
-        }
-        .intro-device__signal {
-            width: 0.72rem;
-            height: 0.55rem;
-            background:
-              linear-gradient(90deg, currentColor 0 2px, transparent 2px 3px, currentColor 3px 5px, transparent 5px 6px, currentColor 6px 8px, transparent 8px 9px, currentColor 9px 11px);
-            clip-path: polygon(0 100%, 22% 70%, 22% 100%, 44% 45%, 44% 100%, 66% 22%, 66% 100%, 100% 0, 100% 100%);
-            opacity: 0.88;
-        }
-        .intro-device__wifi {
-            width: 0.72rem;
-            height: 0.55rem;
-            border: 1.5px solid currentColor;
-            border-radius: 70% 70% 0 0;
-            border-bottom: 0;
-            opacity: 0.88;
-            transform: translateY(2px);
-        }
-        .intro-device__battery {
-            width: 1.05rem;
-            height: 0.5rem;
-            border: 1.35px solid currentColor;
-            border-radius: 0.15rem;
-            opacity: 0.88;
-            position: relative;
-        }
-        .intro-device__battery::before {
-            content: "";
-            position: absolute;
-            inset: 1px 1px 1px 1px;
-            width: 72%;
-            background: currentColor;
-            border-radius: 1px;
-        }
-        .intro-device__battery::after {
-            content: "";
-            position: absolute;
-            right: -3px;
-            top: 50%;
-            width: 2px;
-            height: 0.22rem;
-            background: currentColor;
-            border-radius: 0 1px 1px 0;
-            transform: translateY(-50%);
-        }
-        .intro-device__home {
-            flex-shrink: 0;
-            height: 1.15rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--color-background-primary, #fff);
-        }
-        .intro-device__home::after {
-            content: "";
-            width: 7.5rem;
-            height: 0.28rem;
-            border-radius: 999px;
-            background: #1a1a1a;
-            opacity: 0.88;
-        }
-        .intro-device__btn {
-            position: absolute;
-            width: 3px;
-            border-radius: 1px;
-            background: linear-gradient(90deg, #6a6a70, #2c2c30 40%, #1a1a1d);
-            box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.4);
-        }
-        .intro-device__btn--vol {
-            left: -3px;
-            top: 18%;
-            height: 5.4rem;
-        }
-        .intro-device__btn--power {
-            right: -3px;
-            top: 24%;
-            height: 3.35rem;
-        }
-        .phone-wrap .ping-phone-mockup {
-            max-width: min(300px, 78vw);
-        }
-        @media (max-width: 720px) {
-            html.ping-intro-active .app-shell.intro-app {
-                max-width: 100%;
-                width: 100%;
-            }
-            .intro-app .phone-wrap {
-                padding-left: 0;
-                padding-right: 0;
-            }
-            .intro-app .phone-bar {
-                display: none;
-            }
-            .phone-wrap .ping-phone-mockup {
-                max-width: none;
-            }
-        }
-        .intro-app .phone-bar {
-            height: auto;
-            background: transparent;
-            padding: 4px 20px 8px;
-        }
-        .phone-bar {
-            height: 38px;
-            background: transparent;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-        .phone-logo { font-size: 14px; font-weight: 600; color: #fff; letter-spacing: 0.04em; }
-        .intro-brand-hit {
-            background: transparent;
-            border: none;
-            margin: 0;
-            padding: 0;
-            font: inherit;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .phone-menu {
-            width: 18px;
-            height: 12px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            margin-left: auto;
-        }
-        .phone-menu span { display: none; }
-        .phone-body {
-            padding: 14px 12px 10px;
-            min-height: clamp(420px, 98vw, 560px);
-            background: var(--color-background-primary);
-        }
-        .intro-app .phone-body {
-            flex: 1 1 auto;
-            min-height: 0;
-            overflow: auto;
-        }
-
-        .phone-cta {
-            padding: 0 12px 14px;
-            background: var(--color-background-primary);
-            flex-shrink: 0;
-        }
-
-        .phone-cta .intro-cta-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            width: 100%;
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: -0.03em;
-            line-height: 1.3;
-            color: #fff;
-            background: var(--ping-primary);
-            padding: 14px 16px;
-            min-height: 52px;
-            border-radius: 16px;
-            border: none;
-            text-decoration: none;
-            box-sizing: border-box;
-            box-shadow: var(--shadow-ping-primary);
-            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-        }
-
-        .phone-cta .intro-cta-link:hover {
-            filter: brightness(1.05);
-        }
-
-        .phone-cta .intro-cta-link:active {
-            transform: scale(0.985);
-            filter: brightness(0.96);
-            box-shadow: var(--shadow-ping-sm);
-        }
-
-        /* `/start` → 발송완료 — BulkFlowProgress + ping-bordered-panel 미니 목업 */
-        .phone-body .intro-flow-step {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-            min-width: 0;
-        }
-
-        .phone-body .intro-flow-step__progress {
-            padding: 0 0 10px;
-        }
-
-        .phone-body .intro-flow-step__bars {
-            display: flex;
-            gap: 2px;
-            margin-bottom: 6px;
-        }
-
-        .phone-body .intro-flow-step__bar {
-            flex: 1;
-            min-width: 0;
-            height: 3px;
-            border-radius: 999px;
-            background: #e9ecf0;
-        }
-
-        .phone-body .intro-flow-step__bar.is-on {
-            background: var(--ping-primary, #0056f3);
-        }
-
-        .phone-body .intro-flow-step__meta {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            gap: 6px;
-        }
-
-        .phone-body .intro-flow-step__label {
-            margin: 0;
-            min-width: 0;
-            font-size: 10px;
-            font-weight: 600;
-            line-height: 1.35;
-            letter-spacing: -0.02em;
-            color: #191f28;
-        }
-
-        .phone-body .intro-flow-step__label-num {
-            color: var(--ping-primary, #0056f3);
-        }
-
-        .phone-body .intro-flow-step__label-muted {
-            font-weight: 500;
-            color: #b0b8c1;
-        }
-
-        .phone-body .intro-flow-step__label-dot {
-            font-weight: 400;
-            color: #d1d6db;
-        }
-
-        .phone-body .intro-flow-step__pct {
-            flex-shrink: 0;
-            font-size: 9px;
-            font-weight: 500;
-            font-variant-numeric: tabular-nums;
-            color: #b0b8c1;
-        }
-
-        .phone-body .intro-flow-step__card {
-            padding: 14px;
-        }
-
-        .phone-body .intro-flow-step__eyebrow {
-            margin: 0 0 6px;
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            color: var(--ping-primary, #0056f3);
-        }
-
-        .phone-body .intro-flow-step__head {
-            margin-bottom: 12px;
-        }
-
-        .phone-body .intro-flow-step .ping-step-head--panel .ping-step-head__title,
-        .phone-body .intro-flow-step .ping-step-head--lead .ping-step-head__title {
-            font-size: 15px;
-            font-weight: 700;
-            color: #191f28;
-        }
-
-        .phone-body .intro-flow-step .ping-step-head--panel .ping-step-head__sub,
-        .phone-body .intro-flow-step .ping-step-head--lead .ping-step-head__sub {
-            font-size: 11px;
-            font-weight: 500;
-            color: #6b7684;
-        }
-
-        .phone-body .intro-flow-step__input-wrap {
-            min-width: 0;
-        }
-
-        .phone-body .intro-flow-step__field {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            max-width: 100%;
-            min-width: 0;
-            box-sizing: border-box;
-            min-height: 38px;
-            padding: 9px 10px 9px 1.5ch;
-            font-size: 11px;
-            line-height: 1.35;
-            letter-spacing: -0.01em;
-            color: #191f28;
-            background: #f2f4f6;
-            border-radius: 4px;
-            border: none;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .phone-body .intro-flow-step__field--valid {
-            background: var(--ping-surface, #fff);
-            box-shadow: 0 0 0 2px var(--ping-primary, #0056f3);
-        }
-
-        /* 2단계 — 부고 문자 작성 */
-        .phone-body .intro-compose__title-wrap {
-            position: relative;
-            margin-bottom: 8px;
-        }
-
-        .phone-body .intro-compose__title {
-            padding-right: 3.25rem;
-            white-space: nowrap;
-        }
-
-        .phone-body .intro-compose__title-count {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 9px;
-            font-weight: 600;
-            color: var(--ping-primary, #0056f3);
-            font-variant-numeric: tabular-nums;
-        }
-
-        .phone-body .intro-compose__body-shell {
-            border-radius: 8px;
-            background: #f2f4f6;
-            overflow: hidden;
-            box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.06);
-        }
-
-        .phone-body .intro-compose__textarea {
-            min-height: 88px;
-            padding: 8px 10px;
-            font-size: 10px;
-            line-height: 1.5;
-            color: #191f28;
-            background: #fff;
-        }
-
-        .phone-body .intro-compose__toolbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            padding: 6px 8px;
-            background: #f2f4f6;
-        }
-
-        .phone-body .intro-compose__toolbar-left {
-            display: flex;
-            gap: 6px;
-        }
-
-        .phone-body .intro-compose__tool {
-            display: inline-flex;
-            width: 22px;
-            height: 22px;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            background: #fff;
-            font-size: 10px;
-        }
-
-        .phone-body .intro-compose__bytes {
-            font-size: 8px;
-            font-weight: 600;
-            color: #6b7684;
-            font-variant-numeric: tabular-nums;
-        }
-
-        /* 3단계 — 연락처 */
-        .phone-body .intro-pick__stack {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 8px;
-        }
-
-        .phone-body .intro-pick__btn {
-            display: flex;
-            width: 100%;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            min-height: 44px;
-            padding: 8px 12px;
-            border: 1px solid #e9ecf0;
-            border-radius: 16px;
-            background: #fff;
-            font-size: 10px;
-            font-weight: 600;
-            color: #191f28;
-            box-sizing: border-box;
-        }
-
-        .phone-body .intro-pick__selected {
-            padding: 10px;
-            border-radius: 8px;
-            background: #e6effc;
-            border: 1px solid rgba(0, 86, 243, 0.22);
-        }
-
-        .phone-body .intro-pick__selected-name {
-            display: block;
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--ping-primary, #0056f3);
-        }
-
-        .phone-body .intro-pick__selected-meta {
-            display: block;
-            margin-top: 2px;
-            font-size: 9px;
-            color: #6b7684;
-        }
-
-        /* 4단계 — 결제 금액 */
-        .phone-body .intro-review__source {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-bottom: 8px;
-            font-size: 10px;
-            color: #4e5968;
-        }
-
-        .phone-body .intro-review__totals {
-            padding: 10px;
-            border-radius: 8px;
-            background: #f2f4f6;
-        }
-
-        .phone-body .intro-review__row,
-        .phone-body .intro-review__total {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            font-size: 10px;
-            color: #6b7684;
-        }
-
-        .phone-body .intro-review__row + .intro-review__row {
-            margin-top: 4px;
-        }
-
-        .phone-body .intro-review__row strong {
-            color: #191f28;
-            font-weight: 700;
-        }
-
-        .phone-body .intro-review__total {
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px dashed #e5e8eb;
-            font-size: 11px;
-            font-weight: 700;
-            color: #191f28;
-        }
-
-        .phone-body .intro-review__total strong {
-            font-size: 12px;
-            color: var(--ping-primary, #0056f3);
-        }
-
-        .phone-body .intro-review__note {
-            margin: 4px 0 0;
-            font-size: 8px;
-            text-align: right;
-            color: #b0b8c1;
-        }
-
-        /* 5단계 — 본인 확인 */
-        .phone-body .intro-auth__stack {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 6px;
-        }
-
-        .phone-body .intro-auth__kakao,
-        .phone-body .intro-auth__guest,
-        .phone-body .intro-auth__email {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            min-height: 36px;
-            border-radius: 8px;
-            font-size: 10px;
-            font-weight: 600;
-        }
-
-        .phone-body .intro-auth__kakao {
-            background: #fee500;
-            color: #1a1a1a;
-        }
-
-        .phone-body .intro-auth__guest {
-            border: 1px solid #e9ecf0;
-            background: #fff;
-            color: #191f28;
-        }
-
-        .phone-body .intro-auth__email {
-            border: 1px solid #e9ecf0;
-            background: #f2f4f6;
-            color: #4e5968;
-        }
-
-        /* 6단계 — 결제 */
-        .phone-body .intro-checkout__rows {
-            margin-bottom: 8px;
-        }
-
-        .phone-body .intro-checkout__row,
-        .phone-body .intro-checkout__amount {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 8px;
-            font-size: 10px;
-            color: #6b7684;
-        }
-
-        .phone-body .intro-checkout__row + .intro-checkout__row {
-            margin-top: 4px;
-        }
-
-        .phone-body .intro-checkout__row strong,
-        .phone-body .intro-checkout__amount strong {
-            color: #191f28;
-            font-weight: 600;
-            text-align: right;
-        }
-
-        .phone-body .intro-checkout__mono {
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            font-size: 8px;
-            word-break: break-all;
-        }
-
-        .phone-body .intro-checkout__amount {
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid #e9ecf0;
-            font-weight: 700;
-            color: #191f28;
-        }
-
-        .phone-body .intro-checkout__amount strong {
-            font-size: 13px;
-            color: var(--ping-primary, #0056f3);
-        }
-
-        .phone-body .intro-checkout__methods {
-            margin-bottom: 8px;
-            font-size: 8px;
-            text-align: center;
-            color: #b0b8c1;
-        }
-
-        .phone-body .intro-checkout__pay {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 38px;
-            border-radius: 10px;
-            background: var(--ping-primary, #0056f3);
-            color: #fff;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        /* 7단계 — 발송 중 */
-        .phone-body .intro-dispatch__hero {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .phone-body .intro-dispatch__spinner {
-            width: 24px;
-            height: 24px;
-            margin: 0 auto 8px;
-            border: 2px solid #e9ecf0;
-            border-top-color: var(--ping-primary, #0056f3);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        .phone-body .intro-dispatch__title {
-            margin: 0;
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--ping-primary, #0056f3);
-        }
-
-        .phone-body .intro-dispatch__sub {
-            margin: 4px 0 0;
-            font-size: 9px;
-            line-height: 1.45;
-            color: rgba(0, 86, 243, 0.82);
-        }
-
-        .phone-body .intro-dispatch__track {
-            height: 3px;
-            margin-bottom: 8px;
-            border-radius: 999px;
-            background: #f2f4f6;
-            overflow: hidden;
-        }
-
-        .phone-body .intro-dispatch__track > span {
-            display: block;
-            height: 100%;
-            border-radius: inherit;
-            background: var(--ping-primary, #0056f3);
-        }
-
-        .phone-body .intro-dispatch__list {
-            padding: 8px;
-            border-radius: 8px;
-            background: #f2f4f6;
-        }
-
-        .phone-body .intro-dispatch__item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 0;
-            border-bottom: 0.5px solid #e5e8eb;
-            animation: slideIn 0.3s ease both;
-        }
-
-        .phone-body .intro-dispatch__item:last-child {
-            border-bottom: none;
-        }
-
-        .phone-body .intro-dispatch__dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            flex-shrink: 0;
-            background: #d1d6db;
-        }
-
-        .phone-body .intro-dispatch__item--done .intro-dispatch__dot {
-            background: #1d9e75;
-        }
-
-        .phone-body .intro-dispatch__item--active .intro-dispatch__dot {
-            background: var(--ping-primary, #0056f3);
-            animation: pulse 0.8s ease infinite;
-        }
-
-        .phone-body .intro-dispatch__name {
-            flex: 1;
-            min-width: 0;
-            font-size: 9px;
-            color: rgba(0, 86, 243, 0.72);
-        }
-
-        .phone-body .intro-dispatch__status {
-            font-size: 8px;
-            font-weight: 600;
-            color: var(--ping-primary, #0056f3);
-        }
-
-        .phone-body .intro-dispatch__item--done .intro-dispatch__status {
-            color: var(--ping-primary, #0056f3);
-        }
-
-        .phone-body .intro-dispatch__item--active .intro-dispatch__status {
-            color: var(--ping-primary, #0056f3);
-        }
-
-        .phone-body .intro-dispatch__item--wait .intro-dispatch__status {
-            color: rgba(0, 86, 243, 0.45);
-        }
-
-        /* 8단계 — 발송 완료 */
-        .phone-body .intro-complete__hero {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .phone-body .intro-complete__mark {
-            width: 40px;
-            height: 40px;
-            margin: 0 auto 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: var(--ping-primary, #0056f3);
-            box-shadow: 0 8px 20px rgba(0, 86, 243, 0.28);
-        }
-
-        .phone-body .intro-complete__mark svg {
-            width: 22px;
-            height: 22px;
-        }
-
-        .phone-body .intro-complete__title {
-            margin: 0;
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--ping-primary, #0056f3);
-        }
-
-        .phone-body .intro-complete__sub {
-            margin: 4px 0 0;
-            font-size: 9px;
-            color: rgba(0, 86, 243, 0.82);
-        }
-
-        .phone-body .intro-complete__card {
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            background: #f2f4f6;
-        }
-
-        .phone-body .intro-complete__row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            font-size: 10px;
-            color: rgba(0, 86, 243, 0.72);
-        }
-
-        .phone-body .intro-complete__row + .intro-complete__row {
-            margin-top: 4px;
-        }
-
-        .phone-body .intro-complete__row strong {
-            color: var(--ping-primary, #0056f3);
-            font-weight: 700;
-        }
-
-        .phone-body .intro-complete__ok {
-            color: var(--ping-primary, #0056f3) !important;
-        }
-
-        .phone-body .intro-complete__row--amount strong {
-            color: var(--ping-primary, #0056f3);
-        }
-
-        .phone-body .intro-complete__export {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            min-height: 34px;
-            border: 1px solid rgba(0, 86, 243, 0.28);
-            border-radius: 8px;
-            background: #fff;
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--ping-primary, #0056f3);
-        }
-
-        .tab-bar {
-            display: flex;
-            background: #ebeef2;
-            border-radius: 12px;
-            padding: 3px;
-            gap: 3px;
-            margin-bottom: 14px;
-        }
-        .tab {
-            flex: 1;
-            padding: 7px 4px;
-            border-radius: 10px;
-            font-size: 10px;
-            font-weight: 600;
-            text-align: center;
-            color: #4e5968;
-            transition: all 0.25s;
-        }
-        .tab.on { background: var(--color-background-primary); color: var(--intro-phone-accent, var(--ping-primary, #0056f3)); border: 0.5px solid var(--intro-phone-accent-border, rgba(0, 86, 243, 0.28)); }
-
-        .label { font-size: 11px; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 5px; }
-        .field {
-            width: 100%;
-            height: 34px;
-            border-radius: 10px;
-            border: 1px solid var(--color-border-secondary);
-            background: var(--color-background-secondary);
-            margin-bottom: 10px;
-            padding: 0 10px;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            color: var(--color-text-secondary);
-        }
-        .field.filled {
-            border-color: var(--intro-phone-accent, var(--ping-primary, #0056f3));
-            background: var(--color-background-primary);
-            color: var(--color-text-primary);
-        }
-        .btn-main {
-            width: 100%;
-            height: 40px;
-            border-radius: 12px;
-            background: var(--intro-phone-accent, var(--ping-primary, #0056f3));
-            color: #fff;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 8px;
-        }
-        .btn-main.disabled { background: #e5e8eb; color: #b0b8c1; }
-        .btn-main.active { animation: bounce 0.8s ease infinite; }
-
-        .upload-box {
-            border: 1.5px dashed var(--color-border-secondary);
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .upload-box.highlight { border-color: var(--intro-phone-accent, var(--ping-primary, #0056f3)); background: var(--intro-phone-accent-muted, rgba(0, 86, 243, 0.08)); }
-        .upload-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--intro-phone-accent-ring, rgba(0, 86, 243, 0.12));
-            margin: 0 auto 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .price-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 10px;
-            padding: 4px 0;
-            color: var(--color-text-secondary);
-        }
-        .price-row.total {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--intro-phone-accent, var(--ping-primary, #0056f3));
-            border-top: 1px dashed var(--color-border-tertiary);
-            margin-top: 6px;
-            padding-top: 8px;
-        }
-
-        .pg-box { border: 1px solid var(--color-border-secondary); border-radius: 14px; padding: 14px; margin-bottom: 10px; }
-        .pg-title { font-size: 11px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 10px; text-align: center; }
-        .card-input {
-            height: 30px;
-            border-radius: 8px;
-            border: 1px solid var(--color-border-secondary);
-            background: var(--color-background-secondary);
-            margin-bottom: 7px;
-            padding: 0 8px;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            color: var(--color-text-secondary);
-        }
-        .card-input.active { border-color: var(--intro-phone-accent, var(--ping-primary, #0056f3)); }
-
-        .phone .spinner,
-        .phone-body .spinner {
-            width: 28px;
-            height: 28px;
-            border: 3px solid var(--color-border-tertiary);
-            border-top-color: var(--intro-phone-accent, var(--ping-primary, #0056f3));
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        .spinner {
-            width: 28px;
-            height: 28px;
-            border: 3px solid var(--color-border-tertiary);
-            border-top-color: var(--ping-primary, #0056f3);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        .result-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            margin: 0 auto 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .result-icon.success { background: var(--intro-phone-accent-ring, rgba(0, 86, 243, 0.12)); }
-        .result-icon.fail { background: rgba(226, 75, 74, 0.1); }
-        .check-svg { stroke-dasharray: 40; stroke-dashoffset: 40; animation: checkDraw 0.5s 0.2s ease forwards; }
-
-        .progress-track { height: 4px; background: var(--color-background-secondary); border-radius: 2px; margin: 12px 0 4px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--intro-phone-accent, var(--ping-primary, #0056f3)); border-radius: 2px; animation: progressFill 0.8s ease forwards; }
-
-        .step-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
-        .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-border-secondary); transition: all 0.3s; }
-        .dot.on { background: #0056F3; width: 18px; border-radius: 4px; }
-        .dot.done { background: #7aa7f5; }
-
-        .send-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px 0;
-            border-bottom: 0.5px solid var(--color-border-tertiary);
-            animation: slideIn 0.3s ease both;
-        }
-        .send-item:last-child { border-bottom: none; }
-        .send-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--intro-phone-accent, var(--ping-primary, #0056f3)); flex-shrink: 0; }
-        .send-dot.done { background: #1d9e75; }
-
-        .stage-top {
-            position: relative;
-            margin-bottom: 10px;
-        }
-        .stage-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--color-text-primary);
-            text-align: center;
-            line-height: 1.35;
-            padding: 0 3rem;
-            box-sizing: border-box;
-            min-height: 1.4em;
-        }
-        .stage-num {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 11px;
-            color: var(--color-text-secondary);
-            text-align: right;
-        }
-
-        .cx-cta {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 28rem;
-            padding: 0.875rem 1.25rem;
-            padding-bottom: calc(0.875rem + env(safe-area-inset-bottom));
-            background: rgba(255, 255, 255, 0.9);
-            border-top: 1px solid rgba(0, 0, 0, 0.06);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            z-index: 2;
-        }
-        .intro-app .cx-cta {
-            /* fixed 는 뷰포트 기준이라 shell(400px)과 어긋남 — shell 과 동일 max-width 로 #phoneBody 와 맞춤 */
-            max-width: var(--intro-shell-max-w);
-            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.42) 45%, rgba(0, 0, 0, 0.55) 100%);
-            border: none;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-            padding: 1rem 0 calc(1rem + env(safe-area-inset-bottom));
-        }
-        .intro-app .cx-cta-inset {
-            padding-left: var(--intro-main-pad-x);
-            padding-right: var(--intro-main-pad-x);
-            box-sizing: border-box;
-        }
-        .intro-app .cx-cta-phone-wrap.phone-wrap {
-            padding-top: 0;
-            padding-bottom: 0;
-            /* 좌우는 .phone-wrap 기본값과 동일 (var(--intro-phone-wrap-pad-x)) */
-        }
-        .intro-app .cx-cta .intro-cta-link {
-            width: 100%;
-            max-width: none;
-            box-sizing: border-box;
-        }
-        .cx-cta a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            font-size: 17px;
-            font-weight: 600;
-            letter-spacing: -0.03em;
-            line-height: 1.3;
-            color: #fff;
-            background: var(--ping-primary);
-            padding: 16px 20px;
-            min-height: 52px;
-            border-radius: 16px;
-            border: none;
-            text-decoration: none;
-            box-sizing: border-box;
-            box-shadow: var(--shadow-ping-primary);
-            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-        }
-        .cx-cta a:hover {
-            filter: brightness(1.05);
-        }
-        .cx-cta a:active {
-            transform: scale(0.985);
-            filter: brightness(0.96);
-            box-shadow: var(--shadow-ping-sm);
-        }
-
-        .intro-hero-tagline {
-            text-align: center;
-            margin-top: 2.25rem;
-            padding: 0 1rem 0.5rem;
-        }
-        .intro-hero-brand {
-            display: flex;
-            justify-content: center;
-            margin: 0;
-        }
-        .intro-hero-brand .ping-brand-logo--horizontal {
-            height: 40px;
-            max-width: min(200px, 70vw);
-        }
-        .intro-hero-brand-btn {
-            background: transparent;
-            border: none;
-            padding: 0;
-            width: 100%;
-            text-align: center;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .intro-hero-sub {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: clamp(0.7rem, 2.4vw, 0.95rem);
-            font-weight: 700;
-            color: #6b7684;
-            margin: 0.65rem 0 0;
-            letter-spacing: 0.06em;
-            text-transform: none;
-            line-height: 1.45;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .stage, .check-svg, .progress-fill, .btn-main.active, .spinner, .cx-flash-spin, .send-item { animation: none !important; }
-            .dot { transition: none; }
-            .cx-head-caret { animation: none !important; opacity: 0.35; }
-        }
-        /* Canonical inner grammar wins over legacy 9px demo type */
-        .intro-app .phone-body .ping-mobile-title {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: -0.04em;
-            color: #191f28;
-        }
-        .intro-app .phone-body .ping-mobile-count-line {
-            font-size: 16px;
-            color: #191f28;
-        }
-        .intro-app .phone-body .ping-mobile-ratio {
-            font-size: 32px;
-        }
-        .intro-app .phone-body .ping-mobile-wait {
-            font-size: 13px;
-        }
-        .intro-app .phone-body .ping-mobile-signal {
-            width: 120px;
-            height: 120px;
-            margin: 12px auto 8px;
-        }
-        .intro-app .phone-body .ping-mobile-success-mark {
-            width: 72px;
-            height: 72px;
-            margin: 16px auto 12px;
-            font-size: 30px;
-        }
-        .intro-app .phone-body .ping-mobile-complete-lead {
-            font-size: 24px;
-            color: #191f28;
-        }
-
-        @media (max-width: 1023px) {
-            html.ping-intro-active .app-shell.intro-app {
-                max-width: 100%;
-                width: 100%;
-            }
-            .intro-app .phone-wrap {
-                padding-left: 0;
-                padding-right: 0;
-            }
-            .intro-app .phone-bar {
-                display: none;
-            }
-            .phone-wrap .ping-phone-mockup {
-                max-width: none;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            html.ping-intro-active body {
-                display: block;
-                justify-content: unset;
-            }
-            .app-shell.intro-app {
-                --intro-shell-max-w: min(1120px, calc(100% - 4rem));
-                width: 100%;
-                max-width: var(--intro-shell-max-w);
-                margin-inline: auto;
-                display: grid;
-                grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
-                column-gap: 4rem;
-                padding: 1.25rem 2.5rem 3.5rem;
-                box-sizing: border-box;
-            }
-            .intro-app header.cx-head {
-                grid-column: 1;
-                justify-content: flex-start;
-                padding-left: 0;
-                padding-right: 0;
-            }
-            .intro-app .cx-head-title {
-                justify-content: flex-start;
-                text-align: left;
-            }
-            .intro-app .cx-head-type-text {
-                text-align: left;
-            }
-            .intro-app main.cx-main {
-                display: contents;
-                padding: 0;
-            }
-            .intro-app .stage-top,
-            .intro-app .step-dots {
-                grid-column: 1;
-            }
-            .intro-app .step-dots {
-                justify-content: flex-start;
-            }
-            .intro-app .phone-wrap {
-                grid-column: 2;
-                grid-row: 1 / span 6;
-                align-self: center;
-                padding: 0;
-            }
-            .phone-wrap .ping-phone-mockup {
-                max-width: 360px;
-            }
-            .intro-app .intro-hero-tagline {
-                grid-column: 1;
-                text-align: left;
-                margin-top: 1.5rem;
-                padding-left: 0;
-            }
-            .intro-app .intro-hero-brand {
-                justify-content: flex-start;
-            }
-        }
-
-
+  --intro-blue: #0056f3;
+  --intro-navy: #0b1b33;
+  background: #f7fbff !important;
+  scroll-behavior: smooth;
+}
+
+html.ping-intro-active,
+html.ping-intro-active body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+html.ping-intro-active body,
+html.ping-intro-active .ping-global-main { background: #f7fbff !important; }
+html.ping-intro-active .ping-global-root,
+html.ping-intro-active .ping-global-main { width: 100% !important; max-width: none !important; }
+
+.intro-paint-guard { position: fixed; inset: 0; z-index: -1; background: #f7fbff; pointer-events: none; }
+
+.intro-canonical-page {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  overflow: hidden;
+  color: var(--intro-navy);
+  background: radial-gradient(circle at 51% 43%, rgba(224, 241, 255, .72), transparent 33%), #f9fcff;
+  font-family: Pretendard, "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.intro-site-header {
+  position: relative;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: minmax(330px, 1fr) auto minmax(270px, 1fr);
+  align-items: center;
+  width: min(1760px, calc(100% - 80px));
+  height: 94px;
+  margin: 0 auto;
+}
+
+.intro-header-brand, .intro-header-actions, .intro-header-nav { display: flex; align-items: center; }
+.intro-header-brand {
+  width: fit-content;
+  gap: 25px;
+  color: #293a5c;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.intro-header-logo.ping-brand-logo--horizontal { width: 180px; max-width: none; height: 62px; object-fit: cover; object-position: center 48%; }
+.intro-header-nav { justify-content: center; gap: clamp(26px, 2.5vw, 49px); white-space: nowrap; }
+.intro-header-nav a, .intro-login-link { color: var(--intro-navy); font-size: 15px; font-weight: 750; text-decoration: none; transition: color 150ms ease; }
+.intro-header-nav a:hover, .intro-login-link:hover { color: var(--intro-blue); }
+.intro-header-actions { justify-content: flex-end; gap: 33px; }
+.intro-header-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-width: 181px;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: 8px;
+  color: #fff;
+  background: #071a3c;
+  font-size: 16px;
+  font-weight: 750;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: transform 150ms ease, background 150ms ease;
+}
+.intro-header-cta:hover, .intro-primary-cta:hover { background: #0a2b66; }
+.intro-header-cta:active, .intro-primary-cta:active { transform: translateY(1px); }
+
+.intro-board {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(350px, 1.16fr) minmax(300px, .82fr) minmax(330px, .95fr);
+  align-items: center;
+  gap: clamp(28px, 3vw, 62px);
+  width: min(1760px, calc(100% - 112px));
+  min-height: 730px;
+  margin: 0 auto;
+  padding: 5px 0 20px;
+  box-sizing: border-box;
+}
+.intro-background-shape {
+  position: absolute;
+  z-index: -1;
+  top: 54px;
+  left: 27%;
+  width: 62%;
+  height: 650px;
+  border-radius: 43% 57% 54% 46% / 44% 43% 57% 56%;
+  background: rgba(224, 241, 255, .68);
+  transform: rotate(-7deg);
+  pointer-events: none;
+}
+
+.intro-hero-copy {
+  position: relative;
+  z-index: 3;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 42px 0 4px 12px;
+}
+.intro-eyebrow { display: flex; align-items: center; gap: 26px; margin: 0 0 30px; color: #84a5e8; font-size: 10px; font-weight: 700; letter-spacing: .48em; white-space: nowrap; }
+.intro-eyebrow b { color: var(--intro-blue); font-weight: 850; }
+.intro-hero-copy h1 { display: flex; flex-direction: column; margin: 0; color: #071a3c; font-size: clamp(52px, 4vw, 72px); font-weight: 900; line-height: 1.13; letter-spacing: -.075em; word-break: keep-all; }
+.intro-hero-copy h1 strong { color: var(--intro-blue); font-weight: 900; }
+.intro-description { margin: 28px 0; color: #50688f; font-size: clamp(18px, 1.35vw, 22px); font-weight: 500; line-height: 1.7; letter-spacing: -.035em; }
+.intro-primary-cta {
+  display: grid;
+  grid-template-columns: 54px 1fr 32px;
+  align-items: center;
+  width: min(380px, 100%);
+  height: 76px;
+  padding: 0 28px;
+  border-radius: 14px;
+  color: #fff;
+  background: var(--intro-blue);
+  box-shadow: 0 18px 35px rgba(0, 86, 243, .18);
+  font-size: 23px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: transform 150ms ease, background 150ms ease;
+}
+.intro-cta-play { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; color: var(--intro-blue); background: #fff; }
+.intro-cta-play svg { margin-left: 3px; }
+.intro-cta-arrow { justify-self: end; }
+.intro-mini-points { display: flex; align-items: center; margin-top: 28px; color: #20385f; font-size: 13px; font-weight: 650; white-space: nowrap; }
+.intro-mini-points span { display: inline-flex; align-items: center; gap: 8px; padding: 0 20px; border-right: 1px solid #c9d8ec; }
+.intro-mini-points span:first-child { padding-left: 0; }
+.intro-mini-points span:last-child { padding-right: 0; border-right: 0; }
+.intro-emotional-copy { display: flex; flex-direction: column; width: fit-content; margin: auto 0 0 2px; color: #85b2ff; font-family: "Segoe Print", "Nanum Pen Script", cursive; font-size: 23px; line-height: 1.35; letter-spacing: .02em; transform: rotate(-5deg); }
+.intro-emotional-copy b { align-self: flex-end; margin-top: 3px; color: #729cee; font-family: Pretendard, sans-serif; font-size: 10px; letter-spacing: .5em; }
+
+.intro-phone-stage { position: relative; z-index: 4; display: flex; align-items: center; justify-content: center; height: 700px; }
+.intro-phone-frame {
+  position: relative;
+  width: 326px;
+  height: 690px;
+  padding: 11px;
+  border: 1px solid #bdc9d9;
+  border-radius: 50px;
+  background: linear-gradient(145deg, #f8fafc, #dce4ed 52%, #f9fbfd);
+  box-shadow: 0 16px 32px rgba(16, 52, 98, .16), inset 0 0 0 2px rgba(255, 255, 255, .84);
+  box-sizing: border-box;
+}
+.intro-phone-frame.ping-phone-mockup { max-width: none; margin-inline: 0; aspect-ratio: auto; }
+.intro-phone-frame > .ping-phone-mockup__screen,
+.intro-phone-frame .ping-phone-frame__viewport,
+.intro-phone-frame .ping-phone-frame__fit,
+.intro-phone-frame .ping-phone-frame__scale-inner {
+  display: contents;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  transform: none;
+}
+.intro-phone-frame::before, .intro-phone-frame::after { position: absolute; left: -4px; width: 4px; border-radius: 3px 0 0 3px; background: #c5cfdb; content: ""; }
+.intro-phone-frame::before { top: 108px; height: 58px; }
+.intro-phone-frame::after { top: 181px; height: 84px; }
+.intro-phone-screen { display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden; border: 1px solid #e1e8f0; border-radius: 40px; background: rgba(255, 255, 255, .98); box-shadow: inset 0 0 30px rgba(19, 67, 120, .035); }
+.intro-phone-header { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 22px; height: 88px; padding: 16px 19px 0; color: #1e3d6d; box-sizing: border-box; }
+.intro-phone-logo.ping-brand-logo--horizontal { width: 125px; max-width: none; height: 44px; object-fit: cover; object-position: center 48%; }
+.intro-phone-progress { color: #5e6f8f; font-size: 14px; }
+.intro-phone-progress b { color: #071a3c; }
+.intro-phone-content { flex: 1; min-height: 0; padding: 17px 20px 8px; }
+.intro-phone-content h2 { margin: 0 0 3px; color: #081a3b; font-size: 32px; font-weight: 900; line-height: 1.1; letter-spacing: -.07em; }
+.intro-phone-count { margin: 0 0 14px; color: #2a3f61; font-size: 16px; font-weight: 550; }
+.intro-phone-count strong { color: var(--intro-blue); font-size: 19px; }
+.intro-phone-search { display: flex; align-items: center; gap: 9px; height: 40px; padding: 0 13px; border: 1px solid #cfdaea; border-radius: 8px; color: #98a8c1; font-size: 13px; box-sizing: border-box; }
+.intro-contact-list { display: flex; flex-direction: column; gap: 4px; margin: 14px 0 0; padding: 0 4px; list-style: none; }
+.intro-contact-list li { display: grid; grid-template-columns: 28px 44px 1fr; align-items: center; gap: 10px; min-height: 48px; }
+.intro-contact-check { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border: 1.5px solid #9eb2d1; border-radius: 50%; color: #fff; box-sizing: border-box; }
+.intro-contact-check.is-selected { border-color: var(--intro-blue); background: var(--intro-blue); }
+.intro-contact-avatar { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; overflow: hidden; border-radius: 50%; background: #dce5ef; }
+.intro-contact-avatar--warm { background: #ead9ce; }
+.intro-contact-avatar--rose { background: #eadfe5; }
+.intro-contact-avatar--sand { background: #dfd3c5; }
+.intro-contact-avatar--blue { background: #cbd9e8; }
+.intro-contact-avatar--gray { color: #fff; background: #aeb8c9; }
+.intro-contact-portrait, .intro-contact-head, .intro-contact-shoulders { position: absolute; display: block; }
+.intro-contact-portrait { inset: 0; }
+.intro-contact-head { top: 8px; left: 15px; width: 14px; height: 16px; border-radius: 48% 48% 45% 45%; background: #7b5a4d; }
+.intro-contact-shoulders { left: 8px; bottom: -2px; width: 28px; height: 22px; border-radius: 50% 50% 8px 8px; background: #f8fafc; }
+.intro-contact-avatar--rose .intro-contact-head { background: #392f31; }
+.intro-contact-avatar--sand .intro-contact-head { background: #2c2929; }
+.intro-contact-avatar--blue .intro-contact-head { background: #332f2c; }
+.intro-contact-initial { font-size: 17px; font-weight: 600; }
+.intro-contact-copy { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
+.intro-contact-copy strong { color: #0c2144; font-size: 14px; font-weight: 800; }
+.intro-contact-copy small { color: #8193b1; font-size: 12px; }
+.intro-phone-footer { display: flex; align-items: center; justify-content: center; height: 58px; margin: 0 17px 18px; border-radius: 9px; color: #fff; background: #071b3d; font-size: 16px; font-weight: 750; }
+
+.intro-floating-app { position: absolute; z-index: 5; top: 158px; left: -161px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 132px; height: 155px; border-radius: 34px; background: rgba(255, 255, 255, .85); box-shadow: 0 18px 45px rgba(46, 105, 176, .12); transform: rotate(-14deg); backdrop-filter: blur(3px); }
+.intro-floating-app img { width: 88px; height: 88px; object-fit: contain; }
+.intro-floating-app span { margin-top: -6px; color: #071a3c; font-size: 24px; font-weight: 900; letter-spacing: .04em; }
+.intro-signal { position: absolute; z-index: 3; width: 80px; height: 80px; transform: rotate(-38deg); }
+.intro-signal--top { top: 154px; left: -96px; }
+.intro-signal--bottom { top: 405px; left: -176px; transform: rotate(143deg); }
+.intro-signal i { position: absolute; left: 0; bottom: 0; border: 9px solid #85bcff; border-left-color: transparent; border-bottom-color: transparent; border-radius: 0 100% 0 0; opacity: .82; }
+.intro-signal i:nth-child(1) { width: 24px; height: 24px; }
+.intro-signal i:nth-child(2) { width: 45px; height: 45px; }
+.intro-signal i:nth-child(3) { width: 66px; height: 66px; }
+.intro-floating-note { position: absolute; top: 334px; left: -140px; margin: 0; color: #54709b; font-family: "Segoe Print", "Nanum Pen Script", cursive; font-size: 16px; line-height: 1.4; text-align: center; transform: rotate(-13deg); }
+
+.intro-steps { position: relative; z-index: 3; align-self: center; padding-left: 6px; }
+.intro-steps ol { margin: 0; padding: 0; list-style: none; }
+.intro-steps li { position: relative; display: grid; grid-template-columns: 50px 64px 1fr; align-items: center; gap: 17px; min-height: 120px; }
+.intro-steps li::after { position: absolute; top: calc(50% + 24px); bottom: calc(-50% + 24px); left: 24px; width: 1px; background: #c8d5e7; content: ""; }
+.intro-steps li:last-child::after { display: none; }
+.intro-step-number { position: relative; z-index: 2; display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 50%; color: #314c78; background: #e9f1fa; font-size: 16px; font-weight: 750; }
+.intro-steps li.is-active .intro-step-number { color: #fff; background: var(--intro-blue); box-shadow: 0 8px 19px rgba(0, 86, 243, .2); }
+.intro-step-icon { display: inline-flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; color: #004ce5; background: #edf5ff; }
+.intro-step-copy { display: flex; flex-direction: column; gap: 7px; }
+.intro-step-copy strong { color: #0b2b64; font-size: 18px; font-weight: 850; letter-spacing: -.03em; }
+.intro-step-copy > span { color: #6077a0; font-size: 15px; line-height: 1.55; letter-spacing: -.025em; }
+.intro-steps li.is-active { margin: 0 -16px; padding: 0 16px; border-radius: 18px; background: rgba(255, 255, 255, .93); box-shadow: 0 14px 35px rgba(39, 83, 133, .08); }
+.intro-steps-tagline { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 14px 0 0; color: #8aa5db; font-size: 8px; font-weight: 750; line-height: 1.8; letter-spacing: .46em; text-align: center; }
+.intro-steps-tagline span { width: 58px; height: 1px; background: #b7c9e2; }
+
+.intro-trust-strip { position: relative; z-index: 10; display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; width: min(1760px, calc(100% - 112px)); min-height: 122px; margin: 0 auto 44px; border-radius: 17px; background: rgba(255, 255, 255, .96); box-shadow: 0 18px 45px rgba(50, 97, 148, .06); }
+.intro-trust-item { display: grid; grid-template-columns: 58px 1fr; align-items: center; gap: 25px; min-height: 72px; padding: 0 clamp(24px, 3vw, 58px); border-right: 1px solid #d7e1ed; box-sizing: border-box; }
+.intro-trust-item:last-child { border-right: 0; }
+.intro-trust-icon { display: inline-flex; align-items: center; justify-content: center; color: #003de0; }
+.intro-trust-item > span:last-child { display: flex; flex-direction: column; gap: 7px; }
+.intro-trust-item strong { color: #0b2b64; font-size: 17px; font-weight: 850; white-space: nowrap; }
+.intro-trust-item small { color: #6077a0; font-size: 14px; line-height: 1.4; white-space: nowrap; }
+
+@media (max-width: 1380px) {
+  .intro-site-header { grid-template-columns: minmax(275px, 1fr) auto minmax(220px, 1fr); width: calc(100% - 48px); }
+  .intro-header-logo.ping-brand-logo--horizontal { width: 170px; }
+  .intro-header-brand { gap: 16px; font-size: 13px; }
+  .intro-header-nav { gap: 25px; }
+  .intro-header-actions { gap: 20px; }
+  .intro-header-cta { min-width: 150px; }
+  .intro-board { width: calc(100% - 72px); grid-template-columns: minmax(330px, 1.05fr) 310px minmax(310px, .9fr); gap: 32px; }
+  .intro-hero-copy { padding-left: 0; }
+  .intro-hero-copy h1 { font-size: clamp(48px, 4.25vw, 61px); }
+  .intro-mini-points { font-size: 11px; }
+  .intro-mini-points span { padding: 0 12px; }
+  .intro-phone-frame { width: 304px; height: 650px; }
+  .intro-phone-stage { height: 660px; }
+  .intro-floating-app { left: -128px; width: 112px; height: 135px; }
+  .intro-signal--bottom { left: -140px; }
+  .intro-floating-note { left: -120px; }
+  .intro-steps li { grid-template-columns: 46px 58px 1fr; gap: 12px; min-height: 112px; }
+  .intro-step-icon { width: 54px; height: 54px; }
+  .intro-step-copy strong { font-size: 16px; }
+  .intro-step-copy > span { font-size: 14px; }
+  .intro-trust-strip { width: calc(100% - 72px); }
+  .intro-trust-item { gap: 16px; padding: 0 24px; }
+}
+
+@media (min-width: 1101px) and (max-height: 950px) {
+  .intro-board {
+    grid-template-columns: minmax(500px, 1.3fr) 326px minmax(330px, .85fr);
+    min-height: 660px;
+    padding-block: 0;
+  }
+  .intro-hero-copy { padding-top: 20px; }
+  .intro-phone-stage { height: 660px; }
+  .intro-phone-frame { height: 650px; }
+  .intro-steps li { min-height: 110px; }
+  .intro-trust-strip { margin-bottom: 24px; }
+}
+
+@media (max-width: 1100px) {
+  .intro-site-header { grid-template-columns: 1fr auto; height: 80px; }
+  .intro-header-nav { display: none; }
+  .intro-header-actions { grid-column: 2; }
+  .intro-board { grid-template-columns: minmax(350px, .95fr) minmax(320px, 1.05fr); gap: 70px; width: calc(100% - 72px); padding-top: 34px; }
+  .intro-hero-copy { min-height: 650px; }
+  .intro-phone-stage { justify-self: center; }
+  .intro-steps { grid-column: 1 / -1; width: min(760px, 100%); margin: 40px auto 20px; }
+  .intro-steps li { min-height: 105px; }
+  .intro-trust-strip { grid-template-columns: repeat(2, 1fr); margin-top: 30px; }
+  .intro-trust-item:nth-child(2) { border-right: 0; }
+  .intro-trust-item:nth-child(-n+2) { border-bottom: 1px solid #d7e1ed; }
+}
+
+@media (max-width: 760px) {
+  .intro-canonical-page { background: #f8fbff; }
+  .intro-site-header { position: relative; grid-template-columns: 1fr auto; width: calc(100% - 32px); height: 70px; }
+  .intro-header-brand { gap: 0; }
+  .intro-header-brand > span, .intro-login-link { display: none; }
+  .intro-header-logo.ping-brand-logo--horizontal { width: 150px; height: 46px; }
+  .intro-header-actions { gap: 0; }
+  .intro-header-cta { min-width: 118px; height: 42px; padding: 0 14px; gap: 8px; font-size: 14px; }
+  .intro-board { display: flex; flex-direction: column; align-items: stretch; gap: 0; width: calc(100% - 32px); min-height: 0; padding: 24px 0 0; }
+  .intro-background-shape { top: 600px; left: -20%; width: 140%; height: 680px; }
+  .intro-hero-copy { align-self: auto; min-height: 0; padding: 0; }
+  .intro-eyebrow { gap: 12px; margin-bottom: 18px; font-size: 8px; letter-spacing: .25em; }
+  .intro-hero-copy h1 { font-size: clamp(43px, 12.2vw, 54px); line-height: 1.1; }
+  .intro-description { margin: 23px 0; font-size: 16px; line-height: 1.65; }
+  .intro-primary-cta { grid-template-columns: 44px 1fr 25px; width: 100%; height: 58px; padding: 0 18px; border-radius: 12px; font-size: 18px; }
+  .intro-cta-play { width: 38px; height: 38px; }
+  .intro-mini-points { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; font-size: 12px; }
+  .intro-mini-points span, .intro-mini-points span:first-child, .intro-mini-points span:last-child { padding: 0; border-right: 0; }
+  .intro-emotional-copy { align-self: flex-end; margin: 26px 38px 0 0; font-size: 17px; }
+  .intro-phone-stage { align-self: center; width: 100%; height: auto; margin-top: 26px; padding: 0 0 16px; }
+  .intro-phone-frame { width: min(318px, calc(100vw - 50px)); height: 665px; }
+  .intro-floating-app { top: 190px; left: -7px; width: 83px; height: 101px; border-radius: 22px; }
+  .intro-floating-app img { width: 58px; height: 58px; }
+  .intro-floating-app span { font-size: 16px; }
+  .intro-signal--top { top: 159px; left: 18px; }
+  .intro-signal--bottom { top: 294px; left: -3px; }
+  .intro-floating-note { display: none; }
+  .intro-steps { width: 100%; margin: 38px 0 10px; padding: 0; }
+  .intro-steps li, .intro-steps li.is-active { grid-template-columns: 44px 52px 1fr; gap: 11px; min-height: 104px; margin: 0; padding: 0 7px; }
+  .intro-steps li.is-active { padding: 0 10px; }
+  .intro-step-number { width: 40px; height: 40px; font-size: 14px; }
+  .intro-steps li::after { left: 26px; }
+  .intro-step-icon { width: 50px; height: 50px; }
+  .intro-step-copy strong { font-size: 15px; }
+  .intro-step-copy > span { font-size: 13px; }
+  .intro-steps-tagline { display: none; }
+  .intro-trust-strip { grid-template-columns: 1fr; width: calc(100% - 32px); margin: 28px auto; padding: 8px 0; }
+  .intro-trust-item { min-height: 92px; padding: 0 25px; border-right: 0; border-bottom: 1px solid #d7e1ed; }
+  .intro-trust-item:nth-child(2) { border-right: 0; }
+  .intro-trust-item:nth-child(-n+2) { border-bottom: 1px solid #d7e1ed; }
+  .intro-trust-item:last-child { border-bottom: 0; }
+}
+
+@media (max-width: 390px) {
+  .intro-header-cta { min-width: 106px; padding: 0 11px; }
+  .intro-header-cta svg { display: none; }
+  .intro-hero-copy h1 { font-size: 43px; }
+  .intro-description { font-size: 15px; }
+  .intro-phone-frame { width: 304px; height: 640px; }
+  .intro-phone-content { padding-inline: 17px; }
+  .intro-contact-list { gap: 5px; }
+  .intro-contact-list li { min-height: 49px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.ping-intro-active { scroll-behavior: auto; }
+  .intro-header-cta, .intro-primary-cta { transition: none; }
+}
