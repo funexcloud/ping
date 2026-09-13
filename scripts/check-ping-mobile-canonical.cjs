@@ -42,7 +42,7 @@ mustContain(
   "The approved PING logo is a locked canonical brand asset.",
 );
 mustContain("src/components/ping-mobile/ping-mobile-screens.tsx", "PingBrandLogo");
-mustContain("src/app/intro/intro-client.tsx", "PhoneMockup");
+mustContain("src/components/intro/IntroCanonicalBoard.tsx", "PhoneMockup");
 mustNotContain("src/app/intro/intro-client.tsx", "intro-device__hole");
 mustNotContain("src/components/intro/PhoneDeviceFrame.tsx", "PHONE_MOCKUP_HERO");
 mustNotContain("src/components/ping-mobile/phone-mockup.tsx", "Dynamic Island");

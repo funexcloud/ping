@@ -2,6 +2,7 @@
 
 import type { BulkRecipientRow } from "@/lib/ping-bulk-recipients";
 import { useEffect, useMemo, useState } from "react";
+import { StartRecipientStep } from "@/components/start/start-recipient-step";
 import "./recipient-exclude-modal.css";
 
 type Props = {
@@ -13,9 +14,13 @@ type Props = {
 
 export function RecipientExcludeModal({ open, rows, onClose, onConfirm }: Props) {
   const [excludedPhones, setExcludedPhones] = useState<Set<string>>(new Set());
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
-    if (open) setExcludedPhones(new Set());
+    if (open) {
+      setExcludedPhones(new Set());
+      setQuery("");
+    }
   }, [open, rows]);
 
   useEffect(() => {
@@ -31,104 +36,56 @@ export function RecipientExcludeModal({ open, rows, onClose, onConfirm }: Props)
     () => rows.filter((r) => !excludedPhones.has(r.phone)).length,
     [rows, excludedPhones],
   );
+  const visibleRows = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    if (!needle) return rows;
+    return rows.filter((row) =>
+      `${row.name || ""} ${row.label || ""} ${row.phone}`.toLowerCase().includes(needle),
+    );
+  }, [query, rows]);
 
   if (!open) return null;
 
   return (
     <div
-      className="recipient-exclude-overlay-root fixed inset-0 z-[60] flex overflow-hidden bg-black/40"
+      className="recipient-exclude-overlay-root"
       role="presentation"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div
-        className="recipient-exclude-sheet flex max-h-[min(85dvh,640px)] flex-col overflow-hidden bg-white overscroll-contain"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="recipient-exclude-title"
-      >
-        <div className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-[#E9ECF0]" aria-hidden />
-        <div className="recipient-exclude-sheet__head shrink-0 px-5 pb-2 pt-3">
-          <h2
-            id="recipient-exclude-title"
-            className="ping-mobile-title text-[18px] font-extrabold tracking-tight"
-          >
-            발송 제외할 연락처
-          </h2>
-          <p className="ping-mobile-count-line mt-2 text-[12px] font-semibold" aria-live="polite">
-            발송 예정 {sendCount.toLocaleString("ko-KR")}명 · 제외{" "}
-            {excludedPhones.size.toLocaleString("ko-KR")}명
-          </p>
-        </div>
-        <div className="recipient-exclude-sheet__list min-h-0 flex-1 overflow-y-auto px-5">
-          <ul className="min-w-0 max-w-full divide-y divide-[var(--ping-divider,#e9ecf0)]">
-            {rows.map((row) => {
-              const checked = excludedPhones.has(row.phone);
-              return (
-                <li key={row.phone} className="min-w-0 max-w-full">
-                  <label className="recipient-exclude-row ping-mobile-row flex cursor-pointer items-center gap-3 py-3">
-                    <span className="ping-mobile-avatar text-[13px]" aria-hidden>
-                      {(row.name || row.label || "?").trim().charAt(0)}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="recipient-exclude-row__label ping-mobile-row__name block min-w-0 text-[14px] leading-snug">
-                        {row.label}
-                      </span>
-                      <span className="ping-mobile-row__phone block min-w-0 truncate">
-                        {row.phone}
-                      </span>
-                    </span>
-                    <span className="shrink-0 text-[11px] font-semibold tracking-wide text-[#B0B8C1]">
-                      제외
-                    </span>
-                    <input
-                      type="checkbox"
-                      className={`ping-mobile-check h-5 w-5 shrink-0 ${checked ? "is-on" : ""}`}
-                      checked={checked}
-                      onChange={() => {
-                        setExcludedPhones((prev) => {
-                          const next = new Set(prev);
-                          if (next.has(row.phone)) next.delete(row.phone);
-                          else next.add(row.phone);
-                          return next;
-                        });
-                      }}
-                    />
-                  </label>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-        <div className="recipient-exclude-sheet__footer shrink-0 border-t border-[#E9ECF0] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-          <button
-            type="button"
-            className="recipient-exclude-confirm-btn ping-mobile-cta ob-flow-btn-primary w-full min-h-[52px] touch-manipulation"
-            disabled={sendCount < 1}
-            onClick={() => {
-              const effective = rows
-                .filter((r) => !excludedPhones.has(r.phone))
-                .map((r) => ({
-                  phone: r.phone,
-                  label: (r.label || r.phone).trim() || r.phone,
-                  ...(r.name ? { name: r.name } : {}),
-                }));
-              if (effective.length < 1) {
-                window.alert(
-                  "발송할 연락처가 1명 이상 있어야 합니다.\n제외 체크를 일부 해제해 주세요.",
-                );
-                return;
-              }
-              onConfirm(effective);
-            }}
-          >
-            {sendCount < 1
-              ? "발송 대상 없음"
-              : `선택 완료 (${sendCount.toLocaleString("ko-KR")}명 발송)`}
-          </button>
-        </div>
-      </div>
+      <StartRecipientStep
+        rows={rows}
+        visibleRows={visibleRows}
+        query={query}
+        sendCount={sendCount}
+        excludedPhones={excludedPhones}
+        onQueryChange={setQuery}
+        onTogglePhone={(phone) => {
+          setExcludedPhones((prev) => {
+            const next = new Set(prev);
+            if (next.has(phone)) next.delete(phone);
+            else next.add(phone);
+            return next;
+          });
+        }}
+        onConfirm={() => {
+          const effective = rows
+            .filter((r) => !excludedPhones.has(r.phone))
+            .map((r) => ({
+              phone: r.phone,
+              label: (r.label || r.phone).trim() || r.phone,
+              ...(r.name ? { name: r.name } : {}),
+            }));
+          if (effective.length < 1) {
+            window.alert(
+              "발송할 연락처가 1명 이상 있어야 합니다.\n제외 체크를 일부 해제해 주세요.",
+            );
+            return;
+          }
+          onConfirm(effective);
+        }}
+      />
     </div>
   );
 }
