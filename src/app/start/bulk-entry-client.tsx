@@ -110,6 +110,7 @@ import { StartReviewStep } from "@/components/start/start-review-step";
 import { StartSavedComposeModal } from "@/components/start/start-saved-compose-modal";
 import { StartStepIndicator } from "@/components/start/start-step-indicator";
 import { StartUrlStep } from "@/components/start/start-url-step";
+import { PingSiteLegalFooter } from "@/components/ping-site-legal-footer";
 
 /** TEMP — Google 연락처 OAuth 심사 중 배지. 심사 완료 후 false 또는 아래 마크업·CSS 삭제 */
 const SHOW_GOOGLE_CONTACTS_REVIEW_BADGE = true;
@@ -250,8 +251,7 @@ function BulkEntryShellPlaceholder() {
   return (
     <StartCanonicalShell>
       <div className="bulk-entry-shell" aria-busy="true">
-        <StartHeader currentStep={1} />
-        <StartStepIndicator currentStep={1} />
+        <StartHeader currentStep={1} hideStepCount />
         <main className="index-main-flow ping-start__body" />
       </div>
     </StartCanonicalShell>
@@ -1117,6 +1117,7 @@ function BulkEntryInner() {
       <StartHeader
         currentStep={visibleProductStep}
         showBack={showHeaderBack}
+        hideStepCount={showIntentChoose}
         onBack={onHeaderBack}
       />
 
@@ -1246,6 +1247,10 @@ function BulkEntryInner() {
           onApply={applyRecentSendAsReference}
         />
       ) : null}
+
+      <div className="ping-start__legal">
+        <PingSiteLegalFooter />
+      </div>
       </div>
     </StartCanonicalShell>
   );

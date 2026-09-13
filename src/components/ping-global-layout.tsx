@@ -46,6 +46,13 @@ const HIDE_PREFIXES = ["/admin", "/condolence/", "/tv/"] as const;
 /** 580px 제품 열 제외 — PC·태블릿 반응형(방명록 720px 등) */
 const FULL_WIDTH_EXACT = ["/flower", "/console", "/condolence", "/intro", "/start"] as const;
 const FULL_WIDTH_PREFIXES = ["/condolence/", "/tv/"] as const;
+/** Runtime 부고 플로 — 480px 서비스 열 (obituary-form 기준) */
+const SERVICE_COLUMN_EXACT = [
+  "/obituary-form",
+  "/mourner-info",
+  "/mourner-account",
+  "/obituary-create",
+] as const;
 
 function matchesPrefix(pathname: string, prefixes: readonly string[]): boolean {
   return prefixes.some((prefix) => {
@@ -81,10 +88,15 @@ export function PingGlobalLayout({ children }: { children: ReactNode }) {
   const showCondolenceDevSkip =
     isPingDevFlowSkipEnabled() &&
     isPingDevCondolenceTourLocation(pathname, searchParams.toString());
+  const serviceColumn = (SERVICE_COLUMN_EXACT as readonly string[]).includes(
+    pathname,
+  );
 
   return (
     <div
-      className={`ping-global-root flex min-h-dvh w-full flex-col bg-background${
+      className={`ping-global-root flex min-h-dvh w-full flex-col ${
+        serviceColumn ? "bg-[#f4f9ff]" : "bg-background"
+      }${
         condolenceAuthFlowPage
           ? " ping-global-root--condolence-login items-stretch"
           : condolencePage
@@ -97,7 +109,11 @@ export function PingGlobalLayout({ children }: { children: ReactNode }) {
       <PingKeyboardInset />
       <div
         className={`ping-global-main flex min-h-0 w-full flex-1 flex-col ${
-          fullWidth ? "max-w-none" : "max-w-[var(--ping-column-max)] bg-white"
+          fullWidth
+            ? "max-w-none"
+            : serviceColumn
+              ? "max-w-[var(--ping-service-column,480px)] bg-white"
+              : "max-w-[var(--ping-column-max)] bg-white"
         }${
           condolencePage ? " ping-global-main--condolence" : ""
         }${

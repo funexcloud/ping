@@ -12,6 +12,7 @@ type StartHeaderProps = {
   currentStep: number;
   onBack?: () => void;
   showBack?: boolean;
+  hideStepCount?: boolean;
   totalSteps?: number;
 };
 
@@ -19,6 +20,7 @@ export function StartHeader({
   currentStep,
   onBack,
   showBack = false,
+  hideStepCount = false,
   totalSteps = START_WIZARD_TOTAL_STEPS,
 }: StartHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -37,9 +39,11 @@ export function StartHeader({
           </a>
         </div>
         <div className="ping-start__header-actions">
-          <span className="ping-start__step-count" aria-label={`${currentStep} / ${totalSteps} 단계`}>
-            <strong>{currentStep}</strong> / {totalSteps}
-          </span>
+          {hideStepCount ? null : (
+            <span className="ping-start__step-count" aria-label={`${currentStep} / ${totalSteps} 단계`}>
+              <strong>{currentStep}</strong> / {totalSteps}
+            </span>
+          )}
           <button
             type="button"
             className="ping-start__header-button"

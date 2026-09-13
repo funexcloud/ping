@@ -5,16 +5,14 @@ type StartCanonicalShellProps = {
 };
 
 /**
- * `/start` presentation shell.
- * Native (0–1023): viewport is the app. Desktop (1024+): centered phone frame.
+ * `/start` application column.
+ * Same responsive UI on phone / tablet / desktop — no device mockup.
+ * Mobile: full viewport width. Desktop: centered `--ping-service-column` (480px).
  */
 export function StartCanonicalShell({ children }: StartCanonicalShellProps) {
   return (
     <div className="ping-start">
-      <div className="ping-start__presentation">
-        <div className="ping-start__notch" aria-hidden="true" />
-        <div className="ping-start__app">{children}</div>
-      </div>
+      <div className="ping-start__app">{children}</div>
     </div>
   );
 }

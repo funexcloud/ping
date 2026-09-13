@@ -1,12 +1,12 @@
-/* PING `/start` canonical shell
- * 0–1023px: viewport is the app. No phone frame.
- * ≥1024px: pale desktop canvas + centered 440px app in a generic phone frame.
+/* PING `/start` application column
+ * Mobile: viewport is the app (width 100%).
+ * Desktop / tablet: ice-blue canvas + centered 480px column. No phone mockup.
  */
 
 html.ping-one-screen,
 html.ping-one-screen body {
   min-height: 100%;
-  background: #f4f9ff;
+  background: #fff;
 }
 
 .ping-start {
@@ -16,28 +16,26 @@ html.ping-one-screen body {
   --start-line: #e9ecf0;
   --start-ice: #f4f9ff;
   --start-control: #f8fbff;
-  --start-app-width: 440px;
+  --start-app-width: var(--ping-service-column, 480px);
   display: flex;
   width: 100%;
   min-width: 0;
   min-height: 100dvh;
   align-items: stretch;
   justify-content: center;
-  overflow: hidden;
+  overflow-x: clip;
   color: var(--start-navy);
   background: #fff;
 }
 
-.ping-start__presentation,
 .ping-start__app {
   display: flex;
   width: 100%;
+  max-width: var(--start-app-width);
   min-width: 0;
   min-height: 100dvh;
+  margin-inline: auto;
   flex-direction: column;
-}
-
-.ping-start__app {
   overflow: hidden;
   background: #fff;
 }
@@ -51,10 +49,6 @@ html.ping-one-screen body {
   flex-direction: column;
   overflow: hidden;
   background: #fff;
-}
-
-.ping-start__notch {
-  display: none;
 }
 
 .ping-start__header {
@@ -808,10 +802,17 @@ html.ping-one-screen body {
   background: rgba(15, 23, 42, 0.36);
 }
 
+.ping-start__legal {
+  flex: 0 0 auto;
+  width: 100%;
+  background: #fff;
+  box-sizing: border-box;
+}
+
 .ping-start-overlay__sheet {
   display: flex;
   width: 100%;
-  max-width: min(var(--ping-column-max), 100%);
+  max-width: min(var(--ping-service-column, 480px), 100%);
   max-height: min(85dvh, 640px);
   flex-direction: column;
   overflow: hidden;
@@ -923,76 +924,33 @@ html.ping-one-screen body {
   background: var(--start-blue);
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
+  html.ping-one-screen,
+  html.ping-one-screen body,
   .ping-start {
-    align-items: center;
+    background: var(--start-ice);
+  }
+
+  .ping-start {
+    align-items: stretch;
     justify-content: center;
-    padding: 24px;
-    background:
-      radial-gradient(circle at 50% 14%, rgba(186, 224, 255, 0.72), transparent 38%),
-      linear-gradient(145deg, #fbfdff 0%, #eef7ff 55%, #f8fbff 100%);
+    padding: 0;
     box-sizing: border-box;
-  }
-
-  .ping-start__presentation {
-    position: relative;
-    width: 462px;
-    min-width: 462px;
-    min-height: 0;
-    height: min(880px, calc(100dvh - 48px));
-    padding: 10px;
-    border: 1px solid #d5deea;
-    border-radius: 48px;
-    background: linear-gradient(145deg, #fbfcfe, #e4ebf2 50%, #fff);
-    box-shadow: 0 28px 70px rgba(25, 73, 126, 0.16), inset 0 0 0 2px rgba(255, 255, 255, 0.86);
-    box-sizing: border-box;
-  }
-
-  .ping-start__presentation::before,
-  .ping-start__presentation::after {
-    position: absolute;
-    left: -4px;
-    width: 4px;
-    border-radius: 3px 0 0 3px;
-    background: #c5d0dc;
-    content: "";
-  }
-
-  .ping-start__presentation::before {
-    top: 118px;
-    height: 64px;
-  }
-
-  .ping-start__presentation::after {
-    top: 196px;
-    height: 86px;
-  }
-
-  .ping-start__notch {
-    position: absolute;
-    z-index: 40;
-    top: 12px;
-    left: 50%;
-    display: block;
-    width: 64px;
-    height: 5px;
-    border-radius: 999px;
-    background: #c9d3dd;
-    transform: translateX(-50%);
   }
 
   .ping-start__app {
     width: 100%;
-    min-height: 0;
-    height: 100%;
-    border: 1px solid #dbe4ed;
-    border-radius: 38px;
-    box-shadow: inset 0 0 22px rgba(25, 70, 122, 0.035);
+    max-width: var(--start-app-width);
+    min-height: 100dvh;
+    margin-inline: auto;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .ping-start__header {
-    padding-top: 14px;
-    border-radius: 37px 37px 0 0;
+    padding-top: max(8px, env(safe-area-inset-top));
+    border-radius: 0;
   }
 
   .ping-start-overlay {
@@ -1001,7 +959,7 @@ html.ping-one-screen body {
   }
 
   .ping-start-overlay__sheet {
-    width: 440px;
+    width: min(var(--start-app-width), 100%);
     border-radius: 20px;
   }
 }

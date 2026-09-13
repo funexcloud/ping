@@ -1,7 +1,18 @@
-/* obituary-create.html — 부고 현황(내 부고) */
+/* /obituary-create — PING Blue / ice-blue (no teal, no dark dashboard) */
 .obituary-create-page {
+  --obituary-primary: var(--ping-primary, #0056F3);
+  --obituary-primary-soft: rgba(0, 86, 243, 0.10);
+  --obituary-primary-ring: rgba(0, 86, 243, 0.24);
+  --ping-service-column: 480px;
   font-family: var(--font-ping-ui);
   -webkit-font-smoothing: antialiased;
+  background: #f4f9ff;
+}
+
+.obituary-create-page .app-shell {
+  width: 100%;
+  max-width: var(--ping-service-column);
+  background: #fff;
 }
 
 .touch-manipulation {
@@ -11,9 +22,9 @@
 
 .ob-cx-panel {
   border-radius: var(--ping-radius-card);
-  border: 1px solid rgba(107, 187, 174, 0.42);
-  background: linear-gradient(165deg, #ffffff 0%, rgba(0, 151, 169, 0.07) 100%);
-  box-shadow: 0 4px 20px rgba(65, 39, 59, 0.06);
+  border: 1px solid var(--obituary-primary-ring);
+  background: #f4f9ff;
+  box-shadow: 0 4px 16px rgba(25, 31, 40, 0.04);
 }
 
 .ob-cx-step-num {
@@ -31,27 +42,27 @@
 }
 
 .ob-cx-step--now .ob-cx-step-num {
-  background: var(--ping-primary);
+  background: var(--obituary-primary);
   color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 151, 169, 0.35);
+  box-shadow: 0 4px 12px var(--obituary-primary-ring);
 }
 
 .ob-cx-step--next .ob-cx-step-num {
-  background: rgba(0, 151, 169, 0.12);
-  color: var(--dongban-teal-dark);
+  background: var(--obituary-primary-soft);
+  color: var(--ping-primary-dark, #003da8);
 }
 
 .ob-dash-card {
   border-radius: 20px;
   overflow: hidden;
-  background: #2d2f34;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16);
+  background: #fff;
+  border: 1px solid #e5e8eb;
+  box-shadow: 0 4px 16px rgba(25, 31, 40, 0.05);
 }
 
 .ob-dash-card__head {
   padding: 1.15rem 1.15rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid #eef1f4;
 }
 
 .ob-dash-badge {
@@ -62,12 +73,12 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: rgba(255, 255, 255, 0.94);
-  background: rgba(255, 255, 255, 0.16);
+  color: var(--obituary-primary);
+  background: var(--obituary-primary-soft);
 }
 
 .ob-dash-delete {
-  color: #ff8c42;
+  color: #8b95a1;
   background: transparent;
   border: none;
   padding: 0.35rem;
@@ -82,8 +93,8 @@
 }
 
 .ob-dash-delete:hover {
-  background: rgba(255, 140, 66, 0.14);
-  color: #ffa65e;
+  background: var(--obituary-primary-soft);
+  color: var(--obituary-primary);
 }
 
 .ob-dash-title {
@@ -92,18 +103,18 @@
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.35;
-  color: #fff;
+  color: #191f28;
 }
 
 .ob-dash-title-meta {
   font-size: 12px;
   font-weight: 600;
-  color: #9ca3af;
+  color: #8b95a1;
 }
 
 .ob-dash-card__body {
   padding: 1rem 1.15rem 1.1rem;
-  background: #2d2f34;
+  background: #fff;
 }
 
 .ob-dash-label {
@@ -112,14 +123,14 @@
   padding-top: 0.125rem;
   font-size: 12px;
   font-weight: 700;
-  color: #9ca3af;
+  color: #8b95a1;
   letter-spacing: -0.02em;
 }
 
 .ob-dash-value {
   flex: 1;
   font-size: 13px;
-  color: #f8fafc;
+  color: #191f28;
   line-height: 1.45;
 }
 
@@ -130,8 +141,8 @@
 .ob-dash-actions {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  background: #1a1b1f;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: #f8fbff;
+  border-top: 1px solid #eef1f4;
 }
 
 .ob-dash-act {
@@ -146,11 +157,11 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #f1f5f9;
+  color: #191f28;
   background: transparent;
   border: none;
-  border-right: 1px solid rgba(255, 255, 255, 0.07);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-right: 1px solid #eef1f4;
+  border-bottom: 1px solid #eef1f4;
   cursor: pointer;
   text-align: center;
   text-decoration: none;
@@ -159,11 +170,11 @@
 }
 
 .ob-dash-act:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--obituary-primary-soft);
 }
 
 .ob-dash-act:active {
-  background: rgba(255, 255, 255, 0.09);
+  background: var(--obituary-primary-soft);
 }
 
 .ob-dash-act:nth-child(3n) {

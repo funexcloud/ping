@@ -30,10 +30,14 @@ export default function ObituaryCreateClient() {
     window.history.replaceState(null, "", path);
   }, [searchParams]);
 
+  useEffect(() => {
+    document.title = "PING 내 부고";
+  }, []);
+
   return (
-    <div className="obituary-create-page flex min-h-dvh justify-center bg-background text-foreground">
-      <div className="app-shell relative flex min-h-dvh w-full max-w-md flex-col bg-card">
-        <header className="ping-sticky-page-header sticky top-0 z-20 flex shrink-0 items-center gap-3 border-b border-border/80 bg-card px-5 py-4">
+    <div className="obituary-create-page flex min-h-dvh justify-center text-foreground">
+      <div className="app-shell relative flex min-h-dvh w-full flex-col bg-white">
+        <header className="ping-sticky-page-header sticky top-0 z-20 flex shrink-0 items-center gap-3 border-b border-[#eef1f4] bg-white px-5 py-4">
           <Button
             asChild
             variant="ghost"
@@ -44,7 +48,7 @@ export default function ObituaryCreateClient() {
               <span className="ping-chevron-left" aria-hidden="true" />
             </Link>
           </Button>
-          <h1 className="flex-1 pr-11 text-center text-[15px] font-bold tracking-tight text-foreground">
+          <h1 className="flex-1 pr-11 text-center text-[20px] font-bold tracking-tight text-foreground">
             내 부고
           </h1>
         </header>
@@ -52,11 +56,11 @@ export default function ObituaryCreateClient() {
         <main className="flex-1 px-5 pb-12 pt-4">
           <div
             id="saveSuccessBanner"
-            className={`mb-5 flex items-start gap-3 rounded-lg border border-dongban-mint/45 bg-dongban-cyan/[0.08] px-4 py-3 shadow-sm ${bannerOpen ? "" : "hidden"}`}
+            className={`mb-5 flex items-start gap-3 rounded-lg border border-[rgba(0,86,243,0.24)] bg-[rgba(0,86,243,0.10)] px-4 py-3 ${bannerOpen ? "" : "hidden"}`}
             role="status"
           >
             <CircleCheck
-              className="mt-0.5 size-5 shrink-0 text-dongban-cyan"
+              className="mt-0.5 size-5 shrink-0 text-primary"
               aria-hidden
               strokeWidth={2.25}
             />
@@ -82,7 +86,7 @@ export default function ObituaryCreateClient() {
 
           <Button
             asChild
-            className="mb-7 h-auto w-full touch-manipulation rounded-lg bg-ping-primary px-5 py-4 text-[15px] font-bold text-white shadow-[0_12px_32px_rgba(0,151,169,0.28)] hover:bg-ping-primary/90 hover:opacity-[0.96] active:opacity-90"
+            className="mb-7 h-auto w-full touch-manipulation rounded-lg bg-primary px-5 py-4 text-[15px] font-bold text-primary-foreground hover:bg-primary/90 hover:opacity-[0.96] active:opacity-90"
           >
             <Link href="/obituary-form">새 부고 작성</Link>
           </Button>
