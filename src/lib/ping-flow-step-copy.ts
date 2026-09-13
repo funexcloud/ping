@@ -8,7 +8,7 @@ export type StepCopy = {
 };
 
 /** 8단계 진행바·단계 공통 (⑨ 부의금은 `POST_SEND_CONDOLENCE_COPY`) */
-export const BULK_FLOW_STEP_COPY: Record<BulkFlowStep, StepCopy> = {
+export const BULK_FLOW_STEP_COPY = {
   1: {
     title: "부고 주소 입력",
     subtitle: "링크를 붙여넣으면 문자 내용을 자동으로 가져올게요",
@@ -49,7 +49,12 @@ export const BULK_FLOW_STEP_COPY: Record<BulkFlowStep, StepCopy> = {
     subtitle: "결제가 완료됐어요. 발송이 곧 시작됩니다",
     docTitle: "PING · 발송 완료",
   },
-};
+  9: {
+    title: "부의금 명단",
+    subtitle: "발송하신 분들의 명단을 정리할 수 있어요 (선택)",
+    docTitle: "PING · 부의금 명단",
+  },
+} as Record<BulkFlowStep, StepCopy>;
 
 /** @deprecated `BULK_FLOW_STEP_COPY` 사용 */
 export const BULK_FLOW_NINE_COPY = BULK_FLOW_STEP_COPY;
