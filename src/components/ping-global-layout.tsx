@@ -28,6 +28,7 @@ const HIDE_HEADER_EXACT = [
   "/console",
   "/condolence",
   "/obituary/public",
+  "/start",
 ] as const;
 /** 전역 푸터를 숨길 경로 — 관리자·풀스크린·마케팅 PC(자체 푸터)·디지털 방명록 */
 const HIDE_FOOTER_EXACT = [
@@ -39,10 +40,11 @@ const HIDE_FOOTER_EXACT = [
   "/mourner-info",
   "/mourner-account",
   "/obituary/public",
+  "/start",
 ] as const;
 const HIDE_PREFIXES = ["/admin", "/condolence/", "/tv/"] as const;
 /** 580px 제품 열 제외 — PC·태블릿 반응형(방명록 720px 등) */
-const FULL_WIDTH_EXACT = ["/flower", "/console", "/condolence", "/intro"] as const;
+const FULL_WIDTH_EXACT = ["/flower", "/console", "/condolence", "/intro", "/start"] as const;
 const FULL_WIDTH_PREFIXES = ["/condolence/", "/tv/"] as const;
 
 function matchesPrefix(pathname: string, prefixes: readonly string[]): boolean {
