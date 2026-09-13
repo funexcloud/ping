@@ -16,8 +16,14 @@ import {
   isBugoFuneralImportUrl,
   persistBulkSmsComposeToPingFromIndex,
   persistObituaryUrlToPingFromIndex,
+  readPingFromIndexRecord,
   tryBugoImportForUrl,
 } from "@/lib/ping-bugo-import";
+import {
+  canProceedObituaryUrlForBulkFlow,
+  hasSessionImportVerification,
+  OBITUARY_HOST_NOT_ALLOWED_HINT,
+} from "@/lib/ping-obituary-import-trust";
 import {
   EXTERNAL_OBITUARY_URL_HINT,
   extractFirstHttpsUrl,
@@ -33,6 +39,7 @@ export type BulkComposeHydrate = {
 
 export type AdvanceObituaryUrlResult =
   | { ok: false; reason: "invalid_url"; hint: string }
+  | { ok: false; reason: "host_not_allowed"; hint: string; hostname: string }
   | {
       ok: true;
       normalizedUrl: string;
@@ -100,12 +107,38 @@ export async function advanceBulkEntryFromObituaryUrl(
   persistObituaryUrlToPingFromIndex(normalizedUrl);
 
   let importWarning: string | undefined;
+  let importSucceeded = false;
   try {
-    await tryBugoImportForUrl(normalizedUrl, session.lastImportedUrl, session.inFlight);
-    session.markImported(normalizedUrl);
+    const importResult = await tryBugoImportForUrl(
+      normalizedUrl,
+      session.lastImportedUrl,
+      session.inFlight,
+    );
+    importSucceeded = importResult.imported;
+    if (!importSucceeded && importResult.skipped) {
+      importSucceeded = hasSessionImportVerification(
+        normalizedUrl,
+        readPingFromIndexRecord(),
+      );
+    }
+    if (importResult.imported) session.markImported(normalizedUrl);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "부고 내용을 가져오지 못했습니다.";
     importWarning = `${msg}\n\n부고 문자는 다음 단계에서 직접 작성·수정할 수 있습니다.`;
+  }
+
+  const eligibility = canProceedObituaryUrlForBulkFlow(
+    normalizedUrl,
+    importSucceeded,
+    readPingFromIndexRecord(),
+  );
+  if (!eligibility.ok) {
+    return {
+      ok: false,
+      reason: "host_not_allowed",
+      hint: OBITUARY_HOST_NOT_ALLOWED_HINT,
+      hostname: eligibility.hostname,
+    };
   }
 
   const compose = readBulkComposeHydrateFromSession(fallbackTemplateId, existingBody);
