@@ -1,27 +1,21 @@
 import { LandingDisplayTitle } from "@/components/landing/LandingDisplayTitle";
-import {
-  LANDING_HERO_PREVIEW,
-  LANDING_RESEARCH_STAGES,
-  LANDING_SECTION_EYEBROWS,
-  LANDING_TITLE_BREAKS,
-} from "@/content/landing/landing-config";
-import { PIPELINE } from "@/lib/intro/config";
+import { LANDING_HERO_PREVIEW, LANDING_RESEARCH_STAGES, LANDING_SECTION_EYEBROWS, LANDING_TITLE_BREAKS } from "@/content/landing/landing-config";
 
 const SHIFT_FLOW_STEPS = [
   {
     key: "paste",
-    label: PIPELINE[0].label,
-    caption: "받은 부고 URL",
+    label: "부고 준비",
+    caption: "링크 입력 또는 작성",
   },
   {
     key: "parse",
-    label: "자동 정리 · 보안",
-    caption: PIPELINE[1].desc,
+    label: "연락처 가져오기",
+    caption: "주소록에서 불러오기",
   },
   {
     key: "dispatch",
-    label: PIPELINE[4].label,
-    caption: "약 2분",
+    label: "한 번에 전달",
+    caption: "대상 선택 후 발송",
   },
 ] as const;
 
@@ -53,11 +47,11 @@ function ParseSkeleton() {
 function DispatchSkeleton() {
   return (
     <div className="old-way-flow__mock old-way-flow__mock--dispatch" aria-hidden>
-      <p className="shift-flow__count-tag">312명</p>
+      <p className="shift-flow__count-tag">결과 확인</p>
       <div className="shift-flow__progress">
         <span className="shift-flow__progress-fill" />
       </div>
-      <p className="shift-flow__time-tag">약 2분</p>
+      <p className="shift-flow__time-tag">한 번에 전달</p>
     </div>
   );
 }
@@ -72,7 +66,7 @@ type ShiftFlowSwipeProps = {
   hideHeader?: boolean;
 };
 
-/** 연구 3단계 — 붙여넣기→정리→발송 3열 그리드 (#old-way 패턴) */
+/** 연구 3단계 — 부고 준비 → 연락처 → 전달 */
 export function ShiftFlowSwipe({ hideHeader = false }: ShiftFlowSwipeProps) {
   return (
     <div className="research-stage research-stage--flow old-way-flow shift-flow">

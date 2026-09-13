@@ -11,10 +11,10 @@ export const PRODUCTS_PING_CONSUMER: ProductPingLandingContent = {
   audience: "consumer",
   hero: {
     eyebrow: "한 번에 전하는 중요한 소식",
-    title: "연락처를 불러오고",
-    titleAccent: "중요한 부고를 한 번에 전달하세요",
-    lead: "스마트폰 주소록에서 연락처를 가져와 보낼 사람을 선택하고, 발송 결과까지 확인할 수 있습니다.",
-    badge: "연락처 가져오기",
+    title: "부고를 준비하고",
+    titleAccent: "필요한 사람에게 한 번에 전하세요",
+    lead: "부고 링크를 넣거나 내용을 작성한 뒤, 연락처를 가져와 보낼 사람을 고르고 결과를 확인합니다.",
+    badge: "부고 준비부터",
   },
   oldWay: {
     anchorId: "old-way",
@@ -31,8 +31,8 @@ export const PRODUCTS_PING_CONSUMER: ProductPingLandingContent = {
   theShift: {
     anchorId: "the-shift",
     sectionLabel: "전환",
-    title: "붙여넣기 한 번이면 방식이 바뀝니다",
-    description: "기존 부고 URL을 넣으면 자동으로 정리·보안 처리한 뒤, 웹에서 대량 발송합니다.",
+    title: "부고를 준비한 뒤 한 번에 전합니다",
+    description: "부고 내용을 확인하고, 연락처를 가져와 필요한 사람에게만 전달합니다.",
     beforeTitle: "기존 방식",
     beforeItems: [
       "유가족 휴대폰에서 10명씩 수차례 발송",
@@ -41,12 +41,12 @@ export const PRODUCTS_PING_CONSUMER: ProductPingLandingContent = {
     ],
     afterTitle: "PING",
     afterItems: [
-      "부고 URL 붙여넣기",
-      "자동 정리 · 안심 링크 보안 처리",
-      "웹에서 한 번에 대량 발송",
+      "부고 준비 · 미리보기",
+      "연락처 가져오기 · 대상 선택",
+      "한 번에 전달 · 결과 확인",
     ],
-    demoHint: "붙여넣으면 부고 정보가 이렇게 정리됩니다",
-    timeBadge: "약 2분",
+    demoHint: "부고를 준비하면 미리보기에서 이렇게 정리됩니다",
+    timeBadge: "한 번에",
   },
   trust: {
     anchorId: "trust",
@@ -89,7 +89,7 @@ export const PRODUCTS_PING_CONSUMER: ProductPingLandingContent = {
     steps: [
       {
         title: "부고 대량 발송",
-        desc: "붙여넣기 → 확인 → 웹에서 발송. 약 2분이면 끝납니다.",
+        desc: "부고를 준비하고 확인할 사람을 고른 뒤 한 번에 전합니다.",
         href: "/start",
       },
       {
@@ -118,20 +118,28 @@ export const PRODUCTS_PING_CONSUMER: ProductPingLandingContent = {
   howItWorks: {
     anchorId: "how-it-works",
     sectionLabel: "이용 방법",
-    title: "3단계로 시작합니다",
-    description: "부고 준비, 연락처 가져오기, 발송까지 이어집니다.",
+    title: "이렇게 전합니다",
+    description: "부고 준비, 연락처 가져오기, 대상 선택, 발송 준비, 결과 확인 순입니다.",
     steps: [
       {
         title: "부고 준비",
-        desc: "전할 부고 내용을 준비합니다.",
+        desc: "부고 링크를 넣거나 내용을 작성하고 미리보기에서 확인합니다.",
       },
       {
         title: "연락처 가져오기",
-        desc: "스마트폰 주소록에서 연락처를 불러와 보낼 사람을 고릅니다.",
+        desc: "주소록에서 연락처를 불러옵니다. Google 로그인은 이 단계에서만 이어집니다.",
       },
       {
-        title: "한 번에 발송",
-        desc: "선택한 사람에게 보내고 전달 결과를 확인합니다.",
+        title: "발송 대상 선택",
+        desc: "전할 사람만 고릅니다.",
+      },
+      {
+        title: "발송 준비",
+        desc: "건수와 내용을 확인한 뒤 결제로 이어갑니다.",
+      },
+      {
+        title: "발송 및 결과 확인",
+        desc: "선택한 사람에게 전달하고 결과를 확인합니다.",
       },
     ],
   },
@@ -144,7 +152,7 @@ export const PRODUCTS_PING_CONSUMER: ProductPingLandingContent = {
       {
         question: "부고 문자를 여러 사람에게 어떻게 보내나요?",
         answer:
-          "PING은 스마트폰 주소록에서 연락처를 가져와 보낼 사람을 고른 뒤, 중요한 부고 소식을 한 번에 전달합니다. 선택한 사람에게만 보내며, 발송 전 대상과 발송 후 결과를 확인할 수 있습니다.",
+          "PING은 부고를 준비한 뒤 연락처를 가져와 보낼 사람을 고르고, 한 번에 전달합니다. 선택한 사람에게만 보내며, 발송 전 대상과 발송 후 결과를 확인할 수 있습니다.",
       },
       {
         question: "연락처는 어떻게 가져오나요?",
@@ -159,7 +167,7 @@ export const PRODUCTS_PING_CONSUMER: ProductPingLandingContent = {
       {
         question: "로그인은 언제 하나요?",
         answer:
-          "부고 보내기를 눌러 바로 시작할 수 있습니다. Google 로그인은 발송을 이어가는 시점에 요청합니다.",
+          "부고 보내기를 눌러 부고를 먼저 준비합니다. Google 로그인은 연락처 가져오기를 누를 때만 이어집니다.",
       },
       {
         question: "결제는 안전한가요?",
@@ -172,7 +180,7 @@ export const PRODUCTS_PING_CONSUMER: ProductPingLandingContent = {
     anchorId: "start",
     sectionLabel: "시작",
     title: "지금 부고를 전하세요",
-    lead: "연락처를 불러와 보낼 사람을 고르고 한 번에 전달할 수 있습니다.",
+    lead: "부고를 준비하고 보낼 사람을 고른 뒤 한 번에 전달할 수 있습니다.",
   },
 };
 

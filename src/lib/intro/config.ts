@@ -18,17 +18,17 @@ export const PHONE_MOCKUP_HERO = "/assets/images/phone-mockup-hero.png";
 export const PHONE_MOCKUP_BEZEL = "/assets/images/phone-mockup-bezel.png";
 
 export const PIPELINE = [
-  { key: "paste", label: "붙여넣기", ms: 700 },
-  { key: "parse", label: "정보 인식", ms: 900, desc: "고인·빈소·발인 자동 추출" },
-  { key: "ready", label: "발송 준비", ms: 500, desc: "2분 — 여기서 끊김" },
-  { key: "safelink", label: "보안 변환", ms: 0, desc: "수신자별 Safe Link 토큰 URL" },
-  { key: "dispatch", label: "대량 발송", ms: 0, desc: "Solapi 발송 · 멱등성 키" },
-  { key: "result", label: "완료", ms: 0, desc: "성공/실패 집계" },
+  { key: "paste", label: "부고 준비", ms: 700 },
+  { key: "parse", label: "미리보기", ms: 900, desc: "전할 내용을 확인하고 다듬습니다" },
+  { key: "ready", label: "발송 준비", ms: 500, desc: "대상과 건수를 확인합니다" },
+  { key: "safelink", label: "연락처 가져오기", ms: 0, desc: "주소록에서 연락처를 불러옵니다" },
+  { key: "dispatch", label: "한 번에 전달", ms: 0, desc: "선택한 사람에게 보냅니다" },
+  { key: "result", label: "결과 확인", ms: 0, desc: "전달 결과를 확인합니다" },
 ] as const;
 
 export const HERO = {
-  h1: ["연락처를 불러오고", "중요한 부고를 한 번에 전하세요"],
-  sub: "스마트폰 주소록에서 연락처를 가져와 보낼 사람을 고르고, 발송 결과까지 확인할 수 있습니다.",
+  h1: ["한 사람씩 보내던", "부고 연락을, 한 번에."],
+  sub: "부고 정보를 준비하고, 연락처를 선택해 필요한 분들에게 한 번에 전달하세요. 복잡한 과정 없이 PING이 함께합니다.",
   readyLabel: "선택한 사람에게만 전달",
   hook: "한 번에 전하는 중요한 소식",
 } as const;
@@ -37,32 +37,32 @@ export const HERO = {
 export const PHONE_FLOW = [
   {
     key: "paste",
-    label: "붙여넣기",
-    title: "부고 URL을 붙여넣으세요",
-    body: "받은 부고 링크만 붙여넣으면 문자 초안까지 이어집니다.",
+    label: "부고 준비",
+    title: "부고 링크를 넣거나 내용을 작성하세요",
+    body: "받은 부고 주소 또는 직접 작성으로 전할 내용을 준비합니다.",
   },
   {
     key: "parse",
-    label: "정보 인식",
-    title: "고인·빈소·발인을 자동으로 인식",
+    label: "미리보기",
+    title: "전할 부고를 확인하고 다듬습니다",
     body: PIPELINE[1].desc,
   },
   {
     key: "safelink",
-    label: "보안 변환",
-    title: "수신자별 Safe Link 생성",
-    body: PIPELINE[3].desc,
+    label: "연락처 가져오기",
+    title: "주소록에서 연락처를 불러옵니다",
+    body: "필요할 때만 Google 로그인으로 이어집니다.",
   },
   {
     key: "dispatch",
-    label: "대량 발송",
-    title: "한 번에 보내도 한 사람씩 도착",
+    label: "한 번에 전달",
+    title: "선택한 사람에게 한 번에 전합니다",
     body: PIPELINE[4].desc,
   },
   {
     key: "result",
-    label: "완료",
-    title: "312명, 누락 없이 완료",
+    label: "결과 확인",
+    title: "전달 결과를 확인합니다",
     body: PIPELINE[5].desc,
   },
 ] as const;
@@ -196,7 +196,7 @@ export const LANDING_AUDIENCE_VOICES = [
   },
   {
     id: "voice-director-draft",
-    text: "붙여넣기만으로 부고 본문이 정리된다면, 새벽에도 발송 준비가 빨라질 것입니다.",
+    text: "부고를 준비한 뒤 연락처만 고르면, 새벽에도 발송 준비가 빨라질 것입니다.",
     name: "장례지도사",
     role: "장점 · 자동 정리",
     image: testimonialAvatarForVoiceName("장례지도사"),
@@ -231,13 +231,13 @@ export const MAGIC_SECTIONS = {
     id: "experience",
     label: "Experience",
     title: "실제 발송 화면, 그대로",
-    lead: "붙여넣기부터 완료까지 — `/start` 위저드와 동일한 흐름입니다.",
+    lead: "부고 준비부터 결과 확인까지 — `/start` 위저드와 동일한 흐름입니다.",
   },
   journey: {
     id: "features",
     label: "Features",
     title: "핵심 과정",
-    lead: "부고 준비, 연락처 가져오기, 한 번에 발송까지 — 세 단계입니다.",
+    lead: "부고 준비, 연락처 가져오기, 대상 선택, 한 번에 전달까지입니다.",
   },
   /** @deprecated MAGIC_SECTIONS.journey 사용 */
   features: {
@@ -278,6 +278,6 @@ export const MAGIC_SECTIONS = {
   benefitsLegacy: {
     label: "Benefits",
     title: "웹에서 바로, 발송까지",
-    lead: "붙여넣기에서 완료까지 — 실제 발송 화면 흐름 그대로입니다.",
+    lead: "부고 준비에서 결과 확인까지 — 실제 발송 화면 흐름 그대로입니다.",
   },
 } as const;
