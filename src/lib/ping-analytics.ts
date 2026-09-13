@@ -7,10 +7,13 @@ declare global {
 const ALLOWED = new Set([
   "landing_view",
   "start_click",
+  "obituary_input_start",
+  "obituary_preview",
+  "contacts_import_click",
   "google_login_start",
   "google_login_success",
-  "contacts_import_start",
   "contacts_import_success",
+  "recipient_selection_complete",
   "checkout_start",
   "payment_success",
 ]);
