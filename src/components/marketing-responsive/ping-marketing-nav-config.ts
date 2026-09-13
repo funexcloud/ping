@@ -1,4 +1,4 @@
-import { memberLoginMarketingHref } from "@/lib/auth-signup-flow";
+import { memberLoginMarketingHref } from "@/lib/member-login-marketing-href";
 import { CONDOLENCE_BOOK_PATH } from "@/lib/condolence-paths";
 import { PING_CONSOLE_APP_URL } from "@/lib/ping-main-path";
 import {
