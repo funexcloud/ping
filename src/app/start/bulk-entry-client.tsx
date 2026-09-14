@@ -312,9 +312,12 @@ function BulkEntryInner() {
   useEffect(() => {
     capturePartnerAttributionFromLocation();
     const skipIntroQuery = new URLSearchParams(window.location.search).get("skipIntro") === "1";
-    pingApplyIntroSkipQueryToHistory();
-    pingIntroOnReloadClearSeen();
-    if (!pingIntroSeen()) {
+    if (skipIntroQuery) {
+      pingApplyIntroSkipQueryToHistory();
+    } else {
+      pingIntroOnReloadClearSeen();
+    }
+    if (!skipIntroQuery && !pingIntroSeen()) {
       pingSetIntroReturnPath(PING_MAIN_APP_PATH);
       router.replace("/intro" + window.location.search + window.location.hash);
       setBootState("redirect-intro");
