@@ -1,0 +1,222 @@
+.ping-send-board {
+  --ping-send-blue: var(--ping-primary, #0056f3);
+  --ping-send-navy: #191f28;
+  --ping-send-muted: #6b7684;
+  --ping-send-ice: #f4f9ff;
+  --ping-send-line: #e9ecf0;
+  width: 100%;
+  max-width: var(--ping-service-column, 480px);
+  margin: 0 auto 1.25rem;
+  padding: 8px 0 4px;
+  color: var(--ping-send-navy);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.ping-send-board__title {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.25;
+}
+
+.ping-send-board__mark {
+  position: relative;
+  display: grid;
+  width: 148px;
+  height: 148px;
+  margin: 16px auto 8px;
+  place-items: center;
+}
+
+.ping-send-board__wave {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 1.5px solid rgba(0, 86, 243, 0.16);
+  background: radial-gradient(
+    circle,
+    rgba(0, 86, 243, 0.12) 0%,
+    rgba(0, 86, 243, 0.04) 46%,
+    transparent 70%
+  );
+}
+
+.ping-send-board__wave--mid {
+  inset: 16px;
+  border-color: rgba(0, 86, 243, 0.2);
+}
+
+.ping-send-board__wave--inner {
+  inset: 32px;
+  border-color: rgba(0, 86, 243, 0.28);
+}
+
+.ping-send-board.is-sending .ping-send-board__wave,
+.ping-send-board__mark.is-sending .ping-send-board__wave {
+  animation: ping-send-wave 2.4s ease-out infinite;
+}
+
+.ping-send-board__mark.is-sending .ping-send-board__wave--mid {
+  animation-delay: 0.35s;
+}
+
+.ping-send-board__mark.is-sending .ping-send-board__wave--inner {
+  animation-delay: 0.7s;
+}
+
+.ping-send-board__symbol {
+  position: relative;
+  z-index: 1;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.ping-send-board__ratio {
+  margin: 4px 0 12px;
+  color: var(--ping-send-navy);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.ping-send-board__ratio span {
+  color: var(--ping-send-muted);
+  font-size: 1.125rem;
+  font-weight: 650;
+}
+
+.ping-send-board__progress {
+  width: 100%;
+  height: 8px;
+  margin: 0 0 20px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--ping-send-ice);
+}
+
+.ping-send-board__progress > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ping-send-blue);
+}
+
+.ping-send-board__progress.is-indeterminate > span {
+  width: 36%;
+  animation: ping-send-indet 1.2s ease-in-out infinite;
+}
+
+.ping-send-board__steps {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.ping-send-board__steps li {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  color: var(--ping-send-muted);
+  font-size: 14px;
+}
+
+.ping-send-board__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #d7dee8;
+}
+
+.ping-send-board__dot.is-done,
+.ping-send-board__dot.is-active {
+  background: var(--ping-send-blue);
+}
+
+.ping-send-board__dot.is-fail {
+  background: #e11d48;
+}
+
+.ping-send-board__steps li.is-active,
+.ping-send-board__steps li.is-done {
+  color: var(--ping-send-navy);
+  font-weight: 650;
+}
+
+.ping-send-board__step-count {
+  color: var(--ping-send-muted);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.ping-send-board__steps li.is-active .ping-send-board__step-count {
+  color: var(--ping-send-blue);
+}
+
+.ping-send-board__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 12px 10px;
+  border: 1px solid var(--ping-send-line);
+  border-radius: 14px;
+  background: var(--ping-send-ice);
+}
+
+.ping-send-board__stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ping-send-board__stats small {
+  color: var(--ping-send-muted);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.ping-send-board__stats strong {
+  color: var(--ping-send-navy);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.ping-send-board__lead {
+  margin: 0;
+  color: var(--ping-send-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@keyframes ping-send-wave {
+  0% {
+    transform: scale(0.86);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1.08);
+    opacity: 0.15;
+  }
+}
+
+@keyframes ping-send-indet {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ping-send-board__mark.is-sending .ping-send-board__wave,
+  .ping-send-board__progress.is-indeterminate > span {
+    animation: none;
+  }
+}

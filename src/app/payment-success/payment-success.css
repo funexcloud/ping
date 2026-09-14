@@ -1,26 +1,26 @@
-/* 결제 완료 전용 — 흰 컬럼 + 토스 블루 (#3182f6) */
+/* 결제 완료 전용 — 흰 컬럼 + Funex Blue (#0056f3) */
 .ping-global-root:has(.pay-ok-page) .ping-global-main {
   background: var(--ping-surface, #fff);
 }
 
 .pay-ok-flow-progress-wrap {
     width: 100%;
-    max-width: min(400px, 100%);
+    max-width: min(var(--ping-service-column, 480px), 100%);
     align-self: stretch;
 }
 
 .pay-ok-page > .bulk-flow-logo-bar {
     width: 100%;
-    max-width: min(400px, 100%);
+    max-width: min(var(--ping-service-column, 480px), 100%);
     align-self: stretch;
     margin-top: env(safe-area-inset-top, 0);
     box-sizing: border-box;
 }
 
 .pay-ok-page {
-    --pay-ok-accent: #3182f6;
-    --pay-ok-accent-deep: #2563eb;
-    --pay-ok-accent-hover: #1b64da;
+    --pay-ok-accent: var(--ping-primary, #0056f3);
+    --pay-ok-accent-deep: var(--ping-primary-hover, #0046c8);
+    --pay-ok-accent-hover: var(--ping-primary-hover, #0046c8);
     --pay-ok-text: #191f28;
     --pay-ok-text-sub: #6b7684;
     flex: 1;
@@ -36,7 +36,7 @@
 }
 .pay-ok-shell {
     width: 100%;
-    max-width: 28rem;
+    max-width: var(--ping-service-column, 480px);
     margin-top: env(safe-area-inset-top, 0);
     padding-top: 1.75rem;
     box-sizing: border-box;
@@ -86,8 +86,8 @@
     justify-content: center;
     background: linear-gradient(145deg, #4f9bff 0%, var(--pay-ok-accent-deep) 100%);
     box-shadow:
-        0 12px 32px rgba(49, 130, 246, 0.4),
-        0 4px 12px rgba(37, 99, 235, 0.22);
+        0 12px 32px rgba(0, 86, 243, 0.4),
+        0 4px 12px rgba(0, 86, 243, 0.22);
     transform-origin: center center;
 }
 .pay-ok-success-circle:not(.pay-ok-circle-enter-done) {
@@ -148,9 +148,6 @@
 #pay-ok-valid .pay-ok-title {
     color: var(--pay-ok-text);
 }
-#pay-ok-valid .pay-ok-sub {
-    color: var(--pay-ok-text-sub);
-}
 #pay-ok-valid .pay-ok-card,
 #pay-ok-valid .pay-ok-message,
 #pay-ok-valid .pay-ok-actions {
@@ -174,7 +171,6 @@
 }
 .pay-ok-sub {
     font-size: 0.9375rem;
-    color: var(--pay-ok-text-sub);
     line-height: 1.55;
     margin: 0 0 1.75rem;
 }
@@ -213,8 +209,8 @@
     letter-spacing: -0.02em;
 }
 .pay-ok-message {
-    background: linear-gradient(135deg, rgba(49, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.06) 100%);
-    border: 1px solid rgba(49, 130, 246, 0.18);
+    background: linear-gradient(135deg, rgba(0, 86, 243, 0.08) 0%, rgba(0, 86, 243, 0.06) 100%);
+    border: 1px solid rgba(0, 86, 243, 0.18);
     border-radius: var(--radius-16);
     padding: 1.15rem 1.25rem;
     margin-bottom: 1.5rem;
@@ -256,7 +252,7 @@
 .pay-ok-btn--primary {
     background: var(--pay-ok-accent);
     color: #fff;
-    box-shadow: 0 8px 24px rgba(49, 130, 246, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 86, 243, 0.35);
 }
 .pay-ok-btn--primary:hover { background: var(--pay-ok-accent-hover); }
 .pay-ok-btn--secondary {
@@ -315,8 +311,8 @@
     color: #fff;
     background: linear-gradient(145deg, #4f9bff 0%, var(--pay-ok-accent-deep) 100%);
     box-shadow:
-        0 12px 32px rgba(49, 130, 246, 0.35),
-        0 4px 12px rgba(37, 99, 235, 0.2);
+        0 12px 32px rgba(0, 86, 243, 0.35),
+        0 4px 12px rgba(0, 86, 243, 0.2);
 }
 .pay-ok-invalid-circle svg {
     width: 58%;
@@ -371,9 +367,6 @@
 #pay-ok-invalid .pay-ok-title {
     color: var(--pay-ok-text);
 }
-#pay-ok-invalid .pay-ok-sub {
-    color: var(--pay-ok-text-sub);
-}
 #pay-ok-invalid .pay-ok-actions {
     width: 100%;
     max-width: 100%;
@@ -411,12 +404,12 @@
 .pay-ok-btn--excel {
     background: #fff;
     color: var(--pay-ok-accent-deep);
-    border: 1.5px solid rgba(49, 130, 246, 0.45);
+    border: 1.5px solid rgba(0, 86, 243, 0.45);
     gap: 0.45rem;
     box-shadow: 0 2px 8px rgba(25, 31, 40, 0.04);
 }
 .pay-ok-btn--excel:hover {
-    background: rgba(49, 130, 246, 0.07);
+    background: rgba(0, 86, 243, 0.07);
     border-color: var(--pay-ok-accent);
 }
 .pay-ok-btn--excel.pay-ok-btn--dim {
@@ -459,7 +452,7 @@
     background: linear-gradient(145deg, #4f9bff 0%, var(--pay-ok-accent-deep) 100%);
     border: none;
     color: #fff;
-    box-shadow: 0 8px 24px rgba(49, 130, 246, 0.28);
+    box-shadow: 0 8px 24px rgba(0, 86, 243, 0.28);
 }
 
 .pay-ok-bank-pending-icon svg {
@@ -495,7 +488,7 @@
     background: #fff;
     color: var(--pay-ok-accent-deep);
     box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
-    border: 1px solid rgba(49, 130, 246, 0.2);
+    border: 1px solid rgba(0, 86, 243, 0.2);
 }
 
 .pay-ok-bank-steps__num {
@@ -530,8 +523,8 @@
     gap: 0.25rem;
     padding: 1rem 0.75rem;
     border-radius: 1rem;
-    background: linear-gradient(180deg, rgba(49, 130, 246, 0.06) 0%, rgba(49, 130, 246, 0.02) 100%);
-    border: 1px solid rgba(49, 130, 246, 0.12);
+    background: linear-gradient(180deg, rgba(0, 86, 243, 0.06) 0%, rgba(0, 86, 243, 0.02) 100%);
+    border: 1px solid rgba(0, 86, 243, 0.12);
 }
 
 .pay-ok-bank-amount-label {

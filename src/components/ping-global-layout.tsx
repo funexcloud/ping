@@ -52,6 +52,7 @@ const SERVICE_COLUMN_EXACT = [
   "/mourner-info",
   "/mourner-account",
   "/obituary-create",
+  "/payment-success",
 ] as const;
 
 function matchesPrefix(pathname: string, prefixes: readonly string[]): boolean {

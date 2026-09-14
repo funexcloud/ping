@@ -2,10 +2,8 @@
 
 import { BulkFlowProgress } from "@/components/bulk/bulk-flow-progress";
 import { PingLoadingSpinner } from "@/components/ping-loading-spinner";
-import {
-  PingMobileCompletionScreen,
-  PingMobileSendingScreen,
-} from "@/components/ping-mobile/ping-mobile-screens";
+import { PingFulfillmentBoard } from "@/components/send/ping-fulfillment-board";
+import { fulfillmentHeadline, fulfillmentLead } from "@/lib/ping-fulfillment-ui";
 import { PingBankAccountCopyAllButton } from "@/components/ping-bank-account-copy-all-button";
 import { PingBankAccountCopyButton } from "@/components/ping-bank-account-copy-button";
 import {
@@ -738,9 +736,13 @@ function PaymentSuccessInner() {
 
   const showSuccessCheckmark =
     phase === "valid" && !bankDepositPending && fulfillmentPhase === "complete";
-  const showCanonicalSending =
-    phase === "valid" && !bankDepositPending && fulfillmentPhase === "dispatching";
-  const showCanonicalComplete = showSuccessCheckmark;
+  const showFulfillmentBoard =
+    phase === "valid" &&
+    !bankDepositPending &&
+    (fulfillmentPhase === "dispatching" ||
+      fulfillmentPhase === "complete" ||
+      fulfillmentPhase === "partial" ||
+      fulfillmentPhase === "failed");
 
   return (
     <div className="pay-ok-page">
@@ -775,19 +777,8 @@ function PaymentSuccessInner() {
         id="pay-ok-valid"
         aria-live="polite"
       >
-        {showCanonicalSending ? (
-          <PingMobileSendingScreen
-            chrome={false}
-            sent={fulfillment?.sentCount ?? 0}
-            total={fulfillment?.targetCount ?? 0}
-          />
-        ) : showCanonicalComplete ? (
-          <PingMobileCompletionScreen
-            chrome={false}
-            delivered={fulfillment?.sentCount ?? fulfillment?.targetCount ?? 0}
-            success={fulfillment?.sentCount ?? 0}
-            needsReview={fulfillment?.failedCount ?? 0}
-          />
+        {showFulfillmentBoard && fulfillment ? (
+          <PingFulfillmentBoard data={fulfillment} />
         ) : isBankAwaitingDeposit ? (
           <div className="pay-ok-bank-pending-hero" aria-hidden>
             <div className="pay-ok-bank-pending-icon">
@@ -796,26 +787,16 @@ function PaymentSuccessInner() {
           </div>
         ) : null}
 
-        <h1 className={`pay-ok-title${showCanonicalSending || showCanonicalComplete ? " sr-only" : ""}`}>
+        <h1 className={`pay-ok-title${showFulfillmentBoard ? " sr-only" : ""}`}>
           {isBankAwaitingDeposit
             ? "입금 안내"
             : isBankRegistered
               ? "주문이 접수되었습니다"
-              : fulfillmentPhase === "failed"
-                ? "발송에 실패했습니다"
-                : fulfillmentPhase === "partial"
-                  ? "일부 수신자에게 발송되지 않았습니다"
-                  : fulfillmentPhase === "complete"
-                    ? isBankTransfer
-                      ? "발송이 완료되었습니다"
-                      : "발송이 완료되었습니다"
-                    : fulfillmentPhase === "dispatching"
-                      ? isBankTransfer
-                        ? "입금 확인 · 발송 중"
-                        : "발송 중"
-                      : "결제가 완료되었습니다"}
+              : fulfillmentPhase
+                ? fulfillmentHeadline(fulfillmentPhase)
+                : "결제가 완료되었습니다"}
         </h1>
-        <p className={`pay-ok-sub${showCanonicalSending || showCanonicalComplete ? " sr-only" : ""}`}>
+        <p className={`pay-ok-sub${showFulfillmentBoard ? " sr-only" : ""}`}>
           {isBankAwaitingDeposit
             ? "아래 계좌로 입금해 주세요. 입금 확인 후 문자 발송이 시작됩니다."
             : isBankRegistered
@@ -835,16 +816,10 @@ function PaymentSuccessInner() {
                 : fulfillmentPhase === "partial"
                   ? fulfillment?.sentCount != null && fulfillment?.targetCount != null
                     ? `총 ${fulfillment.targetCount.toLocaleString("ko-KR")}건 중 ${fulfillment.sentCount.toLocaleString("ko-KR")}건이 접수되었습니다. 미도달 건은 고객센터로 문의해 주세요.`
-                    : "일부 수신자에게 부고가 전달되지 않았습니다. 고객센터로 문의해 주세요."
-                  : fulfillmentPhase === "complete"
-                    ? isBankTransfer
-                      ? "발송이 완료되었습니다. 아래에서 현금영수증을 발급해 주세요."
-                      : "지인분들께 부고가 발송되었습니다."
-                    : fulfillmentPhase === "dispatching"
-                      ? isBankTransfer
-                        ? "입금이 확인되었습니다. 지인분들께 부고가 발송되고 있습니다."
-                        : "결제가 확인되었습니다. 지인분들께 부고를 발송하고 있습니다."
-                      : "주문·결제가 정상적으로 처리되었습니다."}
+                    : "일부 수신자에게 부고 요청이 접수되지 않았습니다. 고객센터로 문의해 주세요."
+                  : fulfillmentPhase
+                    ? fulfillmentLead(fulfillmentPhase)
+                    : "주문·결제가 정상적으로 처리되었습니다."}
         </p>
 
         {isBankAwaitingDeposit || isBankRegistered ? (
@@ -982,7 +957,7 @@ function PaymentSuccessInner() {
             fulfillment.phase === "failed") &&
           fulfillment.targetCount != null ? (
             <div className="pay-ok-row">
-              <span className="pay-ok-k">발송 결과</span>
+              <span className="pay-ok-k">접수 결과</span>
               <span className="pay-ok-v" id="pay-ok-dispatch-result">
                 {fulfillment.sentCount != null
                   ? `${fulfillment.sentCount.toLocaleString("ko-KR")} / ${fulfillment.targetCount.toLocaleString("ko-KR")}건`
